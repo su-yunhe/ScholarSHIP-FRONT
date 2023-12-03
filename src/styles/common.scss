@@ -1,0 +1,115 @@
+// 重置样式
+/**
+目的是消除浏览器之间的默认样式差异，
+使网页的布局和显示更加一致
+**/
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 14px;
+}
+// 设置了文档的高度，颜色，最小宽度，字体等属性
+body {
+  height: 100%;
+  color: #333;
+  min-width: 1240px;
+  font: 1em/1.4 'Microsoft Yahei', 'PingFang SC', 'Avenir', 'Segoe UI',
+    'Hiragino Sans GB', 'STHeiti', 'Microsoft Sans Serif', 'WenQuanYi Micro Hei',
+    sans-serif;
+}
+body,
+ul,
+h1,
+h3,
+h4,
+p,
+dl,
+dd {
+  padding: 0;
+  margin: 0;
+}
+// 去掉了超链接的下划线和轮廓，并设置了颜色
+a {
+  text-decoration: none;
+  color: #333;
+  outline: none;
+}
+i {
+  font-style: normal;
+}
+// 去掉了输入框的边框和外观，并设置了占位符的颜色
+input[type='text'],
+input[type='search'],
+input[type='password'],
+input[type='checkbox'] {
+  padding: 0;
+  outline: none;
+  border: none;
+  -webkit-appearance: none;
+  &::placeholder {
+    color: #ccc;
+  }
+}
+// 设置了图片的最大宽度和高度，并设置了垂直对齐方式和背景
+img {
+  max-width: 100%;
+  max-height: 100%;
+  vertical-align: middle;
+  background: #ebebeb url('@/assets/images/200.png') no-repeat center / contain;
+}
+// 去掉了无序列表的项目符号
+ul {
+  list-style: none;
+}
+// 设置了应用程序容器的背景色和用户选择属性
+#app {
+  background: #ffffff;
+  user-select: none;
+}
+// 设置了内容容器的宽度，居中对齐和相对定位
+.container {
+  width: 1500px;
+  margin: 0 auto;
+  position: relative;
+}
+// 实现了单行和多行文本的省略效果
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ellipsis-2 {
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix:after {
+  content: '.';
+  display: block;
+  visibility: hidden;
+  height: 0;
+  line-height: 0;
+  clear: both;
+}
+
+// reset element
+.el-breadcrumb__inner.is-link {
+  font-weight: 400 !important;
+}

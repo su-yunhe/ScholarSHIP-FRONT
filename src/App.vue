@@ -1,26 +1,21 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { useUserStore } from '@/stores/userStore'
+import router from './router'
+const userStore = useUserStore()
+const username = userStore.userInfo.username
+
+
+const logout = () => {
+
+  router.push({name:'login'})
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
   <RouterView />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 header {
   line-height: 1.5;
   max-height: 100vh;
@@ -82,4 +77,16 @@ nav a:first-of-type {
     margin-top: 1rem;
   }
 }
+
+.el-menu-demo{
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px #888888;
+}
+
+.hello{
+  position: absolute;
+  margin-top: 18px;
+  margin-left: 87%;
+}
+
 </style>

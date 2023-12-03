@@ -1,4 +1,4 @@
-# ScholarSHIP
+# demo
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -28,5 +28,8 @@ npm run dev
 npm run build
 ```
 
-### test
-# edited by Stevex 2023.11.07
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
