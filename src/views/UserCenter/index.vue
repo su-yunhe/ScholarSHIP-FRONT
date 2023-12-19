@@ -1,9 +1,9 @@
 <template>
     <div>
       <el-container>
-        <el-header>
+        <!-- <el-header>
           <Header></Header>
-        </el-header>
+        </el-header> -->
         <el-main>
           <Main></Main>
         </el-main>

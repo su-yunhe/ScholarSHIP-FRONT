@@ -1,21 +1,23 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore'
 import router from './router'
+import Header from '@/components/header.vue'
 const userStore = useUserStore()
 const username = userStore.userInfo.username
 
 
 const logout = () => {
-
-  router.push({name:'login'})
+  router.push({ name: 'login' })
 }
 </script>
 
 <template>
+  <Header />
   <RouterView />
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="scss">  
+
 header {
   line-height: 1.5;
   max-height: 100vh;
@@ -78,15 +80,14 @@ nav a:first-of-type {
   }
 }
 
-.el-menu-demo{
+.el-menu-demo {
   border-radius: 10px;
   box-shadow: 1px 1px 5px #888888;
 }
 
-.hello{
+.hello {
   position: absolute;
   margin-top: 18px;
   margin-left: 87%;
 }
-
 </style>
