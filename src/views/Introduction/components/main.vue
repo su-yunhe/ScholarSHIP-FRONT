@@ -93,8 +93,9 @@ const search = () => {
     message: '请勿搜索空字段',
     grouping: true,
     type: 'warning',
-  })
-  console.log("空字段");
+    })
+    console.log("空字段");
+    return;
   }
   if (ok=="文献"){
     console.log("文献+"+name);
