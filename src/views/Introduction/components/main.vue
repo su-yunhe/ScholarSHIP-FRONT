@@ -148,7 +148,7 @@ const search = () => {
   gap: 5px;
   border-radius: 22px;
   // max-width: 300px;
-  height: 10vh;
+  height: 66px;
   transition: transform 400ms;
   transform-style: preserve-3d;
   // transform: rotateX(15deg) rotateY(-20deg);
