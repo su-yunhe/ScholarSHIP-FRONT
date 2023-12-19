@@ -1,0 +1,184 @@
+// 个人图书馆筛选框的组件
+<template>
+    <div>
+        <div class="tags">
+            <el-card class="screening-card">
+                筛选
+                <el-divider/>
+                <el-tag
+                    type="info"
+                    v-for="tag in dynamicTags"
+                    :key="tag"
+                    class="mx-1"
+                    :class="{ 'active-tag': activeName === tag }"  
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose(tag)"
+                    @click="selectTag(tag)"
+                >
+                    {{ tag.name }}
+                </el-tag>
+                <el-input
+                    v-if="inputVisible"
+                    ref="InputRef"
+                    v-model="inputValue"
+                    class="input-new-tag"
+                    size="small"
+                    @keyup.enter="handleInputConfirm"
+                    @blur="handleInputConfirm"
+                />
+                <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                    + 新建收藏夹
+                </el-button>
+            </el-card>
+        </div>
+        <el-dialog
+            v-model="deleteDialogVisible"
+            title="删除标签"
+            width="30%"
+        >
+            <span>确定要删除“{{ closingTag.name }}”标签吗？删除后相关文章会移动到默认收藏夹中。</span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="deleteDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="deleteTag">
+                确定
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
+        <el-dialog
+            v-model="noDeleteVisible"
+            title="删除标签"
+            width="30%"
+        >
+            <span>无法删除默认收藏夹！</span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="noDeleteVisible = false">
+                确定
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import { nextTick, onBeforeMount, reactive, ref } from 'vue'
+import { ElInput, ElMessage } from 'element-plus'
+import httpInstance from '@/utils/http'
+import { ElMessageBox } from 'element-plus'
+import { useUserStore } from '@/stores/userStore'
+import axios from 'axios'
+const userStore = useUserStore()
+const userId = userStore.userInfo.userid
+
+const inputValue = ref('')
+const dynamicTags = reactive([])
+const inputVisible = ref(false)
+const InputRef = ref<InstanceType<typeof ElInput>>()
+
+const loadTags = () => {
+    httpInstance.post("/api/label_star_get_all",{
+        userid: 1
+    }).then((res) => {
+        console.log(res)
+        dynamicTags.splice(0, dynamicTags.length, ...res.results)
+    })
+}
+
+//关闭标签：删除后其中的article自动加入默认收藏夹
+const deleteDialogVisible = ref(false)
+const noDeleteVisible = ref(false)
+var closingTag = ''
+const handleClose = (tag: string) => {
+    closingTag = tag
+    if(dynamicTags.indexOf(tag) == 0){
+        // 默认收藏夹
+        noDeleteVisible.value = true
+    }else{
+        deleteDialogVisible.value = true
+    }
+}
+const deleteTag = () => {
+    let tag = dynamicTags[dynamicTags.indexOf(closingTag)]
+    dynamicTags.splice(dynamicTags.indexOf(closingTag), 1)
+    deleteDialogVisible.value = false
+    httpInstance.post("/api/label_delete",{
+        userid: 1,
+        id: tag.id,
+        isDelete: 1
+    }).then((res) => {
+        console.log("res")
+    })
+}
+
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+
+const handleInputConfirm = () => {
+  if (inputValue.value) {
+    if(inputValue.value.length > 10){
+        alert("标签名不能超过十个字符")
+    }else{
+        httpInstance.post("api/label_star_add",{
+        userid: 1,
+        name: inputValue.value
+    }).then((res) => {
+        console.log(res)
+        if(res.msg === "标签重名"){
+            ElMessage({
+                message: "收藏夹已存在!",
+                type: 'error',
+            })
+        }else{
+            dynamicTags.push(res.label[0])
+        }
+    })
+    }
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
+
+const activeName = ref()
+const selectTag = (tag: string) => {
+    console.log("选择了标签：" + tag.name)
+    activeName.value = tag;
+}
+
+
+onBeforeMount(() => {
+      loadTags()
+})
+</script>
+
+<style>
+.screening-card{
+    margin: 5%;
+    min-height: 100px;
+}
+.mx-1{
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.button-new-tag{
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 100px;
+}
+.input-new-tag{
+    width: 100px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.active-tag {
+    background-color: #cfd2d5; /* 标签被选中后的颜色 */
+}
+</style>

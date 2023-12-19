@@ -31,6 +31,16 @@ const router = createRouter({
       path: '/academic',
       name: 'academic',
       component: AcademicView
+    },
+    {
+      path: '/userCenter',
+      name: 'userCenter',
+      component: () => import('@/views/UserCenter/index.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('@/views/Admin/index.vue')
     }
   ]
 })
