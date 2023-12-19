@@ -35,6 +35,16 @@ const router = createRouter({
       component: AcademicView
     },
     {
+      path: '/userCenter',
+      name: 'userCenter',
+      component: () => import('@/views/UserCenter/index.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('@/views/Admin/index.vue')
+    },
+    {
       path: '/search',
       name: 'search',
       component: SearchView
