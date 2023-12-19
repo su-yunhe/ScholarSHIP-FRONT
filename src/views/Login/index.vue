@@ -151,7 +151,8 @@ const doLogin = () => {
   }else if(!form.value.agree){
     ElMessage({ type: 'warning', message: '请勾选同意隐私和服务条款' })
   }else{
-    httpInstance.post('/login',{
+    console.log(1)
+    httpInstance.post('/user_login',{
       userName: form.value.userName,
       password: form.value.password,
       agree: form.value.agree
@@ -160,7 +161,7 @@ const doLogin = () => {
       userStore.userInfo = res.data
       console.log(userStore.userInfo)
       ElMessage({ type: 'success', message: '登录成功' })
-      router.replace({ path: '/team' })
+      router.replace({ path: '/scholar' })
     })
   }
 }
@@ -189,7 +190,7 @@ const register  = () => {
         console.log(userStore.userInfo)
         ElMessage({ type: 'success', message: '注册成功' })
         userStore.pages.isNewUser = [true,true]
-        router.replace({ path: '/team' })
+        router.replace({ path: '/scholar' })
       }
     })
   }

@@ -1,3 +1,24 @@
+<script setup>
+import { useUserStore } from '@/stores/userStore'
+import { useRouter } from 'vue-router'
+const userStore = useUserStore()
+const router = useRouter()
+console.log(userStore.userInfo)
+
+const toLogin = () => {
+  router.replace({ path: '/login' })
+}
+
+const toLogout = () => {
+  userStore.clearUserInfo()
+  ElMessage({
+    message: '您已成功退出 ~',
+    type: 'success',
+  })
+  router.replace({ path: '/intro' })
+}
+</script>
+
 <template>
   <div class="header">
     <div class="logo">
@@ -14,8 +35,8 @@
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
     </div>
     <div class="menu1">高级搜索</div>
-    
-    
+
+
     <div class="search">
       <div class="form-control">
         <input class="input input-alt" placeholder="搜索......" required="" type="text">
@@ -23,12 +44,40 @@
       </div>
 
     </div>
-    <div class="menu2">
-      <button class="btn">
+    <div class="menu2" v-if="userStore.userInfo.username == ''">
+      <button class="btn" @click="toLogin()">
         <span class="box">
-          个人中心
+          <el-icon style="position: relative; top: 2px;">
+            <User />
+          </el-icon>
+          去登录
         </span>
       </button>
+    </div>
+    <div class="menu2" v-else>
+      <button class="btn">
+        <span class="box">
+          <el-icon style="position: relative; top: 2px;">
+            <User />
+          </el-icon>
+          {{ userStore.userInfo.username }} | 个人中心
+        </span>
+      </button>
+      <el-popconfirm width="220" confirm-button-text="确定" cancel-button-text="取消" :icon="InfoFilled" icon-color="#626AEF"
+        title="确定要退出登录吗?" @confirm="toLogout()">
+        <template #reference>
+          <button class="btn">
+            <span class="box">
+              <el-icon style="position: relative; top: 2px;">
+                <SwitchButton />
+              </el-icon>
+              退出登录
+            </span>
+          </button>
+        </template>
+      </el-popconfirm>
+
+
     </div>
   </div>
 </template>
@@ -39,8 +88,10 @@
   display: flex;
   margin: 0px 20px 0px 20px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-  border-bottom-left-radius: 5px;  /* 左下角 */
-  border-bottom-right-radius: 5px; /* 右下角 */
+  border-bottom-left-radius: 5px;
+  /* 左下角 */
+  border-bottom-right-radius: 5px;
+  /* 右下角 */
 
   .logo {
     width: 25%;
@@ -55,7 +106,7 @@
     width: 10%;
     line-height: 60px;
     text-align: center;
-    font-weight: bold;
+    // font-weight: bold;
     font-size: 15px;
   }
 
@@ -113,7 +164,7 @@
 
     }
 
-    
+
 
     .input-alt:focus+.input-border-alt {
       width: 100%;
@@ -128,10 +179,10 @@
   }
 
   .menu2 {
-    width: 15%;
+    width: 40%;
     line-height: 60px;
     text-align: center;
-    font-weight: bold;
+    // font-weight: bold;
     font-size: 18px;
 
     .btn {
@@ -150,9 +201,9 @@
         margin: 0 5px;
         background: transparent;
         text-transform: uppercase;
-        font-weight: 900;
+        font-weight: 550;
         border-radius: 10px;
-        
+
       }
     }
 

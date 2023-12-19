@@ -43,7 +43,6 @@ httpInstance.interceptors.response.use(function (res) {
         }
       )
         .then(() => {
-          console.log(1)
           router.push({ path: '/login' })
         })
         .catch(() => {
