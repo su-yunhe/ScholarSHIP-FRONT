@@ -3,16 +3,25 @@
     <div class="logo-box" @click="goToHome">
       <img src="../../assets/images/scholarAvator.jpg" class="logo-img" />
     </div>
-    <div class="search-btn" @click="dialogVisible = true">
+    <div class="search-btn" @click="dialogVisible = !dialogVisible">
       <span>高级检索</span>
     </div>
-    <el-dialog
-      title="高级检索"
-      v-model="dialogVisible"
-      width="70%"
-    >
-      <div><span>这是一段信息</span></div>
-      
+    <el-dialog title="高级检索" width="70%" v-model="dialogVisible">
+      <el-card>
+        <div>高级检索</div>
+        <div v-for="(searchItem, i) in searchRequests" :key="i" style="margin-bottom: 0">
+          <el-select v-model="searchItem.select" mutiple placeholder="选项">
+            <el-option v-for="a in areaChoices" :label="a" :value="a" :key="a"></el-option>
+          </el-select>
+          <el-select v-model="searchItem.relation" mutiple placeholder="选项">
+            <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
+          </el-select>
+          <el-select v-model="searchItem.method" mutiple placeholder="选项">
+            <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
+          </el-select>
+          <el-input v-model="searchItem.str"></el-input>
+        </div>
+      </el-card>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -21,28 +30,29 @@
     <el-input
       v-model="input"
       placeholder="搜索"
-      style="width: 600px; margin-top: 50px"
+      style="width: 600px; margin-top: 30px; margin-bottom: 20px"
     ></el-input>
-    <el-button style="width: 80px; margin-top: 50px; margin-left: 30px">搜索</el-button>
+    <el-button
+      style="width: 80px; margin-top: 30px; margin-left: 30px; margin-bottom: 20px"
+      >搜索</el-button
+    >
   </div>
   <div>
     <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
       <div style="font-size: 18px; height: 80px">
-        <span
+        <div
           style="
             float: left;
-            text-align: right;
+            text-align: center;
             margin-top: 20px;
-            color: grey;
-            font-size: 15px;
+            font-size: 20px;
             margin-left: 0px;
           "
         >
           筛选方式
-        </span>
+        </div>
       </div>
       <el-card width="" height="">
-        <el-subheader>时间</el-subheader>
         <el-select v-model="minyear" mutiple placeholder="最早年份">
           <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
         </el-select>
@@ -63,9 +73,120 @@
         <el-divider></el-divider>
       </el-card>
     </div>
-    <div style="float: left"></div>
-    <div v-for="item in paginatedData">
-      {{ item.name }}
+    <div v-for="item in paginatedData" style="margin-top: 15px">
+      <el-card>
+        <div>
+          <div>{{ item.title }}</div>
+          <span
+            v-for="a in item.authors"
+            style="
+              border: solid 1px;
+              color: orange;
+              margin-left: 10px;
+              margin-right: 10px;
+            "
+            >{{ a }}</span
+          >
+          <div>{{ item.brief }}</div>
+          <span
+            v-for="k in item.keywords"
+            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
+            >{{ k }}</span
+          >
+        </div>
+        <div>
+          <el-button
+            style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            "
+            @click="cite(item)"
+          >
+            引用<el-icon><Link /></el-icon>
+          </el-button>
+          <el-button
+            style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            "
+            @click="toDocument(item.title, item.id)"
+          >
+            详情<el-icon><DataAnalysis /></el-icon>
+          </el-button>
+          <el-button
+            style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            "
+            @click="changeCollectIconToTrue(item.id)"
+          >
+            收藏<el-icon><FolderAdd /></el-icon>
+          </el-button>
+          <el-button
+            style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            "
+            @click="gourl(item)"
+          >
+            来源<el-icon><Position /></el-icon>
+          </el-button>
+          <el-button
+            style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            "
+            @click="pdf(item.pdf)"
+          >
+            下载<el-icon><Download /></el-icon>
+          </el-button>
+          <span
+            style="
+              float: right;
+              text-align: right;
+              margin-top: 8px;
+              color: grey;
+              font-size: 15px;
+              margin-right: 150px;
+            "
+          >
+            被引次数：
+            <span style="color: #2d94d4">
+              {{ item.n_citation }}
+            </span>
+          </span>
+          <span
+            style="
+              float: right;
+              text-align: right;
+              margin-top: 8px;
+              color: grey;
+              font-size: 15px;
+              margin-right: 50px;
+            "
+          >
+            发表时间：
+            <span style="color: #2d94d4">
+              {{ item.year }}
+            </span>
+          </span>
+        </div>
+      </el-card>
     </div>
     <div class="footer">
       <el-pagination
@@ -79,13 +200,87 @@
   </div>
 </template>
 <script setup>
-import Input from "../../utils/Input.vue";
 import { ref, watchEffect, computed, onMounted } from "vue";
+const areaChoices = ["标题","期刊","作者","领域","机构","关键词"]
+const relationChoices = ["且","或","非"]
+const methodChoices = ["精确","模糊"]
+const searchRequests = ref([
+  {
+    select:"标题",
+    relation:"且",
+    method:"精确",
+    str: "",
+  },
+  {
+    select:"标题",
+    relation:"且",
+    method:"精确",
+    str: "",
+  },
+])
+const searchChoice = ref("")
 const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
 const dialogVisible = ref(false);
+const minyear = ref();
+const maxyear = ref();
+const years = ref([
+  1999,
+  2000,
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+]);
+const authorList = ref([
+  {
+    name: "adam",
+    status: "b",
+  },
+  {
+    name: "bane",
+    status: "b",
+  },
+  {
+    name: "cypher",
+    status: "b",
+  },
+]);
+const journalList = ref([
+  {
+    name: "first",
+    status: "b",
+  },
+  {
+    name: "second",
+    status: "b",
+  },
+  {
+    name: "third",
+    status: "b",
+  },
+]);
 const getList = async () => {
   // await httpInstance
   //   .post('/page_get', {
@@ -98,13 +293,62 @@ const getList = async () => {
   //     // router.push({ path: '/project' })
   //   })
   items.value = [
-    { name: "a" },
-    { name: "b" },
-    { name: "c" },
-    { name: "d" },
-    { name: "e" },
-    { name: "f" },
-    { name: "g" },
+    {
+      title: "alpha",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
+    {
+      title: "beta",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
+    {
+      title: "cythor",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
+    {
+      title: "destine",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
+    {
+      title: "ethic",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
+    {
+      title: "forkk",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
+    {
+      title: "grabit",
+      authors: ["aa", "aa1"],
+      brief: "thanks",
+      keywords: ["avba", "gfdb"],
+      n_citation: 100,
+      year: 1991,
+    },
   ];
 };
 const currentPage = ref(1);
