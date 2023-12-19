@@ -1,46 +1,64 @@
 import Mock from 'mockjs'
 
-const testData = Mock.mock('/test','post',{
+const testData = Mock.mock('/test_tags','post',{
 	status:200, //请求成功状态码
 	dataList:[
+        '默认收藏夹',
+        '自然科学',
+        '计算机科学',
+        '编译技术',
+        '深度学习'
+    ]
+})
+
+Mock.mock('/test_followings','post',{
+    status:200,
+    dataList:[
         {
-            groupId:1,
-            groupName:"六个核桃",
-            groupBuilder:"Alex",
-            buildTime:"2023-08-25T01:52:05.296Z",
-            occupation:"member"
+            name: "xqf",
+            intro: "软件学院大三"
         },
         {
-            groupId:2,
-            groupName:"六个胡桃",
-            groupBuilder:"aaaa",
-            buildTime:"2023-08-23T11:52:05.296Z",
-            occupation:"member"
+            name: "abc",
+            intro: "国内知名计算机科学家"
         },
         {
-            groupId: 3,
-            groupName:"六个黄桃",
-            groupBuilder:"bbbbbbb",
-            buildTime:"2023-08-26T08:52:05.296Z",
-            occupation:"manager"
+            name: "def",
+            intro: "中科院院士"
+        },
+        {
+            name: "hij",
+            intro: "原神启动"
         }
     ]
 })
 
-Mock.mock('/test/team','post',{
-    res:1,
-    data:"六个核桃",
+Mock.mock('/test_history','post',{
+    dataList:[
+        {
+            title: "论文1",
+            author: "xqf"
+        },
+        {
+            title: "论文2",
+            author: "xqf"
+        },
+        {
+            title: "论文3",
+            author: "xqf"
+        },
+        {
+            title: "论文4",
+            author: "xqf"
+        },
+        {
+            title: "论文5",
+            author: "xqf"
+        }
+    ]
 })
 
-Mock.mock('/test/create','post',{
-    res:1,
-    data:{
-        id:23,
-        info:"abcde"
-    },
-})
-
-Mock.mock('/test/memberlist','post',{
+Mock.mock('/test_','post',{
     res:1,
     data:[
         {
