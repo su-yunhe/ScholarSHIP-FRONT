@@ -196,7 +196,8 @@ export default {
 <style>
 .academicContent{
     /* width: 100%; */
-    width: 70%;margin: auto;
+    width: 70%;
+    margin: auto;
     height: auto;
     margin-top: 20px;
     overflow-x: hidden;
@@ -209,10 +210,21 @@ export default {
     font-size:25px
 }
 .essayBox{
-    width: 100%;
+    margin-left: 5px;
+    width: 98%;
     height: auto;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
     margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.essayBox:hover {
+    margin-left: 5px;
+    width: 98%;
+    height: auto;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    border-radius: 5px;
 }
 .essayBox-name{
     font-size: large;

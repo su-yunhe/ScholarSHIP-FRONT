@@ -2,19 +2,56 @@
     <div id="introduction">
         <div id="intro1">
             <div id="walnuts" style="float: left;">
-                <div style="font-size: 60px;font-weight:bold;color: rgb(73, 149, 248);">六个核桃</div>
+                <div style="font-size: 60px;font-weight:bold;color: rgb(73, 149, 248);">
+                  <span style="color: rgba(97, 134, 243);margin: 0;">S</span>
+                  <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
+                  <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
+                  <span style="color: rgba(107, 168, 87);margin-left: 2px;">o</span>
+                  <span style="color: rgba(97, 134, 243);margin-left: 2px;">l</span>
+                  <span style="color: rgba(200, 65, 48);margin-left: 2px;">a</span>
+                  <span style="color: rgba(233, 187, 18);margin-left: 2px;">r</span>
+                  <span style="color: rgba(107, 168, 87);margin-left: 2px;">S</span>
+                  <span style="color: rgba(97, 134, 243);margin-left: 2px;">H</span>
+                  <span style="color: rgba(200, 65, 48);margin-left: 2px;">I</span>
+                  <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
+                </div>
+                <div style="padding-top: 10px;">
+                  <div class="input__container">
+                    <div class="shadow__input"></div>
+                    <span id="dropdown_span">
+                      <el-dropdown @command="handleCommand">
+                        <span class="el-dropdown-link" style="font-weight:bold;font-size: 18px;">
+                          {{ok}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+                        </span>
+                        <template #dropdown>
+                          <el-dropdown-menu>
+                            <el-dropdown-item command="a" @click="ok='文献'">文献</el-dropdown-item>
+                            <el-dropdown-item command="b" @click="ok='学者'">学者</el-dropdown-item>
+                            <el-dropdown-item command="c" @click="ok='机构'">机构</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </template>
+                      </el-dropdown>
+                    </span>
+                    <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索" style="font-weight:bold;font-size: 18px;">
+                    <button class="input__button__shadow" id="search_button" @click="search">
+                      <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
+                        <path d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z" fill-rule="evenodd" fill="#17202A"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
                 <div style="margin-top: 30px;">
                     <div class="introList1">
                         <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
-                        <el-text style="margin-left: 20px;" class="mx-1" size="large">一站式项目开发协作平台</el-text>
+                        <el-text style="margin-left: 20px;" class="mx-1" size="large">一站式学术成果分享平台</el-text>
                     </div>
                     <div class="introList1">
                         <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
-                        <el-text style="margin-left: 20px;" class="mx-1" size="large">完善的团队与项目系统</el-text>
+                        <el-text style="margin-left: 20px;" class="mx-1" size="large">完善的检索与展示系统</el-text>
                     </div>
                     <div class="introList1">
                         <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
-                        <el-text style="margin-left: 20px;" class="mx-1" size="large">激发个人、团队创作活力</el-text>
+                        <el-text style="margin-left: 20px;" class="mx-1" size="large">ScholarSHIP-载您遨游学术海洋</el-text>
                     </div>
                 </div>
                 <div class="start">
@@ -24,217 +61,7 @@
                     </div>
                 </div>
             </div>
-            <img style="background:transparent;width: 700px;" src="/src/assets/images/intro1.png" class="image" />
-        </div>
-        <div id="intro2">
-            <div style="text-align: center; padding-bottom: 50px; font-size: 40px;">加入团队，释放生产力</div>
-            <div style="float: left;">
-                <el-card style="width: 600px; padding: 0px;" :body-style="{ padding: '0px',background: '#fdeded'}" shadow="always">
-                    <!-- <img src="/src/assets/images/intro2.jpg" class="image" /> -->
-                    <el-carousel>
-                        <el-carousel-item>
-                            <!-- <h3 class="small justify-center" text="2xl">{{ item }}</h3> -->
-                            <img height="230" src="/src/assets/images/intro2.jpg" class="image" />
-                            <div style="padding: 10px">
-                                <div style="font-size: 30px;">快速-团队切换</div>
-                            </div>
-                        </el-carousel-item>
-                        <el-carousel-item>
-                            <img height="230" src="/src/assets/images/intro3.jpg" class="image" />
-                            <div style="padding: 10px">
-                                <div style="font-size: 30px;">便捷-成员管理</div>
-                            </div>
-                        </el-carousel-item>
-                        <el-carousel-item>
-                            <img height="230" src="/src/assets/images/intro3.jpg" class="image" />
-                            <div style="padding: 10px">
-                                <div style="font-size: 30px;">实时-团队交流</div>
-                            </div>
-                        </el-carousel-item>
-                    </el-carousel>
-                    <div style="padding: 14px">
-                    <div class="bottom">
-                        <div>精准处理团队业务</div>
-                        <el-button text class="button" @click="startNow">立刻体验</el-button>
-                    </div>
-                    </div>
-                </el-card>
-            </div>
-            <div style="float: left;margin-left: 100px;">
-                <div>
-                    <el-card style="width: 400px; padding-left: 30px;" :body-style="{ background: '#f8f8ee'}" shadow="always">
-                        <div style="font-size: 20px; font-weight: bold ;margin-bottom: 15px;color: rgb(73, 149, 248);">团队式协同办公</div>
-                        <div>创建或加入专业项目团队，提高协同生产力</div>
-                    </el-card>
-                </div>
-                <div style="margin-top: 40px;">
-                    <div class="introList2">
-                        <el-icon color="rgb(73, 149, 248)" style="margin-right: 10px;"><Avatar /></el-icon>
-                        成员管理
-                        <div>
-                            <el-text class="mx-1" size="large">添加团队管理员，管理人员业务更方便</el-text>
-                        </div>
-                    </div>
-                    <div class="introList2">
-                        <el-icon color="rgb(73, 149, 248)" style="margin-right: 10px;"><Briefcase /></el-icon>
-                        项目管理
-                        <div>
-                            <el-text class="mx-1" size="large">团队项目入口，轻松查看管理项目状况</el-text>
-                        </div>
-                    </div>
-                    <div class="introList2">
-                        <el-icon color="rgb(73, 149, 248)" style="margin-right: 10px;"><Comment /></el-icon>
-                        团队交流
-                        <div>
-                            <el-text class="mx-1" size="large">实时聊天系统配合消息中心，不错过重要通知</el-text>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="intro3">
-            <div style="text-align: center; padding-bottom: 50px; font-size: 40px;">丰富的项目解决方案</div>
-            <div>
-                <div style="float: left;">
-                    <el-card style="width: 350px; padding-left: 30px;" :body-style="{ background: '#fdeded'}" shadow="always">
-                        <div style="font-size: 20px; font-weight: bold ;margin-bottom: 15px;color: rgb(73, 149, 248);">软件项目工具</div>
-                        <div>一站式软件项目全流程，开发更轻松</div>
-                    </el-card>
-                    <div class="introList3">
-                        <el-icon color="rgb(73, 149, 248)" style="margin-right: 10px;"><Briefcase /></el-icon>
-                        项目管理
-                        <div>
-                            <el-text class="mx-1" size="large">快速查看和管理项目，一目了然</el-text>
-                        </div>
-                    </div>
-                    <div class="introList3">
-                        <el-icon color="rgb(73, 149, 248)" style="margin-right: 10px;"><Opportunity /></el-icon>
-                        原型设计
-                        <div>
-                            <el-text class="mx-1" size="large">丰富的原型设计组件，助力开发设计</el-text>
-                        </div>
-                    </div>
-                    <div class="introList3">
-                        <el-icon color="rgb(73, 149, 248)" style="margin-right: 10px;"><Document /></el-icon>
-                        项目文档
-                        <div>
-                            <el-text class="mx-1" size="large">多种文档快速编辑与导出，流畅迭代</el-text>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="float: left; margin-left: 50px;">
-                <div class="card2">
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="/src/assets/images/intro3.jpg"></path></svg> -->
-                    <img src="/src/assets/images/intro3.jpg" alt="">
-                    <div class="card__content">
-                        <p class="card__title">6WALNUTS-项目方案</p>
-                        <p class="card__description">提供软件工程开发的全过程工具，用户在团队中可以轻松构建或参与项目，进行项目管理、原型设计以及使用项目文档功能。</p>
-                        <img src="/src/assets/images/intro3.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div style="float: left; margin-left: 50px;">
-                <div class="card">
-                    <div class="first-content">
-                        <div>项目轻松管理</div>
-                    </div>
-                    <div class="second-content">
-                    <span @click="startNow">立刻体验！</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="intro4">
-            <div style="text-align: center; padding-bottom: 50px; font-size: 40px;">多样化的原型设计组件，为开发助力</div>
-            <div style="float: left;">
-                <div class="parent">
-                    <div class="card3">
-                        <div class="logo">
-                            <span class="circle circle1"></span>
-                            <span class="circle circle2"></span>
-                            <span class="circle circle3"></span>
-                            <span class="circle circle4"></span>
-                            <span class="circle circle5">
-                                <div style="font-family: Lucida;">6WAL</div>
-                            </span>
-
-                        </div>
-                        <div class="glass"></div>
-                        <div class="content">
-                            <span class="title">原型设计</span>
-                            <div class="text" style="margin-top: 50px;">6WALNUTS提供超100+组件</div>
-                            <div class="text">体验丝滑的原型设计过程</div>
-                        </div>
-                        <div class="card3-bottom">
-                            <div class="view-more">
-                                <button class="view-more-button" @click="startNow">了解更多</button>
-                                <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="float: left;">
-                <el-card style="width: 600px; margin-left: 100px;" :body-style="{ padding: '0px',background: '#e3f0c4'}" shadow="always">
-                    <!-- <img src="/src/assets/images/intro2.jpg" class="image" /> -->
-                    <el-carousel>
-                        <el-carousel-item>
-                            <!-- <h3 class="small justify-center" text="2xl">{{ item }}</h3> -->
-                            <img height="230" src="/src/assets/images/intro2.jpg" class="image" />
-                            <div style="padding: 10px">
-                                <div style="font-size: 30px;">快速-团队切换</div>
-                            </div>
-                        </el-carousel-item>
-                        <el-carousel-item>
-                            <img height="230" src="/src/assets/images/intro3.jpg" class="image" />
-                            <div style="padding: 10px">
-                                <div style="font-size: 30px;">便捷-成员管理</div>
-                            </div>
-                        </el-carousel-item>
-                        <el-carousel-item>
-                            <img height="230" src="/src/assets/images/intro3.jpg" class="image" />
-                            <div style="padding: 10px">
-                                <div style="font-size: 30px;">实时-团队交流</div>
-                            </div>
-                        </el-carousel-item>
-                    </el-carousel>
-                    <div style="padding: 14px">
-                    <div class="bottom">
-                        <div>精准处理团队业务</div>
-                        <el-button text class="button">立刻体验</el-button>
-                    </div>
-                    </div>
-                </el-card>
-            </div>
-        </div>
-        <div id="intro5">
-          <div style="text-align: center; padding-bottom: 50px; font-size: 40px;">快速预览项目文档，流畅编辑和导出</div>
-          <div style="float: left;">
-            <div>
-              <div class="card4"></div>
-              <div style="font-size: 20px; margin-top: 20px; text-align: center;">提供各种文档类型</div>
-            </div>
-          </div>
-          <div style="float: left; margin-left: 30px;"> 
-            <div>
-              <div class="card5"></div>
-              <div style="font-size: 20px; margin-top: 20px; text-align: center;">编辑工具轻松使用</div>
-            </div>
-          </div>
-          <div style="float: left; margin-left: 30px;">
-            <div>
-              <div class="card6"></div>
-              <div style="font-size: 20px; margin-top: 20px; text-align: center;">更快导出与分享</div>
-            </div>
-          </div>
-          <div style="margin-top: 450px; padding-left: 40%;">
-            <button class="bottomButton">
-              <span>
-                <div style="font-size: 30px;" @click="startNow">立即试用</div>
-              </span>
-            </button>
-          </div>
+            <img style="background:transparent;width: 50vw;" src="/src/assets/images/intro1.png" class="image" />
         </div>
     </div>
 </template>
@@ -242,12 +69,15 @@
 
 <script setup>
 // import router from '@/router'
-import { Select,ArrowRightBold, Briefcase, Comment, EditPen, Opportunity } from '@element-plus/icons-vue'
+import { Select,ArrowRightBold, Briefcase, Comment, EditPen, Opportunity, ArrowDown} from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import { ElMessage } from 'element-plus'
 
 const userStore = useUserStore()
 const router = useRouter()
+
+var ok = "文献";
 
 const startNow = () => {
   if(userStore.userInfo.username != ''){
@@ -256,9 +86,25 @@ const startNow = () => {
     router.push({name:'login'})
   }
 }
+const search = () => {
+  var name = document.getElementById("text").value;
+  if (ok=="文献"){
+    console.log("文献+"+name);
+  } else if (ok=="学者"){
+    console.log("学者+"+name);
+  } else {
+    console.log("机构+"+name);
+  }
+  document.getElementById("text").value="";
+}
+
+// const handleCommand = (command: string | number | object) => {
+//   ElMessage(`click on item ${command}`)
+// }
+
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 #introduction {
   width: 100%;
@@ -270,7 +116,110 @@ const startNow = () => {
 #walnuts{
     padding-top: 100px;
     padding-left: 150px;
+    
+.container-input {
+  position: relative;
 }
+
+#dropdown_span {
+  width: 100px;
+  border: 0;
+  outline: 0;
+}
+
+#dropdown_span :focus{
+  max-width: 100px;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+
+.input__container {
+  position: relative;
+  background: rgba(255, 255, 255, 0.664);
+  padding: 10px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border-radius: 22px;
+  // max-width: 300px;
+  height: 66px;
+  transition: transform 400ms;
+  transform-style: preserve-3d;
+  // transform: rotateX(15deg) rotateY(-20deg);
+  perspective: 500px;
+  transition: 0.7s ease-in-out;
+}
+
+// .input__container :hover{
+//   width: 60vw;
+//   transition: 0.7s ease-in-out;
+// }
+
+// .input__container :focus{
+//   width: 60vw;
+//   transition: 0.7s ease-in-out;
+// }
+
+#search_button{
+  width: 60px;
+}
+
+
+.shadow__input {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  filter: blur(30px);
+  border-radius: 20px;
+  background-color: #999cff;
+  background-image: radial-gradient(at 85% 51%, hsla(60,60%,61%,1) 0px, transparent 50%),
+    radial-gradient(at 74% 68%, hsla(235,69%,77%,1) 0px, transparent 50%),
+    radial-gradient(at 64% 79%, hsla(284,72%,73%,1) 0px, transparent 50%),
+    radial-gradient(at 75% 16%, hsla(283,60%,72%,1) 0px, transparent 50%),
+    radial-gradient(at 90% 65%, hsla(153,70%,64%,1) 0px, transparent 50%),
+    radial-gradient(at 91% 83%, hsla(283,74%,69%,1) 0px, transparent 50%),
+    radial-gradient(at 72% 91%, hsla(213,75%,75%,1) 0px, transparent 50%);
+}
+
+
+.input__button__shadow {
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: transform 400ms, background 400ms;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  padding: 5px;
+}
+
+.input__button__shadow:hover {
+  background: rgba(255, 255, 255, 0.411);
+}
+
+
+.input__search {
+  width: 100%;
+  height: 80%;
+  border-radius: 20px;
+  outline: 2px solid #4995f8;
+  border: none;
+  padding: 8px;
+  position: relative;
+}
+}
+
 
 .introList1{
     margin-bottom: 15px;

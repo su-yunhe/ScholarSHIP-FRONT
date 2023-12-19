@@ -1,7 +1,7 @@
 <template>
     <div id="introduction" class="common-layout">
       <el-container>
-        <el-header>
+        <!-- <el-header>
           <el-affix :offset="10">
             <el-menu
               :default-active="activeIndex"
@@ -12,7 +12,7 @@
               router
             >
               <el-menu-item>
-                <div style="font-family: 'Lucida';">6WALNUTS</div>
+                <div style="font-family: 'Lucida';">ScholarSHIP</div>
               </el-menu-item>
               <el-sub-menu index="2">
                 <template #title>用户案例</template>
@@ -39,7 +39,7 @@
               </el-menu-item>
             </el-menu>
           </el-affix>
-        </el-header>
+        </el-header> -->
         <el-main>
           <Main></Main>
         </el-main>
@@ -48,7 +48,7 @@
   </template>
 
 <script setup>
-import Main from './components/main.vue'
+import Main from './components/main.vue'  
 import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
 </script>
