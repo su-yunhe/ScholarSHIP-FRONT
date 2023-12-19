@@ -117,7 +117,7 @@ const search = () => {
 
 #introduction {
   width: 100%;
-  min-height: 100vh;
+  min-height: 90vh;
   background: url("/src/assets/images/Jonquil.jpg") center center no-repeat;
   background-size: 100% 100%;
 }
@@ -263,6 +263,7 @@ const search = () => {
 }
 
 .start:hover {
+  cursor: pointer;
   background-color: #f8d9f883;
   box-shadow: 1px 1px 10px #888888;
   /* color: #79bbff; */

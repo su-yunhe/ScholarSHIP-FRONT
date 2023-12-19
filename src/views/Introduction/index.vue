@@ -57,7 +57,7 @@ const userStore = useUserStore()
 
 #introduction {
   width: 100%;
-  min-height: 100vh;
+  min-height: 87vh;
   background: url("/src/assets/images/Jonquil.jpg") center center no-repeat;
   background-size: 100% 100%;
 }
