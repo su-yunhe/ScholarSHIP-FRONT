@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.1.0",
+    "@element-plus/icons-vue": "^2.3.1",
     "@tinymce/tinymce-vue": "^5.1.0",
     "@tiptap/pm": "^2.1.7",
     "@tiptap/starter-kit": "^2.1.7",
