@@ -51,7 +51,7 @@ input[type='checkbox'] {
   border: none;
   -webkit-appearance: none;
   &::placeholder {
-    color: #ccc;
+    color: #b3b3b3;
   }
 }
 // 设置了图片的最大宽度和高度，并设置了垂直对齐方式和背景
@@ -59,7 +59,7 @@ img {
   max-width: 100%;
   max-height: 100%;
   vertical-align: middle;
-  background: #ebebeb url('@/assets/images/200.png') no-repeat center / contain;
+  background: #ffffff url('@/assets/images/200.png') no-repeat center / contain;
 }
 // 去掉了无序列表的项目符号
 ul {

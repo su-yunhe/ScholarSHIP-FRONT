@@ -48,7 +48,7 @@
   </template>
 
 <script setup>
-import Main from './components/main.vue'
+import Main from './components/main.vue'  
 import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
 </script>

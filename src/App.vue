@@ -1,6 +1,7 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore'
 import router from './router'
+import Header from '@/components/header.vue'
 const userStore = useUserStore()
 const username = userStore.userInfo.username
 
@@ -11,17 +12,11 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="my_header">
-    header
-  </div>
+  <Header />
   <RouterView />
-  <div class=""></div>
 </template>
 
-<style scoped lang="scss">
-.my_header {
-  background-color: aqua;
-}
+<style scoped lang="scss">  
 
 header {
   line-height: 1.5;
