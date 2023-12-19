@@ -88,6 +88,14 @@ const startNow = () => {
 }
 const search = () => {
   var name = document.getElementById("text").value;
+  if (name==""){
+    ElMessage({
+    message: '请勿搜索空字段',
+    grouping: true,
+    type: 'warning',
+  })
+  console.log("空字段");
+  }
   if (ok=="文献"){
     console.log("文献+"+name);
   } else if (ok=="学者"){
