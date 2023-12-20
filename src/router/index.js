@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/views/Login/index.vue'
 import Introduction from '@/views/Introduction/index.vue'
-import ScholarView from '../views/scholar/index.vue'
+import ScholarView from '../views/scholar/scholarPortal.vue'
+import PersonalScholarView from '../views/scholar/personalScholar/personalPortal.vue'
 import AcademicView from '../views/academic/index.vue'
 import SearchView from '../views/search/index.vue'
 import AnalysesView from '../views/analyses/index.vue'
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/scholar',
       name: 'scholar',
       component: ScholarView
+    },
+    {
+      path: '/personalScholar',
+      name: 'personalScholar',
+      component: PersonalScholarView
     },
     {
       path: '/academic',
