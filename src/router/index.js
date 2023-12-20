@@ -36,7 +36,7 @@ const router = createRouter({
       component: PersonalScholarView
     },
     {
-      path: '/academic',
+      path: '/academic/:essay_id',
       name: 'academic',
       component: AcademicView
     },

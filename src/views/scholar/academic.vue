@@ -53,7 +53,8 @@ export default {
             console.log('enter essay:',essay,essay.name);
             const academicStore = useAcademicStore();
             // academicStore.getEssayDetail("W2741809807", "A5048491430");
-            this.$router.push('/academic');
+            //const url = `/requirementLibrary/requirement/${requirementId.current}`;
+            this.$router.push(`/academic/${W2741809807}`);
         },
         enterScholarPortal(author){//进入相应学者门户
             console.log('enter scholar portal:',author);

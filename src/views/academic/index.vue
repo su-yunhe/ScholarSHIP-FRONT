@@ -31,13 +31,10 @@
             <div>{{ essay.doi }}</div>
         </div>
         <div class="essay-operation">
-            <!-- <div class="op-cite" @click="citeDialogVisible = true">引用</div> -->
             <el-tag class="op-share" @click="citeDialogVisible = true"><el-icon><Link /></el-icon>引用</el-tag>
-            <!-- <div class="op-share">分享</div> -->
-            <a :href="essay.primary_location?essay.primary_location.pdf_url:null" download="ScholarSHIP文献下载.pdf"><el-tag class="op-share" type="success"><el-icon><Download /></el-icon>下载</el-tag></a>
-            <!-- <div class="op-read">阅读</div> -->
+            <a :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
+            <el-tag class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
             <a :href="essay.primary_location?essay.primary_location.landing_page_url:null" target="_blank" ><el-tag class="op-read" type="danger"><el-icon><View /></el-icon>阅读</el-tag></a>
-            <!-- <div class="op-collection" @click="essayCollection">收藏</div> -->
             <el-tag class="op-collection" @click="essayCollection" type="warning"><el-icon><Star /></el-icon>收藏</el-tag>
         </div>
         <div class="essay-essays">
@@ -93,6 +90,8 @@
 
 <script>
 import { useAcademicStore } from '@/stores/academic';
+import axios from 'axios';
+import httpInstance from '@/utils/http'
 export default {
     name: 'academic',
     components: {
@@ -173,6 +172,18 @@ export default {
             }
             citeDialogVisible = false;
         },
+        async downloadPDF(pdfUrl) {//需要注释掉main.js中的mock引用才能打开下载的pdf文件
+            const response = await axios.get(pdfUrl,{
+                responseType: 'blob', // 必须指定为blob类型才能下载
+            });
+            console.log("download",response);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'ScholarSHIP文献下载.pdf');
+            document.body.appendChild(link);
+            link.click();
+        },
         enterScholarPortal(author){
             console.log('enter scholar portal:',author);
             this.$router.push('/scholar');
@@ -202,11 +213,22 @@ export default {
             this.collections.push({id: this.collections[this.collections.length-1].id+1, name:this.collectionName});
             this.collectionName = null;
             this.addCollectionVisible = false;
+        },
+        getEssayDetail(){
+            let work_id = this.$route.path.split("/")[2];
+            let author_id = "A5023888392";
+            httpInstance.post("/get_detail",{
+                work_id:work_id,
+                author_id:author_id,
+            }).then((res) => {
+                console.log(res);
+            })
         }
     },
     mounted(){
         const academicStore = useAcademicStore();
         this.essay = academicStore.essayDetail;
+        this.getEssayDetail();
         console.log("essay:",this.essay);
     }
 }
