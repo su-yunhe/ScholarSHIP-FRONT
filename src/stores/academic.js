@@ -25,6 +25,7 @@ export const useAcademicStore = defineStore('academic', () => {
         institution:'CICLing',
     }
 
+<<<<<<< Updated upstream
     const essayDetail = {
           "authorships": [
             {
@@ -345,6 +346,10 @@ export const useAcademicStore = defineStore('academic', () => {
         essayInfo,
         essayDetail,
         getEssayDetail
+=======
+    return{
+        essayInfo,
+>>>>>>> Stashed changes
     }
 }, {
     persist: true,

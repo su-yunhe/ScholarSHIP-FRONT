@@ -8,7 +8,7 @@
             </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
-                <span class="essay-indicator">被引用数：{{essay.n_citation}}</span>
+                <span class="essay-indicator">被引用数：{{essay.citation}}</span>
                 <span class="essay-indicator">发表时间：{{essay.year}}</span>
                 <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
                 <span class="essay-indicator-op" @click="cite(essay)"><el-icon><Link /></el-icon>引用</span>
@@ -26,55 +26,55 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../stores/scholar'
-import { useAcademicStore } from '@/stores/academic';
-// const scholarStore = useScholarStore();
-export default {
-    name: 'academic',
-    components: {
+import httpInstance from '@/utils/http'
+// const useScholarStore = useScholarStore();
+const router = useRouter()
+const IDForm = ref({
+    scholarID: 'A5023888391',
+    userID: 1,
+})
+const essayNum = ref();
+const displayEssays = ref([]); // 记得进入页面时初始化
+const essayList = ref([]);
+const currentPage = ref(1);
 
-    },
-    data() {
-        return {
-            essayNum: 7,
-            displayEssays:[],//记得进入页面时初始化
-            essayList: [],
-            currentPage: 1,
-        }
-    },
-    methods:{
-        currentPageChange(value) {
-            this.displayEssays = this.essayList.slice( (value-1)*5, 5+(value-1)*5);
-            this.currentPage = value;
-            console.log(`当前页: ${value}`,this.displayEssays);
-        },
-        enterEssay(essay){//进入文献展示页
-            console.log('enter essay:',essay,essay.name);
-            const academicStore = useAcademicStore();
-            // academicStore.getEssayDetail("W2741809807", "A5048491430");
-            //const url = `/requirementLibrary/requirement/${requirementId.current}`;
-            this.$router.push(`/academic/${W2741809807}`);
-        },
-        enterScholarPortal(author){//进入相应学者门户
-            console.log('enter scholar portal:',author);
-        },
-        download(essay){//下载文献
-            console.log('download:',essay);
-        },
-        cite(essay){//生成文献引用格式
-            console.log('cite:',essay);
-        },
-        collection(essay){//收藏文献
-            console.log('collection:',essay);
-        },
-    },
-    created(){
-        const scholarStore = useScholarStore();
-        this.essayList = scholarStore.essayList;
-        this.essayNum = this.essayList.length;
-        this.displayEssays = this.essayList.slice(0,5);
+onMounted(() => {
+  httpInstance.post('/get_scholar_papers', IDForm.value).then((res) => {
+    if (res.error === 0) {
+      console.log("papers:", res.papers);
+      useScholarStore.essayList = res.papers
+      essayList.value = useScholarStore.essayList
+      displayEssays.value = essayList.value.slice(0,5)
+      essayNum.value = res.Num
+
     }
+  });
+});
+
+const currentPageChange = (value) => {
+    displayEssays.value = essayList.value.slice( (value-1)*5, 5+(value-1)*5);
+    currentPage.value = value;
+    console.log(`当前页: ${value}`,displayEssays.value);
+}
+const enterEssay = (essay) => {//进入文献展示页
+    console.log('enter essay:',essay,essay.name);
+    router.push('/academic');
+}
+const enterScholarPortal = (author) => {//进入相应学者门户
+    console.log('enter scholar portal:',author);
+}
+const download = (essay) => {//下载文献
+    console.log('download:',essay);
+}
+const cite = (essay) => {//生成文献引用格式
+    console.log('cite:',essay);
+}
+const collection = (essay) => {//收藏文献
+    console.log('collection:',essay);
 }
 </script>
 

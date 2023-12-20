@@ -1,22 +1,21 @@
 <template>
     <div class="scholarContainer">
             <div class="scholarTopHeaderBar">
-                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
+                <img src="../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
-                    <div class="scholar-information-name">{{ scholarStore.scholarInfo.real_name }}</div>
-                    <div class="scholar-information-organization">{{ scholarStore.scholarInfo.organization }}</div>
-                    <div class="scholar-information-brief">{{ scholarStore.scholarInfo.introdunction }}</div>
+                    <div class="scholar-information-name">{{ scholarInfo.name }}</div>
+                    <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.citationNum }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.citation }}</div>
                             <div class="scholar-indicator-dec">被引数</div>
                         </div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.impactIndex }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.hIndex }}</div>
                             <div class="scholar-indicator-dec">影响力指数</div>
                         </div>
                     </div>
@@ -35,69 +34,86 @@
     </div>
 </template>
 
-<script>
-import {useScholarStore} from '../../stores/scholar'
 
+<script setup>
+import { ref, onMounted } from 'vue'
+import {useScholarStore} from '../../stores/scholar'
+import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
-
-export default {
-    name: 'scholar',
-    components: {
-        academic,
-        links,
-        datas,
-    },
-    data() {
-        return {
-            scholarStore: useScholarStore(),
-            tagName:'academic',
-            // scholarInfo:{
-            //     scholar_id:1,
-            //     organization:'BUAA',
-            //     introdunction:'balabala',
-            //     real_name:'S.Harmost',
-            // },
-            // name:'S.Harmost',
-            // briefIntrodunction:'xxxxxxxxxxxxx',
-            // essayNum: 7,
-            // citationNum: 6,
-            // impactIndex: 1,
-        }
-    },
-    methods:{
-        clickAcademic(){
-            if(this.tagName != 'academic'){
-                this.tagName = 'academic';
-            }
-            console.log(this.tagName);
-        },
-        clickDatas(){
-            if(this.tagName != 'datas'){
-                this.tagName = 'datas';
-            }
-            console.log(this.tagName);
-        },
-        clickLinks(){
-            if(this.tagName != 'links'){
-                this.tagName = 'links';
-            }
-            console.log(this.tagName);
-        },
-        claimPortal(){//认领门户
-
-        },
-        concernScholar(){//关注学者
-
-        },
-    },
-    mounted(){
-        // const scholarStore = useScholarStore();
-        // scholarStore.getScholarInfo();
-        // scholarStore.getEssayList();
-        // scholarStore.getGraphData();
+const scholar = {
+  name: 'scholar',
+  components: {
+    academic,
+    links,
+    datas,
+  },
+  setup() {
+    const tagName = ref('academic')
+    const scholarStore = useScholarStore()
+    const IDForm = ref({
+        scholarID: 'A5023888391',
+        userID: 1,
+    })
+    const scholarInfo = ref({
+        scholar_id:1,
+        institution:'BUAA',
+        name:'S.Harmost',
+        essayNum: 7,//处理
+        citation: 6,
+        hIndex: 1,
     }
+    )
+    onMounted(() => {
+        httpInstance.post('/get_scholar', IDForm.value).then((res) => {
+            if (res.error === 0) {
+                console.log("res:", res);
+                scholarStore.scholarInfo = res.data
+                scholarInfo.value = scholarStore.scholarInfo
+            }
+        });
+        scholarStore.getGraphData()
+    })
+
+    const clickAcademic = () => {
+      if (tagName.value !== 'academic') {
+        tagName.value = 'academic'
+      }
+      console.log(tagName.value)
+    }
+
+    const clickDatas = () => {
+      if (tagName.value !== 'datas') {
+        tagName.value = 'datas'
+      }
+      console.log(tagName.value)
+    }
+
+    const clickLinks = () => {
+      if (tagName.value !== 'links') {
+        tagName.value = 'links'
+      }
+      console.log(tagName.value)
+    }
+
+    const claimPortal = () => {
+      // 认领门户
+    }
+
+    const concernScholar = () => {
+      // 关注学者
+    }
+    return {
+      tagName,
+      clickAcademic,
+      clickDatas,
+      clickLinks,
+      claimPortal,
+      concernScholar,
+    }
+  },
+
 }
 </script>
 
@@ -189,5 +205,3 @@ export default {
 .scholarNav:hover{
     background-color: rgb(160, 149, 149);
 }
-
-</style>

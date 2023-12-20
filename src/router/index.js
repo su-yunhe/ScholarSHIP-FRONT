@@ -4,8 +4,6 @@ import Introduction from '@/views/Introduction/index.vue'
 import ScholarView from '../views/scholar/scholarPortal.vue'
 import PersonalScholarView from '../views/scholar/personalScholar/personalPortal.vue'
 import AcademicView from '../views/academic/index.vue'
-import SearchView from '../views/search/index.vue'
-import AnalysesView from '../views/analyses/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +34,7 @@ const router = createRouter({
       component: PersonalScholarView
     },
     {
+
       path: '/academic/:essay_id',
       name: 'academic',
       component: AcademicView
@@ -59,6 +58,7 @@ const router = createRouter({
       path: '/analyses',
       name: 'analyses',
       component: AnalysesView
+
     }
   ]
 })

@@ -90,8 +90,11 @@
 
 <script>
 import { useAcademicStore } from '@/stores/academic';
+<<<<<<< Updated upstream
 import axios from 'axios';
 import httpInstance from '@/utils/http'
+=======
+>>>>>>> Stashed changes
 export default {
     name: 'academic',
     components: {
@@ -227,9 +230,13 @@ export default {
     },
     mounted(){
         const academicStore = useAcademicStore();
+<<<<<<< Updated upstream
         this.essay = academicStore.essayDetail;
         this.getEssayDetail();
         console.log("essay:",this.essay);
+=======
+        this.essay = academicStore.essayInfo;
+>>>>>>> Stashed changes
     }
 }
 </script>
