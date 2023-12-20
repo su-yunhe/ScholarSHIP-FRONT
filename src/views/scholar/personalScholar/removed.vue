@@ -1,11 +1,9 @@
 <template>
     <div class="academicContent">
         <div class="essayNum">已下架文献共<span>{{essayNum}}</span>篇</div>
-        <div class="essayBox" v-for="(essay, index) in displayEssays">
-            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.title}}</div>
+        <div class="essayBox" v-for="essay in displayEssays" :key="essay">            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.title}}</div>
             <div class="essayBox-author">
-                <span v-for="(author, key) in essay.authors" @click="enterScholarPortal(author)">{{author.name}},</span>
-            </div>
+                <span v-for="author in essay.authors" :key="author" @click="enterScholarPortal(author)">{{author.name}},</span>            </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
                 <span class="essay-indicator">被引用数：{{essay.n_citation}}</span>
@@ -15,7 +13,7 @@
         </div>
         <el-pagination
             @current-change="currentPageChange"
-            :current-page.sync="currentPage"
+            v-model:current-page="currentPage"
             :page-size="5"
             layout="prev, pager, next, jumper"
             :total="essayNum"

@@ -1,8 +1,7 @@
 <template>
     <div class="scholarContainer">
             <div class="scholarTopHeaderBar">
-                <img src="../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
-                <div class="scholar-information">
+                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">                <div class="scholar-information">
                     <div class="scholar-information-name">{{ scholarInfo.name }}</div>
                     <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
@@ -35,87 +34,88 @@
 </template>
 
 
-<script setup>
-import { ref, onMounted } from 'vue'
+<script>
 import {useScholarStore} from '../../stores/scholar'
 import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
-const scholarStore = useScholarStore()
-const scholar = {
-  name: 'scholar',
-  components: {
-    academic,
-    links,
-    datas,
-  },
-  setup() {
-    const tagName = ref('academic')
-    
-    const IDForm = ref({
-        scholarID: 'A5023888391',
-        userID: 1,
-    })
-    const scholarInfo = ref({
-        scholar_id:1,
-        institution:'BUAA',
-        name:'S.Harmost',
-        essayNum: 7,//处理
-        citation: 6,
-        hIndex: 1,
-    }
-    )
-    onBeforeMounted(() => {
-        httpInstance.post('/get_scholar', IDForm.value).then((res) => {
-            if (res.data.error === 0) {
-                console.log("res:", res);
-                scholarStore.scholarInfo = res.data.data
-                scholarInfo.value = scholarStore.scholarInfo
+const scholarStore = useScholarStore();
+export default {
+    name: 'scholar',
+    components: {
+        academic,
+        links,
+        datas,
+    },
+    data() {
+        return {
+            tagName:'academic',
+            scholarInfo:{},
+        }
+    },
+    methods:{
+        clickAcademic(){
+            if(this.tagName != 'academic'){
+                this.tagName = 'academic';
             }
-        });
-        scholarStore.getGraphData()
-    })
+            console.log(this.tagName);
+        },
+        clickDatas(){
+            if(this.tagName != 'datas'){
+                this.tagName = 'datas';
+            }
+            console.log(this.tagName);
+        },
+        clickLinks(){
+            if(this.tagName != 'links'){
+                this.tagName = 'links';
+            }
+            console.log(this.tagName);
+        },
+        claimPortal(){//认领门户
 
-    const clickAcademic = () => {
-      if (tagName.value !== 'academic') {
-        tagName.value = 'academic'
-      }
-      console.log(tagName.value)
-    }
-
-    const clickDatas = () => {
-      if (tagName.value !== 'datas') {
-        tagName.value = 'datas'
-      }
-      console.log(tagName.value)
-    }
-
-    const clickLinks = () => {
-      if (tagName.value !== 'links') {
-        tagName.value = 'links'
-      }
-      console.log(tagName.value)
-    }
-
-    const claimPortal = () => {
-      // 认领门户
-    }
-
-    const concernScholar = () => {
-      // 关注学者
-    }
-    return {
-      tagName,
-      clickAcademic,
-      clickDatas,
-      clickLinks,
-      claimPortal,
-      concernScholar,
-    }
-  },
-
-}
+        },
+        concernScholar(){//关注学者
+            
+        },
+        async getScholarInfo(){
+            let scholarID = "A5040654425";
+            let userID = 1;
+            await httpInstance.post('/get_scholar', {scholarID : scholarID, userID : userID}).then(res => res.data).then(res => {
+            if (res.error === 0) {
+                console.log("get scholarInfo res:", res);
+                this.scholarInfo = res.data;
+            }
+            });
+        },
+        async getEssayList(scholarStore){
+            let scholarID = "A5023888391";
+            let userID = 1;
+            console.log("balabala");
+            await httpInstance.post('/get_scholar_papers', {scholarID : scholarID, userID : userID}).then((res) => {
+                console.log("papers1:", res);
+                if (res.data.error === 0) {
+                    scholarStore.essayList = res.data.papers;
+                    console.log("papers2:", scholarStore.essayList);
+                }
+            });
+            console.log("balabala2");
+        },
+        getGraphData(scholarStore){
+            let root_id = "A5040654425";
+            httpInstance.get(`/get_relation_map?root_id=${root_id}`).then(res => {
+                console.log("get_relation_map res:", res);
+                scholarStore.graph_data = res;
+            })
+            }
+    },
+    created(){
+        const scholarStore = useScholarStore();
+        this.getScholarInfo(scholarStore);
+        this.getEssayList(scholarStore);
+        this.getGraphData(scholarStore);
+    }}
 </script>
 
 <style scoped>
