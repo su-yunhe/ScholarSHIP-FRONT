@@ -42,6 +42,7 @@ import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
+const scholarStore = useScholarStore()
 const scholar = {
   name: 'scholar',
   components: {
@@ -51,7 +52,7 @@ const scholar = {
   },
   setup() {
     const tagName = ref('academic')
-    const scholarStore = useScholarStore()
+    
     const IDForm = ref({
         scholarID: 'A5023888391',
         userID: 1,
@@ -65,11 +66,11 @@ const scholar = {
         hIndex: 1,
     }
     )
-    onMounted(() => {
+    onBeforeMounted(() => {
         httpInstance.post('/get_scholar', IDForm.value).then((res) => {
-            if (res.error === 0) {
+            if (res.data.error === 0) {
                 console.log("res:", res);
-                scholarStore.scholarInfo = res.data
+                scholarStore.scholarInfo = res.data.data
                 scholarInfo.value = scholarStore.scholarInfo
             }
         });
@@ -205,3 +206,4 @@ const scholar = {
 .scholarNav:hover{
     background-color: rgb(160, 149, 149);
 }
+</style>

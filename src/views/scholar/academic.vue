@@ -44,12 +44,12 @@ const currentPage = ref(1);
 
 onMounted(() => {
   httpInstance.post('/get_scholar_papers', IDForm.value).then((res) => {
-    if (res.error === 0) {
-      console.log("papers:", res.papers);
-      useScholarStore.essayList = res.papers
+    if (res.data.error === 0) {
+      console.log("papers:", res.data.papers);
+      useScholarStore.essayList = res.data.papers
       essayList.value = useScholarStore.essayList
       displayEssays.value = essayList.value.slice(0,5)
-      essayNum.value = res.Num
+      essayNum.value = res.data.Num
 
     }
   });
@@ -62,7 +62,10 @@ const currentPageChange = (value) => {
 }
 const enterEssay = (essay) => {//进入文献展示页
     console.log('enter essay:',essay,essay.name);
-    router.push('/academic');
+    const academicStore = useAcademicStore();
+    // academicStore.getEssayDetail("W2741809807", "A5048491430");
+    //const url = `/requirementLibrary/requirement/${requirementId.current}`;
+    this.$router.push(`/academic/${W2741809807}`);
 }
 const enterScholarPortal = (author) => {//进入相应学者门户
     console.log('enter scholar portal:',author);

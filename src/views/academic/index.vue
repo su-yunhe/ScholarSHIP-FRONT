@@ -90,11 +90,8 @@
 
 <script>
 import { useAcademicStore } from '@/stores/academic';
-<<<<<<< Updated upstream
 import axios from 'axios';
 import httpInstance from '@/utils/http'
-=======
->>>>>>> Stashed changes
 export default {
     name: 'academic',
     components: {
@@ -220,23 +217,18 @@ export default {
         getEssayDetail(){
             let work_id = this.$route.path.split("/")[2];
             let author_id = "A5023888392";
-            httpInstance.post("/get_detail",{
-                work_id:work_id,
-                author_id:author_id,
-            }).then((res) => {
-                console.log(res);
+            httpInstance.get(`/get_detail?work_id=${work_id}&author_id=${author_id}`).then((res) => {
+                console.log("get essay detail:",res);
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
             })
         }
     },
     mounted(){
         const academicStore = useAcademicStore();
-<<<<<<< Updated upstream
         this.essay = academicStore.essayDetail;
         this.getEssayDetail();
         console.log("essay:",this.essay);
-=======
-        this.essay = academicStore.essayInfo;
->>>>>>> Stashed changes
     }
 }
 </script>
