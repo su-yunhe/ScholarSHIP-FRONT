@@ -6,6 +6,7 @@ import PersonalScholarView from '../views/scholar/personalScholar/personalPortal
 import AcademicView from '../views/academic/index.vue'
 import SearchView from '@/views/search/index.vue'
 import AnalysesView from '../views/analyses/index.vue'
+import Institution from '@/views/Institution/index.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // path和component对应关系的位置
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/institution',
+      name: 'institution',
+      component: Institution
     },
     {
       path: '/scholar',
