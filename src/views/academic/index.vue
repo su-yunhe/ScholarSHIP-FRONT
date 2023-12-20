@@ -2,7 +2,7 @@
     <div class="academicContainer">
         <div class="essay-name">{{ essay.title }}</div>
         <div class="essay-author">
-            <span v-for="(authorship, index) in essay.authorships" @click="enterScholarPortal(authorship)">{{ authorship.author.display_name }},</span>
+            <span v-for="authorship in essay.authorships" :key="authorship" @click="enterScholarPortal(authorship)">{{ authorship.author.display_name }},</span>
         </div>
         <!-- <div class="essay-institution">{{ essay.institutions[0].display_name }}</div> -->
         <div class="essay-abstractBox">
@@ -13,7 +13,7 @@
         <div class="essay-dec">
             <div>相关词条：</div>
             <div>
-                <el-tag type="info" v-for="(concept, key) in essay.concepts" class="concept">{{ concept.display_name }}</el-tag>
+                <el-tag type="info" v-for="concept in essay.concepts" :key="concept" class="concept">{{ concept.display_name }}</el-tag>
                 <!-- <span></span> -->
             </div>
             
@@ -28,7 +28,7 @@
         </div>
         <div class="essay-dec">
             <div>发表年份：</div>
-            <div>{{ essay.doi }}</div>
+            <div>{{ essay.publication_date }}</div>
         </div>
         <div class="essay-operation">
             <el-tag class="op-share" @click="citeDialogVisible = true"><el-icon><Link /></el-icon>引用</el-tag>
@@ -39,11 +39,13 @@
         </div>
         <div class="essay-essays">
             <div>引用文章</div>
-            <a v-for="(work,index) in essay.referenced_works" :href="work" target="_blank">{{ work }}</a>
+            <div v-if="referenced_works_num!=0">引用文章</div>
+            <a v-for="work in essay.referenced_works" :key="work" :href="work" target="_blank">{{ work }}</a>
         </div>
         <div class="essay-essays">
             <div>相关文章</div>
-            <a v-for="(work,index) in essay.related_works" :href="work" target="_blank">{{ work }}</a>
+            <div v-if="related_works_num!=0">相关文章</div>
+            <a v-for="work in essay.related_works" :key="work" :href="work" target="_blank">{{ work }}</a>
         </div>
     </div>
     <!-- 引用对话框 -->
@@ -53,7 +55,7 @@
         width="30%"
         >
         <div class="citeContent">{{ citeString }}</div>
-        <div slot="footer" class="dialog-footer">
+        <div class="dialog-footer">
             <el-button @click="citeDialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="copyCiteString(citeString);citeDialogVisible = false">复 制</el-button>
         </div>
@@ -67,9 +69,9 @@
         :show-close="false"
         >
         <el-radio-group v-model="collectionId" @change="collectionChange">
-            <el-radio v-for="(collection,index) in collections" :label="collection.id">{{ collection.name }}</el-radio>
+            <el-radio v-for="collection in collections" :key="collection" :label="collection.id">{{ collection.name }}</el-radio>
         </el-radio-group>
-        <div slot="footer" class="dialog-footer">
+        <div class="dialog-footer">
             <el-button class="op-addCollection" @click="addCollectionVisible = true">新建标签</el-button>
             <el-button @click="cancelCollection">取 消</el-button>
             <el-button type="primary" @click="confirmCollection">确 定</el-button>
@@ -81,7 +83,7 @@
         width="30%"
         >
         <el-input v-model="collectionName" placeholder="请新标签名称..."></el-input>
-        <div slot="footer" class="dialog-footer">
+        <div class="dialog-footer">
             <el-button @click="addCollectionVisible = false">取 消</el-button>
             <el-button type="primary" @click="confirmAddCollection">确 认</el-button>
         </div>
@@ -105,6 +107,8 @@ export default {
             citeString: 'yinyongshishisshishiq[1]',
             collectionId:0,
             collectionName: null,
+            referenced_works_num: 0,
+            related_works_num:0,
             essay: {},
             // essay:{
             //     id:1,
@@ -214,20 +218,21 @@ export default {
             this.collectionName = null;
             this.addCollectionVisible = false;
         },
-        getEssayDetail(){
-            let work_id = this.$route.path.split("/")[2];
-            let author_id = "A5023888392";
+        getEssayDetail(work_id, author_id){
             httpInstance.get(`/get_detail?work_id=${work_id}&author_id=${author_id}`).then((res) => {
                 console.log("get essay detail:",res);
+                this.essay = res.result;
+                this.referenced_works_num = this.essay.referenced_works.length;
+                this.related_works_num = this.essay.related_works.length;
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
         }
     },
     mounted(){
-        const academicStore = useAcademicStore();
-        this.essay = academicStore.essayDetail;
-        this.getEssayDetail();
+        let work_id = this.$route.path.split("/")[2];
+        let author_id = "A5023888392";
+        this.getEssayDetail(work_id, author_id);
         console.log("essay:",this.essay);
     }
 }

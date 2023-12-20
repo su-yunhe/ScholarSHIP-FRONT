@@ -1,11 +1,10 @@
 <template>
     <div class="academicContent">
         <div class="essayNum">学者文献共<span>{{essayNum}}</span>篇</div>
-        <div class="essayBox" v-for="(essay, index) in displayEssays">
+        <div class="essayBox" v-for="essay in displayEssays" :key="essay">
             <div class="essayBox-name" @click="enterEssay(essay)">{{essay.title}}</div>
             <div class="essayBox-author">
-                <span v-for="(author, key) in essay.authors" @click="enterScholarPortal(author)">{{author.name}},</span>
-            </div>
+                <span v-for="author in essay.authors" :key="author" @click="enterScholarPortal(author)">{{author.name}},</span>            </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
                 <span class="essay-indicator">被引用数：{{essay.citation}}</span>
@@ -17,7 +16,7 @@
         </div>
         <el-pagination
             @current-change="currentPageChange"
-            :current-page.sync="currentPage"
+            v-model:current-page="currentPage"
             :page-size="5"
             layout="prev, pager, next, jumper"
             :total="essayNum"
@@ -30,8 +29,8 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../stores/scholar'
+const scholarStore = useScholarStore();
 import httpInstance from '@/utils/http'
-// const useScholarStore = useScholarStore();
 const router = useRouter()
 const IDForm = ref({
     scholarID: 'A5023888391',
@@ -43,16 +42,13 @@ const essayList = ref([]);
 const currentPage = ref(1);
 
 onMounted(() => {
-  httpInstance.post('/get_scholar_papers', IDForm.value).then((res) => {
-    if (res.data.error === 0) {
-      console.log("papers:", res.data.papers);
-      useScholarStore.essayList = res.data.papers
-      essayList.value = useScholarStore.essayList
-      displayEssays.value = essayList.value.slice(0,5)
-      essayNum.value = res.data.Num
-
-    }
-  });
+  setTimeout(()=>{
+        console.log("academic paper:",scholarStore.essayList);
+        essayList.value = scholarStore.essayList;
+        displayEssays.value = essayList.value.slice(0,5);
+        
+        essayNum.value = scholarStore.essayList.length;
+    }, 10000);
 });
 
 const currentPageChange = (value) => {
@@ -61,11 +57,8 @@ const currentPageChange = (value) => {
     console.log(`当前页: ${value}`,displayEssays.value);
 }
 const enterEssay = (essay) => {//进入文献展示页
-    console.log('enter essay:',essay,essay.name);
-    const academicStore = useAcademicStore();
-    // academicStore.getEssayDetail("W2741809807", "A5048491430");
-    //const url = `/requirementLibrary/requirement/${requirementId.current}`;
-    this.$router.push(`/academic/${W2741809807}`);
+    console.log('enter essay:',essay,essay.id);
+    router.push(`/academic/${essay.id}`);
 }
 const enterScholarPortal = (author) => {//进入相应学者门户
     console.log('enter scholar portal:',author);
