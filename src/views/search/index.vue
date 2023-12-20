@@ -1,41 +1,22 @@
 <template>
-  <div class="pageHeader">
-    <div class="logo-box" @click="goToHome">
-      <img src="../../assets/images/scholarAvator.jpg" class="logo-img" />
+  <div class="header">
+    <div class="menu1" @click="gotoAdvancedSearch">高级搜索</div>
+    <el-select v-model="searchType" mutiple placeholder="文献" style="margin-top:15px">
+      <el-option v-for="s in searchTypes" :label="s" :value="s" :key="s"></el-option>
+    </el-select>
+    <div class="search">
+      <div class="form-control">
+        <input class="input input-alt" placeholder="搜索......" required="" type="text">
+        <span class="input-border input-border-alt"></span>
+      </div>
     </div>
-    <div class="search-btn" @click="dialogVisible = !dialogVisible">
-      <span>高级检索</span>
+    <div class="menu2">
+      <button class="btn">
+        <span class="box">
+          个人中心
+        </span>
+      </button>
     </div>
-    <el-dialog title="高级检索" width="70%" v-model="dialogVisible">
-      <el-card>
-        <div>高级检索</div>
-        <div v-for="(searchItem, i) in searchRequests" :key="i" style="margin-bottom: 0">
-          <el-select v-model="searchItem.select" mutiple placeholder="选项">
-            <el-option v-for="a in areaChoices" :label="a" :value="a" :key="a"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.relation" mutiple placeholder="选项">
-            <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.method" mutiple placeholder="选项">
-            <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
-          </el-select>
-          <el-input v-model="searchItem.str"></el-input>
-        </div>
-      </el-card>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-input
-      v-model="input"
-      placeholder="搜索"
-      style="width: 600px; margin-top: 30px; margin-bottom: 20px"
-    ></el-input>
-    <el-button
-      style="width: 80px; margin-top: 30px; margin-left: 30px; margin-bottom: 20px"
-      >搜索</el-button
-    >
   </div>
   <div>
     <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
@@ -201,58 +182,15 @@
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
-const areaChoices = ["标题","期刊","作者","领域","机构","关键词"]
-const relationChoices = ["且","或","非"]
-const methodChoices = ["精确","模糊"]
-const searchRequests = ref([
-  {
-    select:"标题",
-    relation:"且",
-    method:"精确",
-    str: "",
-  },
-  {
-    select:"标题",
-    relation:"且",
-    method:"精确",
-    str: "",
-  },
-])
-const searchChoice = ref("")
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
-const dialogVisible = ref(false);
 const minyear = ref();
 const maxyear = ref();
-const years = ref([
-  1999,
-  2000,
-  2001,
-  2002,
-  2003,
-  2004,
-  2005,
-  2006,
-  2007,
-  2008,
-  2009,
-  2010,
-  2011,
-  2012,
-  2013,
-  2014,
-  2015,
-  2016,
-  2017,
-  2018,
-  2019,
-  2020,
-  2021,
-  2022,
-  2023,
-]);
+const years = ref([1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,]);
 const authorList = ref([
   {
     name: "adam",
@@ -282,16 +220,6 @@ const journalList = ref([
   },
 ]);
 const getList = async () => {
-  // await httpInstance
-  //   .post('/page_get', {
-  //     workId: userStore.pages.proId,
-  //   })
-  //   .then((res) => {
-  //     console.log(res.results)
-  //     items.value = res.results
-  //     //url.value = res.results[0].protoInclude;
-  //     // router.push({ path: '/project' })
-  //   })
   items.value = [
     {
       title: "alpha",
@@ -358,86 +286,19 @@ const paginatedData = computed(() => {
   const end = start + pageSize.value;
   return items.value.slice(start, end);
 });
+const searchType = ref("");
+const searchTypes = ["文献","作者","机构"]
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
 };
-// watchEffect(() => {
-//   console.log('value:', value.value)
-// })
-// watchEffect(() => {
-//   console.log('lazyValue:', lazyValue.value)
-// })
-// function onChange (e: Event) {
-//   console.log('change e:', e)
-// }
-// function onEnter (e: KeyboardEvent) {
-//   console.log('enter e:', e)
-// }
+const gotoAdvancedSearch = () =>{
+  router.push({name:'advancedSearch'})
+}
 onMounted(async () => {
   getList();
 });
-// export default {
-//   data() {
-//     return {
-//       search: "",
-//       collectShow: false,
-//       tab: null,
-//       page: 1,
-//       pageSize: 10,
-//       pageNum: "1",
-//       Num: 0,
-//       CurrentPageData: [],
-//       selects: ["默认", "出版年份", "引用数"],
-//       selectMethod: "推荐排序",
-//       paperInfo: [],
-//       orderBy: "default",
-//       overlay: false,
-//       absolute: false,
-//       opacity: 0.5, //透明度
-//       citeStyle: [{ name: "引用类型", text: "引用文本" }],
-//       keyword: null,
-//       TypeNum: [],
-//       tagData: [],
-//       posturl: "gan",
-//       formdata: {},
-//       paperID: "",
-//       isCollect: false,
-//       tag_list: "",
-//       authorList: [{
-//           name: "adam",
-//           status: "b",
-//         },{
-//           name: "bane",
-//           status: "b",
-//         },{
-//           name: "cypher",
-//           status: "b",
-//         },],
-//       journalList: [
-//         {
-//           name: "first",
-//           status: "b",
-//         },{
-//           name: "second",
-//           status: "b",
-//         },{
-//           name: "third",
-//           status: "b",
-//         },
-//       ],
-//       new: 0,
-//       journal: "",
-//       author: "",
-//       minyear: "",
-//       maxyear: "",
-//       years: [1984, 2077],
-//       pickauthor: "",
-//       pickjournal: "",
-//     };
-//   },
-// };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .logo-img {
   height: 100%;
   margin-top: auto;
@@ -530,5 +391,184 @@ onMounted(async () => {
   text-decoration: underline;
   color: #006064;
   cursor: pointer;
+}
+.header {
+  height: 60px;
+  display: flex;
+  margin: 0px 20px 20px 20px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  border-bottom-left-radius: 5px;  /* 左下角 */
+  border-bottom-right-radius: 5px; /* 右下角 */
+
+  .logo {
+    width: 25%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    // background-color: pink;
+  }
+
+  .menu1 {
+    width: 10%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  .search {
+    width: 50%;
+    padding: 10px;
+
+    .input {
+      color: #000000;
+      font-size: 0.9rem;
+      background-color: transparent;
+      width: 100%;
+      box-sizing: border-box;
+      padding-inline: 0.5em;
+      padding-block: 0.7em;
+      border: none;
+      border-bottom: var(--border-height) solid var(--border-before-color);
+      box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+      border-radius: 15px
+    }
+
+    .input-border {
+      position: absolute;
+      background: var(--border-after-color);
+      width: 0%;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      transition: width 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    }
+
+    .input:focus {
+      outline: none;
+    }
+
+    .input:focus+.input-border {
+      width: 100%;
+    }
+
+    .form-control {
+      position: relative;
+      --width-of-input: 300px;
+    }
+
+    .input-alt {
+      font-size: 1.2rem;
+      padding-inline: 1em;
+      padding-block: 0.8em;
+    }
+
+    .input-border-alt {
+      height: 3px;
+      background: linear-gradient(90deg, #FF6464 0%, #FFBF59 50%, #47C9FF 100%);
+      transition: width 0.4s cubic-bezier(0.42, 0, 0.58, 1.00);
+
+    }
+
+    
+
+    .input-alt:focus+.input-border-alt {
+      width: 100%;
+    }
+
+    // line-height: 60px;
+    // text-align: center;
+    // font-weight: bold;
+    // font-size: 18px;
+    // background-color: rgb(192, 255, 225);
+
+  }
+
+  .menu2 {
+    width: 15%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+
+    .btn {
+      margin-top: 5px;
+
+      .box {
+        width: 100%;
+        height: auto;
+        float: left;
+        transition: .1s linear;
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        margin: 0 5px;
+        background: transparent;
+        text-transform: uppercase;
+        font-weight: 900;
+        border-radius: 10px;
+        
+      }
+    }
+
+    // background-color: rgb(255, 192, 192);
+
+
+    .box:before {
+      position: absolute;
+      content: '';
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+    }
+
+    .box:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+    }
+
+    .box:hover {
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+    }
+
+    // .box:hover:before {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .3s;
+    // }
+
+    // .box:hover:after {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .5s;
+    // }
+
+    button {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+    }
+  }
 }
 </style>

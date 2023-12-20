@@ -4,6 +4,7 @@ import Introduction from '@/views/Introduction/index.vue'
 import ScholarView from '../views/scholar/index.vue'
 import AcademicView from '../views/academic/index.vue'
 import SearchView from '../views/search/index.vue'
+import AdvancedSearchView from '../views/advancedSearch/index.vue'
 import AnalysesView from '../views/analyses/index.vue'
 
 const router = createRouter({
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/search',
       name: 'search',
       component: SearchView
+    },
+    {
+      path: '/advancedSearch',
+      name: 'advancedSearch',
+      component: AdvancedSearchView
     },
     {
       path: '/analyses',
