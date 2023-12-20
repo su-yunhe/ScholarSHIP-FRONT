@@ -1,166 +1,304 @@
 <template>
-  <div class="header">
+  <div class="searchBox">
     <div class="menu1" @click="gotoAdvancedSearch">高级搜索</div>
-    <el-select v-model="searchType" mutiple placeholder="文献" style="margin-top:15px">
+    <!-- <el-select v-model="searchType" mutiple placeholder="文献" style="margin-top:15px">
       <el-option v-for="s in searchTypes" :label="s" :value="s" :key="s"></el-option>
-    </el-select>
+    </el-select> -->
     <div class="search">
-      <div class="form-control">
-        <input class="input input-alt" placeholder="搜索......" required="" type="text">
-        <span class="input-border input-border-alt"></span>
+      <div class="searchbar">
+        <div class="searchbar-wrapper">
+          <div class="searchbar-left">
+            <div class="search-icon-wrapper">
+              <span class="search-icon searchbar-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path
+                    d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+                  </path>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="searchbar-center">
+            <div class="searchbar-input-spacer"></div>
+
+            <input type="text" class="searchbar-input" maxlength="2048" name="q" autocapitalize="off" autocomplete="off"
+              title="Search" role="combobox" placeholder="search in ScholarSHIP">
+          </div>
+
+          <div class="searchbar-right">
+            <svg class="voice-search" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="#4285f4"
+                d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z">
+              </path>
+              <path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path>
+              <path fill="#fbbc05"
+                d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z">
+              </path>
+              <path fill="#ea4335"
+                d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z">
+              </path>
+            </svg>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="menu2">
-      <button class="btn">
-        <span class="box">
-          个人中心
-        </span>
-      </button>
     </div>
   </div>
-  <div>
-    <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
-      <div style="font-size: 18px; height: 80px">
-        <div
-          style="
-            float: left;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            margin-left: 0px;
-          "
-        >
-          筛选方式
+  <div class="result">
+    <el-row :gutter="20">
+      <el-col :span="5">
+        <div class="left">
+          <div class="conditionBox">
+            <div class="title">筛选方式</div>
+            <div class="main">
+              <div class="year">
+                <div style="text-align: center; font-weight: bold; color: #7e7e7e;">年份</div>
+                <el-row :gutter="6">
+                  <el-col :span="11">
+                    <el-select v-model="minyear" mutiple placeholder="最早年份" style="margin: 5px 0 5px 10px">
+                      <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="2">
+                    <div style="text-align: center; line-height: 40px;"> ~ </div>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-select v-model="maxyear" mutiple placeholder="最晚年份" style="margin: 5px 10px 5px 0">
+                      <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </div>
+              <div class="paper">
+                <div style="margin:10px 0 10px 0; text-align: center; font-weight: bold; color: #7e7e7e;">期刊</div>
+                <el-table :data="journalList">
+                  <el-table-column prop="name" label="期刊"> </el-table-column>
+                  <el-table-column prop="status" label="信息"> </el-table-column>
+                </el-table>
+              </div>
+
+              <div class="paper">
+                <div style="margin:10px 0 10px 0; text-align: center; font-weight: bold; color: #7e7e7e;">作者</div>
+                <el-table :data="authorList">
+                  <el-table-column prop="name" label="作者"> </el-table-column>
+                  <el-table-column prop="status" label="信息"> </el-table-column>
+                </el-table>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <el-card width="" height="">
-        <el-select v-model="minyear" mutiple placeholder="最早年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
-        <div style="text-align: center">|</div>
-        <el-select v-model="maxyear" mutiple placeholder="最晚年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
-        <el-divider></el-divider>
-        <el-table :data="journalList">
-          <el-table-column prop="name" label="期刊"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-        <el-table :data="authorList">
-          <el-table-column prop="name" label="作者"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-      </el-card>
-    </div>
-    <div v-for="item in paginatedData" style="margin-top: 15px">
-      <el-card>
-        <div>
-          <div>{{ item.title }}</div>
-          <span
-            v-for="a in item.authors"
-            style="
+      </el-col>
+      <el-col :span="18">
+        <div class="right">
+          <div v-for="item in paginatedData" style="margin-top: 15px">
+            <div class="res" >
+              <div>{{ item.title }}</div>
+              <span v-for="a in item.authors" style="
               border: solid 1px;
-              color: orange;
-              margin-left: 10px;
-              margin-right: 10px;
-            "
-            >{{ a }}</span
-          >
-          <div>{{ item.brief }}</div>
-          <span
-            v-for="k in item.keywords"
-            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
-            >{{ k }}</span
-          >
-        </div>
-        <div>
-          <el-button
-            style="
+              color: rgb(255, 205, 113);
+              margin: 15px 10px 0 10px;
+              padding: 0 5px 0 5px;
+              border-radius: 5px;
+            ">{{ a }}</span>
+              <div>{{ item.brief }}</div>
+              <span v-for="k in item.keywords"
+                style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px">{{ k }}</span>
+            </div>
+            <div>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="cite(item)"
-          >
-            引用<el-icon><Link /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="cite(item)">
+                引用<el-icon>
+                  <Link />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="toDocument(item.title, item.id)"
-          >
-            详情<el-icon><DataAnalysis /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="toDocument(item.title, item.id)">
+                详情<el-icon>
+                  <DataAnalysis />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="changeCollectIconToTrue(item.id)"
-          >
-            收藏<el-icon><FolderAdd /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="changeCollectIconToTrue(item.id)">
+                收藏<el-icon>
+                  <FolderAdd />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="gourl(item)"
-          >
-            来源<el-icon><Position /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="gourl(item)">
+                来源<el-icon>
+                  <Position />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="pdf(item.pdf)"
-          >
-            下载<el-icon><Download /></el-icon>
-          </el-button>
-          <span
-            style="
+            " @click="pdf(item.pdf)">
+                下载<el-icon>
+                  <Download />
+                </el-icon>
+              </el-button>
+              <span style="
               float: right;
               text-align: right;
               margin-top: 8px;
               color: grey;
               font-size: 15px;
               margin-right: 150px;
-            "
-          >
-            被引次数：
-            <span style="color: #2d94d4">
-              {{ item.n_citation }}
-            </span>
-          </span>
-          <span
-            style="
+            ">
+                被引次数：
+                <span style="color: #2d94d4">
+                  {{ item.n_citation }}
+                </span>
+              </span>
+              <span style="
               float: right;
               text-align: right;
               margin-top: 8px;
               color: grey;
               font-size: 15px;
               margin-right: 50px;
-            "
-          >
+            ">
+                发表时间：
+                <span style="color: #2d94d4">
+                  {{ item.year }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+
+  <div>
+    <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
+      <div style="font-size: 18px; height: 80px">
+        <div style="
+            float: left;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            margin-left: 0px;
+          ">
+          筛选方式
+        </div>
+      </div>
+
+    </div>
+    <div v-for="item in paginatedData" style="margin-top: 15px">
+      <el-card>
+        <div>
+          <div>{{ item.title }}</div>
+          <span v-for="a in item.authors" style="
+              border: solid 1px;
+              color: orange;
+              margin-left: 10px;
+              margin-right: 10px;
+            ">{{ a }}</span>
+          <div>{{ item.brief }}</div>
+          <span v-for="k in item.keywords"
+            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px">{{ k }}</span>
+        </div>
+        <div>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="cite(item)">
+            引用<el-icon>
+              <Link />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="toDocument(item.title, item.id)">
+            详情<el-icon>
+              <DataAnalysis />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="changeCollectIconToTrue(item.id)">
+            收藏<el-icon>
+              <FolderAdd />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="gourl(item)">
+            来源<el-icon>
+              <Position />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="pdf(item.pdf)">
+            下载<el-icon>
+              <Download />
+            </el-icon>
+          </el-button>
+          <span style="
+              float: right;
+              text-align: right;
+              margin-top: 8px;
+              color: grey;
+              font-size: 15px;
+              margin-right: 150px;
+            ">
+            被引次数：
+            <span style="color: #2d94d4">
+              {{ item.n_citation }}
+            </span>
+          </span>
+          <span style="
+              float: right;
+              text-align: right;
+              margin-top: 8px;
+              color: grey;
+              font-size: 15px;
+              margin-right: 50px;
+            ">
             发表时间：
             <span style="color: #2d94d4">
               {{ item.year }}
@@ -170,13 +308,8 @@
       </el-card>
     </div>
     <div class="footer">
-      <el-pagination
-        background
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="items.length"
-      />
+      <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        :total="items.length" />
     </div>
   </div>
 </template>
@@ -190,7 +323,7 @@ const lazyValue = ref("");
 const items = ref([]);
 const minyear = ref();
 const maxyear = ref();
-const years = ref([1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,]);
+const years = ref([1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,]);
 const authorList = ref([
   {
     name: "adam",
@@ -287,130 +420,30 @@ const paginatedData = computed(() => {
   return items.value.slice(start, end);
 });
 const searchType = ref("");
-const searchTypes = ["文献","作者","机构"]
+const searchTypes = ["文献", "作者", "机构"]
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
 };
-const gotoAdvancedSearch = () =>{
-  router.push({name:'advancedSearch'})
+const gotoAdvancedSearch = () => {
+  router.push({ name: 'advancedSearch' })
 }
 onMounted(async () => {
   getList();
 });
 </script>
 <style scoped lang="scss">
-.logo-img {
-  height: 100%;
-  margin-top: auto;
-}
-.pageHeader {
-  background-color: white;
-  height: 10vh;
-  display: flex;
-  flex-direction: row;
-}
-.logo-box {
-  margin-left: 5vw;
-  display: flex;
-  margin-right: 5vw;
-  cursor: pointer;
-}
-.search-btn {
-  text-align: center;
-  line-height: 10vh;
-  margin-right: 3vw;
-}
-.search-btn span {
-  cursor: pointer;
-  font-size: 17px;
-  transition: 0.3s;
-}
-.search-btn span:hover {
-  color: #1e88e5;
-}
-.login-btn {
-  margin-left: 10vw;
-  line-height: 10vh;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-}
-.login-btn span {
-  cursor: pointer;
-  font-size: 17px;
-  transition: 0.3s;
-}
-.login-btn span:hover {
-  color: #1e88e5;
-}
-.user-box {
-  margin-left: 7vw;
-  line-height: 10vh;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-}
-.aa {
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.go {
-  transform: rotate(-180deg);
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.select-box {
-  position: absolute;
-  top: 10vh;
-  right: 1vw;
-  width: 15%;
-  z-index: 1000;
-}
-.search-box {
-  margin-left: 5vw;
-  margin-right: 5vw;
-  width: 40%;
-}
-.text-ellipsis-two {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-.focusChange:hover {
-  text-decoration: underline;
-  color: #006064;
-  cursor: pointer;
-}
-.paper-title:hover {
-  cursor: pointer;
-}
-.clickchange:hover {
-  text-decoration: underline;
-  color: #006064;
-  cursor: pointer;
-}
-.header {
+.searchBox {
   height: 60px;
   display: flex;
-  margin: 0px 20px 20px 20px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-  border-bottom-left-radius: 5px;  /* 左下角 */
-  border-bottom-right-radius: 5px; /* 右下角 */
-
-  .logo {
-    width: 25%;
-    line-height: 60px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 30px;
-    // background-color: pink;
-  }
+  margin: 40px 20px 20px 20px;
+  // box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  // border-bottom-left-radius: 5px;
+  /* 左下角 */
+  //  border-bottom-right-radius: 5px;
+  /* 右下角 */
 
   .menu1 {
-    width: 10%;
+    width: 20%;
     line-height: 60px;
     text-align: center;
     font-weight: bold;
@@ -418,71 +451,121 @@ onMounted(async () => {
   }
 
   .search {
-    width: 50%;
+    width: 60%;
     padding: 10px;
 
-    .input {
-      color: #000000;
-      font-size: 0.9rem;
-      background-color: transparent;
-      width: 100%;
-      box-sizing: border-box;
-      padding-inline: 0.5em;
-      padding-block: 0.7em;
-      border: none;
-      border-bottom: var(--border-height) solid var(--border-before-color);
-      box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
-      border-radius: 15px
+    .searchbar {
+      font-size: 14px;
+      font-family: arial, sans-serif;
+      color: #202124;
+      display: flex;
+      z-index: 3;
+      height: 50px;
+      background: white;
+      border: 1px solid #dfe1e5;
+      box-shadow: none;
+      border-radius: 24px;
+      margin: 0 auto;
+      width: auto;
+      max-width: 1000px;
     }
 
-    .input-border {
-      position: absolute;
-      background: var(--border-after-color);
-      width: 0%;
-      height: 2px;
-      bottom: 0;
-      left: 0;
-      transition: width 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    .searchbar:hover {
+      box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
+      border-color: rgba(223, 225, 229, 0);
     }
 
-    .input:focus {
-      outline: none;
+    .searchbar-wrapper {
+      flex: 1;
+      display: flex;
+      padding: 5px 8px 0 14px;
     }
 
-    .input:focus+.input-border {
-      width: 100%;
+    .searchbar-left {
+      font-size: 14px;
+      font-family: arial, sans-serif;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      padding-right: 13px;
+      margin-top: -5px;
     }
 
-    .form-control {
+    .search-icon-wrapper {
+      margin: auto;
+    }
+
+    .search-icon {
+      margin-top: 3px;
+      color: #9aa0a6;
+      height: 20px;
+      line-height: 20px;
+      width: 20px;
+    }
+
+    .searchbar-icon {
+      display: inline-block;
+      fill: currentColor;
+      height: 24px;
+      line-height: 24px;
       position: relative;
-      --width-of-input: 300px;
+      width: 24px;
     }
 
-    .input-alt {
-      font-size: 1.2rem;
-      padding-inline: 1em;
-      padding-block: 0.8em;
+    .searchbar-center {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
     }
 
-    .input-border-alt {
-      height: 3px;
-      background: linear-gradient(90deg, #FF6464 0%, #FFBF59 50%, #47C9FF 100%);
-      transition: width 0.4s cubic-bezier(0.42, 0, 0.58, 1.00);
-
+    .searchbar-input-spacer {
+      color: transparent;
+      flex: 100%;
+      white-space: pre;
+      height: 34px;
+      font-size: 16px;
     }
 
-    
-
-    .input-alt:focus+.input-border-alt {
+    .searchbar-input {
+      background-color: transparent;
+      border: none;
+      margin: 0;
+      padding: 0;
+      color: rgba(0, 0, 0, .87);
+      word-wrap: break-word;
+      outline: none;
+      display: flex;
+      flex: 100%;
+      margin-top: -37px;
+      height: 34px;
+      font-size: 16px;
+      max-width: 100%;
       width: 100%;
     }
 
-    // line-height: 60px;
-    // text-align: center;
-    // font-weight: bold;
-    // font-size: 18px;
-    // background-color: rgb(192, 255, 225);
+    .searchbar-right {
+      display: flex;
+      flex: 0 0 auto;
+      margin-top: -5px;
+      align-items: stretch;
+      flex-direction: row
+    }
 
+    .searchbar-clear-icon {
+      margin-right: 12px
+    }
+
+    .voice-search {
+      flex: 1 0 auto;
+      display: flex;
+      cursor: pointer;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      outline: none;
+      padding: 0 8px;
+      width: 2.8em;
+    }
   }
 
   .menu2 {
@@ -510,7 +593,7 @@ onMounted(async () => {
         text-transform: uppercase;
         font-weight: 900;
         border-radius: 10px;
-        
+
       }
     }
 
@@ -568,6 +651,47 @@ onMounted(async () => {
       outline: none;
       border: none;
       background: transparent;
+    }
+  }
+}
+
+.result {
+  height: 1000px;
+  margin: 40px 20px 20px 20px;
+
+  .left {
+    .conditionBox {
+      margin: 0 20px 0 0;
+      height: 600px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      background-color: #fafafa;
+
+      .title {
+        margin: 0 20px;
+        padding-top: 10px;
+        height: 60px;
+        line-height: 40px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+        border-bottom: 1px solid rgb(222, 222, 222);
+      }
+
+      .main {
+        margin-top: 10px;
+
+        .paper {
+          margin: 10px 20px 0 10px;
+          border-top: 1px solid rgb(222, 222, 222);
+
+        }
+      }
+    }
+  }
+
+  .right {
+    .res {
+      border: 1px;
     }
   }
 }
