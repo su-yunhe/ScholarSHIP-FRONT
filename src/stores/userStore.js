@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
   // 2. 定义获取接口数据的action函数
   const getUserInfo = async(loginForm) => {
     console.log(loginForm)
-    await httpInstance.post('/login', loginForm).then(res => {
+    await httpInstance.post('/user_login', loginForm).then(res => {
       console.log("res:", res)
       userInfo.value = res.data
     })

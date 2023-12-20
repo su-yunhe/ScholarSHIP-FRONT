@@ -88,6 +88,15 @@ const startNow = () => {
 }
 const search = () => {
   var name = document.getElementById("text").value;
+  if (name==""){
+    ElMessage({
+    message: '请勿搜索空字段',
+    grouping: true,
+    type: 'warning',
+    })
+    console.log("空字段");
+    return;
+  }
   if (ok=="文献"){
     console.log("文献+"+name);
   } else if (ok=="学者"){
@@ -108,7 +117,7 @@ const search = () => {
 
 #introduction {
   width: 100%;
-  min-height: 100vh;
+  min-height: 90vh;
   background: url("/src/assets/images/Jonquil.jpg") center center no-repeat;
   background-size: 100% 100%;
 }
@@ -254,6 +263,7 @@ const search = () => {
 }
 
 .start:hover {
+  cursor: pointer;
   background-color: #f8d9f883;
   box-shadow: 1px 1px 10px #888888;
   /* color: #79bbff; */

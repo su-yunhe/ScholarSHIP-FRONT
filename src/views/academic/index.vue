@@ -1,32 +1,49 @@
 <template>
     <div class="academicContainer">
-        <div class="essay-operation">
-            <div class="op-cite" @click="citeDialogVisible = true">引用</div>
-            <div class="op-share">分享</div>
-            <div class="op-read">阅读</div>
-            <div class="op-collection" @click="essayCollection">收藏</div>
-        </div>
-
         <div class="essay-name">{{ essay.title }}</div>
         <div class="essay-author">
-            <span v-for="(author, index) in essay.authors" @click="enterScholarPortal(author)">{{ author.name }},</span>
+            <span v-for="(authorship, index) in essay.authorships" @click="enterScholarPortal(authorship)">{{ authorship.author.display_name }},</span>
         </div>
-        <div class="essay-institution">{{ essay.institution }}</div>
+        <!-- <div class="essay-institution">{{ essay.institutions[0].display_name }}</div> -->
         <div class="essay-abstractBox">
             <div>摘要：</div>
             <div>{{ essay.abstract }}</div>
         </div>
         <!-- 描述信息 -->
         <div class="essay-dec">
-            <div>关键词：</div>
+            <div>相关词条：</div>
             <div>
-                <span v-for="(keyword, key) in essay.keywords">{{ keyword }}；</span>
+                <el-tag type="info" v-for="(concept, key) in essay.concepts" class="concept">{{ concept.display_name }}</el-tag>
+                <!-- <span></span> -->
             </div>
             
         </div>
         <div class="essay-dec">
             <div>DOI：</div>
             <div>{{ essay.doi }}</div>
+        </div>
+        <div class="essay-dec">
+            <div>被引数：</div>
+            <div>{{ essay.cited_by_count }}</div>
+        </div>
+        <div class="essay-dec">
+            <div>发表年份：</div>
+            <div>{{ essay.doi }}</div>
+        </div>
+        <div class="essay-operation">
+            <el-tag class="op-share" @click="citeDialogVisible = true"><el-icon><Link /></el-icon>引用</el-tag>
+            <a :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
+            <el-tag class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
+            <a :href="essay.primary_location?essay.primary_location.landing_page_url:null" target="_blank" ><el-tag class="op-read" type="danger"><el-icon><View /></el-icon>阅读</el-tag></a>
+            <el-tag class="op-collection" @click="essayCollection" type="warning"><el-icon><Star /></el-icon>收藏</el-tag>
+        </div>
+        <div class="essay-essays">
+            <div>引用文章</div>
+            <a v-for="(work,index) in essay.referenced_works" :href="work" target="_blank">{{ work }}</a>
+        </div>
+        <div class="essay-essays">
+            <div>相关文章</div>
+            <a v-for="(work,index) in essay.related_works" :href="work" target="_blank">{{ work }}</a>
         </div>
     </div>
     <!-- 引用对话框 -->
@@ -72,6 +89,9 @@
 </template>
 
 <script>
+import { useAcademicStore } from '@/stores/academic';
+import axios from 'axios';
+import httpInstance from '@/utils/http'
 export default {
     name: 'academic',
     components: {
@@ -85,28 +105,29 @@ export default {
             citeString: 'yinyongshishisshishiq[1]',
             collectionId:0,
             collectionName: null,
-            essay:{
-                id:1,
-                title:'NLP (natural language processing) for NLP (naturallanguage programming)',
-                year:2023,
-                n_citation:10,
-                url:'xx',
-                doi:'10.1007/11671299 34',
-                abstract:'Natural Language Processing holds great promise for making computer interfaces that are easier to use for people, sincepeople will (hopefully) be able to talk to the computer in their owm language, rather than learn a specialized language otcomputer commands For proeramming. however. thenecessity of a formal proerammine laneuaee for communicating witha computer has always been taken for granted. We would',
-                keywords:['xdxxxx','sssddsds'],
-                authors:[
-                    {
-                        name:'Rada Mihalcea'
-                    },
-                    {
-                        name:'Rada Mihalcea'
-                    },
-                    {
-                        name:'Rada Mihalcea'
-                    },
-                ],
-                institution:'CICLing',
-            },
+            essay: {},
+            // essay:{
+            //     id:1,
+            //     title:'NLP (natural language processing) for NLP (naturallanguage programming)',
+            //     year:2023,
+            //     n_citation:10,
+            //     url:'xx',
+            //     doi:'10.1007/11671299 34',
+            //     abstract:'Natural Language Processing holds great promise for making computer interfaces that are easier to use for people, sincepeople will (hopefully) be able to talk to the computer in their owm language, rather than learn a specialized language otcomputer commands For proeramming. however. thenecessity of a formal proerammine laneuaee for communicating witha computer has always been taken for granted. We would',
+            //     keywords:['xdxxxx','sssddsds'],
+            //     authors:[
+            //         {
+            //             name:'Rada Mihalcea'
+            //         },
+            //         {
+            //             name:'Rada Mihalcea'
+            //         },
+            //         {
+            //             name:'Rada Mihalcea'
+            //         },
+            //     ],
+            //     institution:'CICLing',
+            // },
             collections:[
                 {
                     id:1,
@@ -151,6 +172,18 @@ export default {
             }
             citeDialogVisible = false;
         },
+        async downloadPDF(pdfUrl) {//需要注释掉main.js中的mock引用才能打开下载的pdf文件
+            const response = await axios.get(pdfUrl,{
+                responseType: 'blob', // 必须指定为blob类型才能下载
+            });
+            console.log("download",response);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'ScholarSHIP文献下载.pdf');
+            document.body.appendChild(link);
+            link.click();
+        },
         enterScholarPortal(author){
             console.log('enter scholar portal:',author);
             this.$router.push('/scholar');
@@ -180,7 +213,22 @@ export default {
             this.collections.push({id: this.collections[this.collections.length-1].id+1, name:this.collectionName});
             this.collectionName = null;
             this.addCollectionVisible = false;
+        },
+        getEssayDetail(){
+            let work_id = this.$route.path.split("/")[2];
+            let author_id = "A5023888392";
+            httpInstance.get(`/get_detail?work_id=${work_id}&author_id=${author_id}`).then((res) => {
+                console.log("get essay detail:",res);
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
         }
+    },
+    mounted(){
+        const academicStore = useAcademicStore();
+        this.essay = academicStore.essayDetail;
+        this.getEssayDetail();
+        console.log("essay:",this.essay);
     }
 }
 </script>
@@ -194,10 +242,12 @@ export default {
     position: relative;
 }
 .essay-operation{
-    width: 200px;
+    /* width: 200px;
     position: absolute;
     top: -20px;
-    right: 60px;
+    right: 60px; */
+    width: 80%;
+    margin: 15px auto 0;
 }
 .op-cite,.op-share,.op-read,.op-collection{
     display: inline-block;
@@ -206,7 +256,7 @@ export default {
 .essay-name{
     width: 80%;
     text-align: center;
-    margin: 50px auto 0;
+    margin: 30px auto 0;
     font-size: 25px;
     font-weight: bolder;
 }
@@ -224,30 +274,55 @@ export default {
     margin: 15px auto 0;
 }
 .essay-abstractBox div:first-child{
-    width: 6%;
+    width: 8%;
     vertical-align: top;
     font-weight: bold;
     display: inline-block;
 }
 .essay-abstractBox div:last-child{
-    width: 94%;
+    width: 92%;
     display: inline-block;
 }
 .essay-dec{
     width: 80%;
-    height: 20px;
+    height: auto;
     margin: 15px auto 0;
     text-align: left;
 }
 .essay-dec div:first-child{
-    width: 6%;
+    width: 8%;
     font-weight: bold;
     display: inline-block;
+    vertical-align: top;
 }
 .essay-dec div:last-child{
     /* color: #7EB5EA; */
-    width: 94%;
+    width: 92%;
     display: inline-block;
+}
+
+.essay-dec .concept{
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.essay-essays{
+    width: 80%;
+    height: auto;
+    margin: 15px auto 0;
+    text-align: left;
+    font-weight: bold;
+}
+.essay-essays a{
+    display: inline-block;
+    font-weight:normal;
+    width: 42%;
+    margin-left: calc(8%);
+    margin-top: 10px;
+    color: rgb(118, 139, 205);
+}
+.essay-essays a:hover{
+    text-decoration: underline;
 }
 
 .dialog-footer{

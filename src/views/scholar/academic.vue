@@ -8,11 +8,11 @@
             </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
-                <span class="essay-indicator">被引用数：{{essay.n_citation}}</span>
+                <span class="essay-indicator">被引用数：{{essay.citation}}</span>
                 <span class="essay-indicator">发表时间：{{essay.year}}</span>
-                <span class="essay-indicator-op" @click="download(essay)">下载</span>
-                <span class="essay-indicator-op" @click="cite(essay)">引用</span>
-                <span class="essay-indicator-op" @click="collection(essay)">收藏</span>
+                <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
+                <span class="essay-indicator-op" @click="cite(essay)"><el-icon><Link /></el-icon>引用</span>
+                <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
             </div>
         </div>
         <el-pagination
@@ -26,178 +26,65 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../stores/scholar'
+import httpInstance from '@/utils/http'
+// const useScholarStore = useScholarStore();
+const router = useRouter()
+const IDForm = ref({
+    scholarID: 'A5023888391',
+    userID: 1,
+})
+const essayNum = ref();
+const displayEssays = ref([]); // 记得进入页面时初始化
+const essayList = ref([]);
+const currentPage = ref(1);
 
-export default {
-    name: 'academic',
-    components: {
+onMounted(() => {
+  httpInstance.post('/get_scholar_papers', IDForm.value).then((res) => {
+    if (res.data.error === 0) {
+      console.log("papers:", res.data.papers);
+      useScholarStore.essayList = res.data.papers
+      essayList.value = useScholarStore.essayList
+      displayEssays.value = essayList.value.slice(0,5)
+      essayNum.value = res.data.Num
 
-    },
-    data() {
-        return {
-            store: useScholarStore(),
-            essayNum: 7,
-            displayEssays:[],//记得进入页面时初始化
-            essays:[
-                {
-                    id:1,
-                    title: '论文1',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-                {
-                    id:2,
-                    title: '论文2',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-                {
-                    id:3,
-                    title: '论文3',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-                {
-                    id:4,
-                    title: '论文4',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-                {
-                    id:5,
-                    title: '论文5',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-                {
-                    id:6,
-                    title: '论文6',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-                {
-                    id:7,
-                    title: '论文7',
-                    year:2023,
-                    n_citation:10,
-                    //url,doi,
-                    authors:[
-                        {
-                            name:'作者1',
-                        },
-                        {
-                            name:'作者2',
-                        }
-                    ],
-                    abstract:'balabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabalabala',
-                    keywords:['xxx','bbb'],
-                },
-            ],
-            currentPage: 1,
-        }
-    },
-    methods:{
-        currentPageChange(value) {
-            this.displayEssays = this.essays.slice( (value-1)*5, 5+(value-1)*5);
-            this.currentPage = value;
-            console.log(`当前页: ${value}`,this.displayEssays);
-        },
-        enterEssay(essay){//进入文献展示页
-            console.log('enter essay:',essay,essay.name);
-            this.$router.push('/academic');
-        },
-        enterScholarPortal(author){//进入相应学者门户
-            console.log('enter scholar portal:',author);
-        },
-        download(essay){//下载文献
-            console.log('download:',essay);
-        },
-        cite(essay){//生成文献引用格式
-            console.log('cite:',essay);
-        },
-        collection(essay){//收藏文献
-            console.log('collection:',essay);
-        },
-    },
-    created(){
-        this.essayNum = this.essays.length;
-        this.displayEssays = this.essays.slice(0,5);
     }
+  });
+});
+
+const currentPageChange = (value) => {
+    displayEssays.value = essayList.value.slice( (value-1)*5, 5+(value-1)*5);
+    currentPage.value = value;
+    console.log(`当前页: ${value}`,displayEssays.value);
+}
+const enterEssay = (essay) => {//进入文献展示页
+    console.log('enter essay:',essay,essay.name);
+    const academicStore = useAcademicStore();
+    // academicStore.getEssayDetail("W2741809807", "A5048491430");
+    //const url = `/requirementLibrary/requirement/${requirementId.current}`;
+    this.$router.push(`/academic/${W2741809807}`);
+}
+const enterScholarPortal = (author) => {//进入相应学者门户
+    console.log('enter scholar portal:',author);
+}
+const download = (essay) => {//下载文献
+    console.log('download:',essay);
+}
+const cite = (essay) => {//生成文献引用格式
+    console.log('cite:',essay);
+}
+const collection = (essay) => {//收藏文献
+    console.log('collection:',essay);
 }
 </script>
 
 <style>
 .academicContent{
     /* width: 100%; */
-    width: 70%;
-    margin: auto;
+    width: 70%;margin: auto;
     height: auto;
     margin-top: 20px;
     overflow-x: hidden;
@@ -210,21 +97,10 @@ export default {
     font-size:25px
 }
 .essayBox{
-    margin-left: 5px;
-    width: 98%;
+    width: 100%;
     height: auto;
-    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
-    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     margin-bottom: 15px;
-    border-radius: 5px;
-}
-
-.essayBox:hover {
-    margin-left: 5px;
-    width: 98%;
-    height: auto;
-    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
-    border-radius: 5px;
 }
 .essayBox-name{
     font-size: large;
@@ -245,7 +121,7 @@ export default {
 }
 .essayBox-abstract{
     width: 100%;
-    max-height: 60px;
+    max-height: 52px;
     color: gray;
     padding: 10px 20px 10px 10px;
 
