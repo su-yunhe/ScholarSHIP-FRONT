@@ -1,344 +1,170 @@
 <template>
-  <div class="pageHeader">
-    <div class="search-btn" @click="dialogVisible = !dialogVisible">
-      <span>高级检索</span>
-    </div>
-    <el-dialog title="高级检索" width="70%" v-model="dialogVisible">
-      <el-card>
+  <el-row>
+    <el-col :span="15"
+      ><el-card>
         <div>高级检索</div>
-        <div v-for="(searchItem, i) in searchRequests" :key="i" style="margin-bottom: 0">
-          <el-select v-model="searchItem.select" mutiple placeholder="选项" style="width:100px">
-            <el-option v-for="a in areaChoices" :label="a" :value="a" :key="a"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.relation" mutiple placeholder="选项" style="width:100px">
-            <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.method" mutiple placeholder="选项" style="width:100px">
-            <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
-          </el-select>
-          <el-input v-model="searchItem.str" style="width:300px"></el-input>
-          <el-button v-show="i" @click="removeStr(i)"><el-icon><Link /></el-icon></el-button>
-        </div>
-        <el-button @click="addStr()" style="width:150px;margin-right:50px">添加搜索条件<el-icon><CirclePlus /></el-icon></el-button>
-        <el-button @click="searchAdvanced()" style="width:100px">开始搜索<el-icon><Search /></el-icon></el-button>
-      </el-card>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-input
-      v-model="input"
-      placeholder="搜索"
-      style="width: 600px; margin-top: 30px; margin-bottom: 20px"
-    ></el-input>
-    <el-button
-      style="width: 80px; margin-top: 30px; margin-left: 30px; margin-bottom: 20px"
-      >搜索</el-button
-    >
-  </div>
-  <div>
-    <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
-      <div style="font-size: 18px; height: 80px">
+        <el-divider></el-divider>
+        <div>搜索条件</div>
         <div
-          style="
-            float: left;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            margin-left: 0px;
-          "
+          v-for="(searchItem, i) in searchRequests"
+          :key="i"
+          style="margin-top: 10px; margin-buttom: 10px"
         >
-          筛选方式
+          <span v-if="i === 0" style="margin-right: 100px"> </span>
+          <el-select
+            v-model="searchItem.relation"
+            mutiple
+            placeholder="与"
+            style="width: 100px"
+            v-if="i"
+          >
+            <el-option
+              v-for="r in relationChoices"
+              :label="r"
+              :value="r"
+              :key="r"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="searchItem.select"
+            mutiple
+            placeholder="选项"
+            style="width: 100px"
+          >
+            <el-option
+              v-for="a in areaChoices"
+              :label="a"
+              :value="a"
+              :key="a"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="searchItem.method"
+            mutiple
+            placeholder="选项"
+            style="width: 100px"
+          >
+            <el-option
+              v-for="m in methodChoices"
+              :label="m"
+              :value="m"
+              :key="m"
+            ></el-option>
+          </el-select>
+          <el-input v-model="searchItem.str" style="width: 300px"></el-input>
+          <el-button v-show="i" @click="removeStr(i)" style="margin-left: 20px"
+            ><el-icon><Minus /></el-icon></el-button
+          ><el-button v-show="isLast(i)" @click="addStr()" style="margin-left: 20px"
+            ><el-icon><Plus /></el-icon
+          ></el-button>
         </div>
-      </div>
-      <el-card width="" height="">
+
+        <el-divider></el-divider>
+        <div>时间范围</div>
         <el-select v-model="minyear" mutiple placeholder="最早年份">
+          <el-option
+            v-for="y in years"
+            :label="y"
+            :value="y"
+            :key="y"
+          ></el-option> </el-select
+        ><el-select v-model="maxyear" mutiple placeholder="最晚年份">
           <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
         </el-select>
-        <div style="text-align: center">|</div>
-        <el-select v-model="maxyear" mutiple placeholder="最晚年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
         <el-divider></el-divider>
-        <el-table :data="journalList">
-          <el-table-column prop="name" label="期刊"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-        <el-table :data="authorList">
-          <el-table-column prop="name" label="作者"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-      </el-card>
-    </div>
-    <div v-for="item in paginatedData" style="margin-top: 15px">
+        <el-button @click="searchAdvanced()" style="width: 100px; margin-top: 10px"
+          >开始搜索<el-icon><Search /></el-icon
+        ></el-button> </el-card
+    ></el-col>
+    <el-col :span="9">
       <el-card>
-        <div>
-          <div>{{ item.title }}</div>
-          <span
-            v-for="a in item.authors"
-            style="
-              border: solid 1px;
-              color: orange;
-              margin-left: 10px;
-              margin-right: 10px;
-            "
-            >{{ a }}</span
-          >
-          <div>{{ item.brief }}</div>
-          <span
-            v-for="k in item.keywords"
-            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
-            >{{ k }}</span
-          >
-        </div>
-        <div>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="cite(item)"
-          >
-            引用<el-icon><Link /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="toDocument(item.title, item.id)"
-          >
-            详情<el-icon><DataAnalysis /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="changeCollectIconToTrue(item.id)"
-          >
-            收藏<el-icon><FolderAdd /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="gourl(item)"
-          >
-            来源<el-icon><Position /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="pdf(item.pdf)"
-          >
-            下载<el-icon><Download /></el-icon>
-          </el-button>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 150px;
-            "
-          >
-            被引次数：
-            <span style="color: #2d94d4">
-              {{ item.n_citation }}
-            </span>
-          </span>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 50px;
-            "
-          >
-            发表时间：
-            <span style="color: #2d94d4">
-              {{ item.year }}
-            </span>
-          </span>
-        </div>
+        <div>高级检索使用说明</div>
+        <el-divider></el-divider>
+        <div>高级检索支持使用运算符*、+、-、''、""、()进行同一检索项内多个检索词的组合运算，检索框内输入的内容不得超过120个字符。
+
+输入运算符*(与)、+(或)、-(非)时，前后要空一个字节，优先级需用英文半角括号确定。
+
+若检索词本身含空格或*、+、-、()、/、%、=等特殊符号，进行多词组合运算时，为避免歧义，须将检索词用英文半角单引号或英文半角双引号引起来。
+
+例如：
+（1）篇名检索项后输入：神经网络 * 自然语言，可以检索到篇名包含“神经网络”及“自然语言”的文献。
+
+（2）主题检索项后输入：(锻造 + 自由锻) * 裂纹，可以检索到主题为“锻造”或“自由锻”，且有关“裂纹”的文献。
+
+（3）如果需检索篇名包含“digital library”和“information service”的文献，在篇名检索项后输入：'digital library' * 'information service'。
+
+（4）如果需检索篇名包含“2+3”和“人才培养”的文献，在篇名检索项后输入：'2+3' * 人才培养。</div>
       </el-card>
-    </div>
-    <div class="footer">
-      <el-pagination
-        background
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="items.length"
-      />
-    </div>
-  </div>
+    </el-col>
+  </el-row>
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
-const areaChoices = ["标题","期刊","作者","领域","机构","关键词"]
-const relationChoices = ["且","或","非"]
-const methodChoices = ["精确","模糊"]
+const areaChoices = ["标题", "期刊", "作者", "领域", "机构", "关键词"];
+const relationChoices = ["且", "或", "非"];
+const methodChoices = ["精确", "模糊"];
 const searchRequests = ref([
   {
-    select:"标题",
-    relation:"且",
-    method:"精确",
+    select: "标题",
+    relation: "且",
+    method: "精确",
     str: "",
   },
   {
-    select:"标题",
-    relation:"且",
-    method:"精确",
+    select: "标题",
+    relation: "且",
+    method: "精确",
     str: "",
   },
-])
-const searchChoice = ref("")
+]);
+const searchChoice = ref("");
 const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
-const dialogVisible = ref(false);
 const minyear = ref();
 const maxyear = ref();
-const years = ref([1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,]);
-const authorList = ref([
-  {
-    name: "adam",
-    status: "b",
-  },
-  {
-    name: "bane",
-    status: "b",
-  },
-  {
-    name: "cypher",
-    status: "b",
-  },
+const years = ref([
+  1999,
+  2000,
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
 ]);
-const journalList = ref([
-  {
-    name: "first",
-    status: "b",
-  },
-  {
-    name: "second",
-    status: "b",
-  },
-  {
-    name: "third",
-    status: "b",
-  },
-]);
-const getList = async () => {
-  items.value = [
-    {
-      title: "alpha",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "beta",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "cythor",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "destine",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "ethic",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "forkk",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "grabit",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-  ];
-};
-const currentPage = ref(1);
-const pageSize = ref(5);
-const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return items.value.slice(start, end);
-});
-const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage;
-};
 const addStr = () => {
   searchRequests.value.push({
-    select:"标题",
-    relation:"且",
-    method:"精确",
+    select: "标题",
+    relation: "且",
+    method: "精确",
     str: "",
-  },);
+  });
 };
-const removeStr = (i) =>{
+const removeStr = (i) => {
   searchRequests.value.splice(i, 1);
-}
-onMounted(async () => {
-  getList();
-});
+};
+const isLast = (index) => {
+  return index === searchRequests.value.length - 1;
+};
 </script>
 <style scoped>
 .logo-img {

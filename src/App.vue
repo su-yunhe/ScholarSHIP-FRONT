@@ -12,7 +12,7 @@ const logout = () => {
 </script>
 
 <template>
-
+  <Header />
   <RouterView />
 </template>
 
