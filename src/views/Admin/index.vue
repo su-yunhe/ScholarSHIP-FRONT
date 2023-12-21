@@ -2,7 +2,7 @@
     <div>
         <el-container>
             <el-header>
-                <Header/>
+                <!-- <Header/> -->
             </el-header>
             <el-container>
                 <el-aside width="200px">
