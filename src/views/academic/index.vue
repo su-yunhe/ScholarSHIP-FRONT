@@ -8,6 +8,7 @@
         <div class="essay-abstractBox">
             <div>摘要：</div>
             <div>{{ essay.abstract }}</div>
+            <div v-if="loading">加载中...</div>
         </div>
         <!-- 描述信息 -->
         <div class="essay-dec">
@@ -38,12 +39,10 @@
             <el-tag class="op-collection" @click="essayCollection" type="warning"><el-icon><Star /></el-icon>收藏</el-tag>
         </div>
         <div class="essay-essays">
-            <div>引用文章</div>
             <div v-if="referenced_works_num!=0">引用文章</div>
             <a v-for="work in essay.referenced_works" :key="work" :href="work" target="_blank">{{ work }}</a>
         </div>
         <div class="essay-essays">
-            <div>相关文章</div>
             <div v-if="related_works_num!=0">相关文章</div>
             <a v-for="work in essay.related_works" :key="work" :href="work" target="_blank">{{ work }}</a>
         </div>
@@ -110,6 +109,7 @@ export default {
             referenced_works_num: 0,
             related_works_num:0,
             essay: {},
+            loading: true,
             // essay:{
             //     id:1,
             //     title:'NLP (natural language processing) for NLP (naturallanguage programming)',
@@ -221,7 +221,7 @@ export default {
         getEssayDetail(work_id, author_id){
             httpInstance.get(`/get_detail?work_id=${work_id}&author_id=${author_id}`).then((res) => {
                 console.log("get essay detail:",res);
-                this.essay = res.result;
+                this.essay = res.data.result;
                 this.referenced_works_num = this.essay.referenced_works.length;
                 this.related_works_num = this.essay.related_works.length;
             }).catch((error)=>{

@@ -40,7 +40,6 @@ import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
-const scholarStore = useScholarStore();
 export default {
     name: 'scholar',
     components: {
@@ -93,10 +92,10 @@ export default {
             let scholarID = "A5023888391";
             let userID = 1;
             console.log("balabala");
-            await httpInstance.post('/get_scholar_papers', {scholarID : scholarID, userID : userID}).then((res) => {
+            await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
                 console.log("papers1:", res);
                 if (res.data.error === 0) {
-                    scholarStore.essayList = res.data.papers;
+                    scholarStore.essayList = res.data.result;
                     console.log("papers2:", scholarStore.essayList);
                 }
             });
