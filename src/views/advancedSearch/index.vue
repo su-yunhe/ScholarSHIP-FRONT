@@ -72,7 +72,7 @@
           <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
         </el-select>
         <el-divider></el-divider>
-        <el-button @click="searchAdvanced()" style="width: 100px; margin-top: 10px"
+        <el-button @click="search()" style="width: 100px; margin-top: 10px"
           >开始搜索<el-icon><Search /></el-icon
         ></el-button> </el-card
     ></el-col>
@@ -80,20 +80,19 @@
       <el-card>
         <div>高级检索使用说明</div>
         <el-divider></el-divider>
-        <div>高级检索支持使用运算符*、+、-、''、""、()进行同一检索项内多个检索词的组合运算，检索框内输入的内容不得超过120个字符。
-
-输入运算符*(与)、+(或)、-(非)时，前后要空一个字节，优先级需用英文半角括号确定。
-
-若检索词本身含空格或*、+、-、()、/、%、=等特殊符号，进行多词组合运算时，为避免歧义，须将检索词用英文半角单引号或英文半角双引号引起来。
-
-例如：
-（1）篇名检索项后输入：神经网络 * 自然语言，可以检索到篇名包含“神经网络”及“自然语言”的文献。
-
-（2）主题检索项后输入：(锻造 + 自由锻) * 裂纹，可以检索到主题为“锻造”或“自由锻”，且有关“裂纹”的文献。
-
-（3）如果需检索篇名包含“digital library”和“information service”的文献，在篇名检索项后输入：'digital library' * 'information service'。
-
-（4）如果需检索篇名包含“2+3”和“人才培养”的文献，在篇名检索项后输入：'2+3' * 人才培养。</div>
+        <div>
+          高级检索支持使用运算符*、+、-、''、""、()进行同一检索项内多个检索词的组合运算，检索框内输入的内容不得超过120个字符。
+          输入运算符*(与)、+(或)、-(非)时，前后要空一个字节，优先级需用英文半角括号确定。
+          若检索词本身含空格或*、+、-、()、/、%、=等特殊符号，进行多词组合运算时，为避免歧义，须将检索词用英文半角单引号或英文半角双引号引起来。
+          例如： （1）篇名检索项后输入：神经网络 *
+          自然语言，可以检索到篇名包含“神经网络”及“自然语言”的文献。
+          （2）主题检索项后输入：(锻造 + 自由锻) *
+          裂纹，可以检索到主题为“锻造”或“自由锻”，且有关“裂纹”的文献。
+          （3）如果需检索篇名包含“digital library”和“information
+          service”的文献，在篇名检索项后输入：'digital library' * 'information service'。
+          （4）如果需检索篇名包含“2+3”和“人才培养”的文献，在篇名检索项后输入：'2+3' *
+          人才培养。
+        </div>
       </el-card>
     </el-col>
   </el-row>
@@ -122,8 +121,8 @@ const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
-const minyear = ref();
-const maxyear = ref();
+const minyear = ref(1999);
+const maxyear = ref(2023);
 const years = ref([
   1999,
   2000,
@@ -164,6 +163,19 @@ const removeStr = (i) => {
 };
 const isLast = (index) => {
   return index === searchRequests.value.length - 1;
+};
+const search = () => {
+  let keyword = [];
+  for (var i = 0; i < searchRequests.value.length; i++) {
+    // console.log(searchRequests.value[i])
+        if (searchRequests.value[i].str == "") {
+          window.alert("搜索字符串不能为空");
+          return;
+        }
+        keyword.push(searchRequests.value[i]);
+      }
+      let formdata = { minyear: minyear, maxyear: maxyear, keyword: keyword };
+      console.log(formdata);
 };
 </script>
 <style scoped>
