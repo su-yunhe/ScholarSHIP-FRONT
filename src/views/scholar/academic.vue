@@ -2,13 +2,13 @@
     <div class="academicContent">
         <div class="essayNum">学者文献共<span>{{essayNum}}</span>篇</div>
         <div class="essayBox" v-for="essay in displayEssays" :key="essay">
-            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.title}}</div>
+            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.display_name}}</div>
             <div class="essayBox-author">
-                <span v-for="author in essay.authors" :key="author" @click="enterScholarPortal(author)">{{author.name}},</span>            </div>
+                <span v-for="author in essay.authors" :key="author" @click="enterScholarPortal(author)">{{author.display_name}},</span>            </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
-                <span class="essay-indicator">被引用数：{{essay.citation}}</span>
-                <span class="essay-indicator">发表时间：{{essay.year}}</span>
+                <span class="essay-indicator">被引用数：{{essay.cited_by_count}}</span>
+                <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
                 <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
                 <span class="essay-indicator-op" @click="cite(essay)"><el-icon><Link /></el-icon>引用</span>
                 <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
@@ -48,7 +48,7 @@ onMounted(() => {
         displayEssays.value = essayList.value.slice(0,5);
         
         essayNum.value = scholarStore.essayList.length;
-    }, 10000);
+    }, 3000);
 });
 
 const currentPageChange = (value) => {
@@ -58,7 +58,9 @@ const currentPageChange = (value) => {
 }
 const enterEssay = (essay) => {//进入文献展示页
     console.log('enter essay:',essay,essay.id);
-    router.push(`/academic/${essay.id}`);
+    let essay_id = essay.id.split('/')[3]
+    console.log("essay_id:",essay_id)
+    router.push(`/academic/${essay_id}`);
 }
 const enterScholarPortal = (author) => {//进入相应学者门户
     console.log('enter scholar portal:',author);
