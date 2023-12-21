@@ -65,6 +65,7 @@
             let line = links[i].relations[0];
             if(line.from == lineObject.from && line.to == lineObject.to){
                 line.text = scholarStore.graph_data.lines[i].article;
+
              }else if(line.text != "合著"){
                 line.text = "合著";
             }

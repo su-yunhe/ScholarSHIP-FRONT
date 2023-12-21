@@ -5,8 +5,9 @@ import ScholarView from '../views/scholar/scholarPortal.vue'
 import PersonalScholarView from '../views/scholar/personalScholar/personalPortal.vue'
 import AcademicView from '../views/academic/index.vue'
 import SearchView from '../views/search/index.vue'
+import AdvancedSearchView from '../views/advancedSearch/index.vue'
 import AnalysesView from '../views/analyses/index.vue'
-
+import Institution from '@/views/Institution/index.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // path和component对应关系的位置
@@ -26,6 +27,11 @@ const router = createRouter({
       component: Login
     },
     {
+      path: '/institution',
+      name: 'institution',
+      component: Institution
+    },
+    {
       path: '/scholar',
       name: 'scholar',
       component: ScholarView
@@ -36,6 +42,7 @@ const router = createRouter({
       component: PersonalScholarView
     },
     {
+
       path: '/academic/:essay_id',
       name: 'academic',
       component: AcademicView
@@ -56,9 +63,15 @@ const router = createRouter({
       component: SearchView
     },
     {
+      path: '/advancedSearch',
+      name: 'advancedSearch',
+      component: AdvancedSearchView
+    },
+    {
       path: '/analyses',
       name: 'analyses',
       component: AnalysesView
+
     }
   ]
 })

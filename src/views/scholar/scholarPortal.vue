@@ -1,22 +1,20 @@
 <template>
     <div class="scholarContainer">
             <div class="scholarTopHeaderBar">
-                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
-                <div class="scholar-information">
-                    <div class="scholar-information-name">{{ scholarStore.scholarInfo.real_name }}</div>
-                    <div class="scholar-information-organization">{{ scholarStore.scholarInfo.organization }}</div>
-                    <div class="scholar-information-brief">{{ scholarStore.scholarInfo.introdunction }}</div>
+                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">                <div class="scholar-information">
+                    <div class="scholar-information-name">{{ scholarInfo.name }}</div>
+                    <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.citationNum }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.citation }}</div>
                             <div class="scholar-indicator-dec">被引数</div>
                         </div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.impactIndex }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.hIndex }}</div>
                             <div class="scholar-indicator-dec">影响力指数</div>
                         </div>
                     </div>
@@ -35,13 +33,13 @@
     </div>
 </template>
 
+
 <script>
 import {useScholarStore} from '../../stores/scholar'
-
+import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
-
 export default {
     name: 'scholar',
     components: {
@@ -51,19 +49,8 @@ export default {
     },
     data() {
         return {
-            scholarStore: useScholarStore(),
             tagName:'academic',
-            // scholarInfo:{
-            //     scholar_id:1,
-            //     organization:'BUAA',
-            //     introdunction:'balabala',
-            //     real_name:'S.Harmost',
-            // },
-            // name:'S.Harmost',
-            // briefIntrodunction:'xxxxxxxxxxxxx',
-            // essayNum: 7,
-            // citationNum: 6,
-            // impactIndex: 1,
+            scholarInfo:{},
         }
     },
     methods:{
@@ -89,16 +76,45 @@ export default {
 
         },
         concernScholar(){//关注学者
-
+            
         },
+        async getScholarInfo(){
+            let scholarID = "A5040654425";
+            let userID = 1;
+            await httpInstance.post('/get_scholar', {scholarID : scholarID, userID : userID}).then(res => res.data).then(res => {
+            if (res.error === 0) {
+                console.log("get scholarInfo res:", res);
+                this.scholarInfo = res.data;
+            }
+            });
+        },
+        async getEssayList(scholarStore){
+            let scholarID = "A5023888391";
+            let userID = 1;
+            console.log("balabala");
+            await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
+                console.log("papers1:", res);
+                if (res.data.error === 0) {
+                    scholarStore.essayList = res.data.result;
+                    console.log("papers2:", scholarStore.essayList);
+                }
+            });
+            console.log("balabala2");
+        },
+        getGraphData(scholarStore){
+            let root_id = "A5040654425";
+            httpInstance.get(`/get_relation_map?root_id=${root_id}`).then(res => {
+                console.log("get_relation_map res:", res);
+                scholarStore.graph_data = res;
+            })
+            }
     },
-    mounted(){
-        // const scholarStore = useScholarStore();
-        // scholarStore.getScholarInfo();
-        // scholarStore.getEssayList();
-        // scholarStore.getGraphData();
-    }
-}
+    created(){
+        const scholarStore = useScholarStore();
+        this.getScholarInfo(scholarStore);
+        this.getEssayList(scholarStore);
+        this.getGraphData(scholarStore);
+    }}
 </script>
 
 <style scoped>
@@ -189,5 +205,4 @@ export default {
 .scholarNav:hover{
     background-color: rgb(160, 149, 149);
 }
-
 </style>

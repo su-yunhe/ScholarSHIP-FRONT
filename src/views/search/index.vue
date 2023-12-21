@@ -1,185 +1,304 @@
 <template>
-  <div class="pageHeader">
-    <div class="logo-box" @click="goToHome">
-      <img src="../../assets/images/scholarAvator.jpg" class="logo-img" />
-    </div>
-    <div class="search-btn" @click="dialogVisible = !dialogVisible">
-      <span>高级检索</span>
-    </div>
-    <el-dialog title="高级检索" width="70%" v-model="dialogVisible">
-      <el-card>
-        <div>高级检索</div>
-        <div v-for="(searchItem, i) in searchRequests" :key="i" style="margin-bottom: 0">
-          <el-select v-model="searchItem.select" mutiple placeholder="选项">
-            <el-option v-for="a in areaChoices" :label="a" :value="a" :key="a"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.relation" mutiple placeholder="选项">
-            <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.method" mutiple placeholder="选项">
-            <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
-          </el-select>
-          <el-input v-model="searchItem.str"></el-input>
-        </div>
-      </el-card>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-input
-      v-model="input"
-      placeholder="搜索"
-      style="width: 600px; margin-top: 30px; margin-bottom: 20px"
-    ></el-input>
-    <el-button
-      style="width: 80px; margin-top: 30px; margin-left: 30px; margin-bottom: 20px"
-      >搜索</el-button
-    >
-  </div>
-  <div>
-    <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
-      <div style="font-size: 18px; height: 80px">
-        <div
-          style="
-            float: left;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            margin-left: 0px;
-          "
-        >
-          筛选方式
+  <div class="searchBox">
+    <div class="menu1" @click="gotoAdvancedSearch">高级搜索</div>
+    <!-- <el-select v-model="searchType" mutiple placeholder="文献" style="margin-top:15px">
+      <el-option v-for="s in searchTypes" :label="s" :value="s" :key="s"></el-option>
+    </el-select> -->
+    <div class="search">
+      <div class="searchbar">
+        <div class="searchbar-wrapper">
+          <div class="searchbar-left">
+            <div class="search-icon-wrapper">
+              <span class="search-icon searchbar-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path
+                    d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+                  </path>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="searchbar-center">
+            <div class="searchbar-input-spacer"></div>
+
+            <input type="text" class="searchbar-input" maxlength="2048" name="q" autocapitalize="off" autocomplete="off"
+              title="Search" role="combobox" placeholder="search in ScholarSHIP">
+          </div>
+
+          <div class="searchbar-right">
+            <svg class="voice-search" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="#4285f4"
+                d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z">
+              </path>
+              <path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path>
+              <path fill="#fbbc05"
+                d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z">
+              </path>
+              <path fill="#ea4335"
+                d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z">
+              </path>
+            </svg>
+          </div>
         </div>
       </div>
-      <el-card width="" height="">
-        <el-select v-model="minyear" mutiple placeholder="最早年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
-        <div style="text-align: center">|</div>
-        <el-select v-model="maxyear" mutiple placeholder="最晚年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
-        <el-divider></el-divider>
-        <el-table :data="journalList">
-          <el-table-column prop="name" label="期刊"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-        <el-table :data="authorList">
-          <el-table-column prop="name" label="作者"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-      </el-card>
     </div>
-    <div v-for="item in paginatedData" style="margin-top: 15px">
-      <el-card>
-        <div>
-          <div>{{ item.title }}</div>
-          <span
-            v-for="a in item.authors"
-            style="
-              border: solid 1px;
-              color: orange;
-              margin-left: 10px;
-              margin-right: 10px;
-            "
-            >{{ a }}</span
-          >
-          <div>{{ item.brief }}</div>
-          <span
-            v-for="k in item.keywords"
-            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
-            >{{ k }}</span
-          >
+  </div>
+  <div class="result">
+    <el-row :gutter="20">
+      <el-col :span="5">
+        <div class="left">
+          <div class="conditionBox">
+            <div class="title">筛选方式</div>
+            <div class="main">
+              <div class="year">
+                <div style="text-align: center; font-weight: bold; color: #7e7e7e;">年份</div>
+                <el-row :gutter="6">
+                  <el-col :span="11">
+                    <el-select v-model="minyear" mutiple placeholder="最早年份" style="margin: 5px 0 5px 10px">
+                      <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="2">
+                    <div style="text-align: center; line-height: 40px;"> ~ </div>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-select v-model="maxyear" mutiple placeholder="最晚年份" style="margin: 5px 10px 5px 0">
+                      <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </div>
+              <div class="paper">
+                <div style="margin:10px 0 10px 0; text-align: center; font-weight: bold; color: #7e7e7e;">期刊</div>
+                <el-table :data="journalList">
+                  <el-table-column prop="name" label="期刊"> </el-table-column>
+                  <el-table-column prop="status" label="信息"> </el-table-column>
+                </el-table>
+              </div>
+
+              <div class="paper">
+                <div style="margin:10px 0 10px 0; text-align: center; font-weight: bold; color: #7e7e7e;">作者</div>
+                <el-table :data="authorList">
+                  <el-table-column prop="name" label="作者"> </el-table-column>
+                  <el-table-column prop="status" label="信息"> </el-table-column>
+                </el-table>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <el-button
-            style="
+      </el-col>
+      <el-col :span="18">
+        <div class="right">
+          <div v-for="item in paginatedData" style="margin-top: 15px">
+            <div class="res" >
+              <div>{{ item.title }}</div>
+              <span v-for="a in item.authors" style="
+              border: solid 1px;
+              color: rgb(255, 205, 113);
+              margin: 15px 10px 0 10px;
+              padding: 0 5px 0 5px;
+              border-radius: 5px;
+            ">{{ a }}</span>
+              <div>{{ item.brief }}</div>
+              <span v-for="k in item.keywords"
+                style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px">{{ k }}</span>
+            </div>
+            <div>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="cite(item)"
-          >
-            引用<el-icon><Link /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="cite(item)">
+                引用<el-icon>
+                  <Link />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="toDocument(item.title, item.id)"
-          >
-            详情<el-icon><DataAnalysis /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="toDocument(item.title, item.id)">
+                详情<el-icon>
+                  <DataAnalysis />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="changeCollectIconToTrue(item.id)"
-          >
-            收藏<el-icon><FolderAdd /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="changeCollectIconToTrue(item.id)">
+                收藏<el-icon>
+                  <FolderAdd />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="gourl(item)"
-          >
-            来源<el-icon><Position /></el-icon>
-          </el-button>
-          <el-button
-            style="
+            " @click="gourl(item)">
+                来源<el-icon>
+                  <Position />
+                </el-icon>
+              </el-button>
+              <el-button style="
               background-color: transparent;
               box-shadow: none;
               font-weight: 300;
               float: left;
               text-align: left;
-            "
-            @click="pdf(item.pdf)"
-          >
-            下载<el-icon><Download /></el-icon>
-          </el-button>
-          <span
-            style="
+            " @click="pdf(item.pdf)">
+                下载<el-icon>
+                  <Download />
+                </el-icon>
+              </el-button>
+              <span style="
               float: right;
               text-align: right;
               margin-top: 8px;
               color: grey;
               font-size: 15px;
               margin-right: 150px;
-            "
-          >
-            被引次数：
-            <span style="color: #2d94d4">
-              {{ item.n_citation }}
-            </span>
-          </span>
-          <span
-            style="
+            ">
+                被引次数：
+                <span style="color: #2d94d4">
+                  {{ item.n_citation }}
+                </span>
+              </span>
+              <span style="
               float: right;
               text-align: right;
               margin-top: 8px;
               color: grey;
               font-size: 15px;
               margin-right: 50px;
-            "
-          >
+            ">
+                发表时间：
+                <span style="color: #2d94d4">
+                  {{ item.year }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+
+  <div>
+    <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
+      <div style="font-size: 18px; height: 80px">
+        <div style="
+            float: left;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            margin-left: 0px;
+          ">
+          筛选方式
+        </div>
+      </div>
+
+    </div>
+    <div v-for="item in paginatedData" style="margin-top: 15px">
+      <el-card>
+        <div>
+          <div>{{ item.title }}</div>
+          <span v-for="a in item.authors" style="
+              border: solid 1px;
+              color: orange;
+              margin-left: 10px;
+              margin-right: 10px;
+            ">{{ a }}</span>
+          <div>{{ item.brief }}</div>
+          <span v-for="k in item.keywords"
+            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px">{{ k }}</span>
+        </div>
+        <div>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="cite(item)">
+            引用<el-icon>
+              <Link />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="toDocument(item.title, item.id)">
+            详情<el-icon>
+              <DataAnalysis />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="changeCollectIconToTrue(item.id)">
+            收藏<el-icon>
+              <FolderAdd />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="gourl(item)">
+            来源<el-icon>
+              <Position />
+            </el-icon>
+          </el-button>
+          <el-button style="
+              background-color: transparent;
+              box-shadow: none;
+              font-weight: 300;
+              float: left;
+              text-align: left;
+            " @click="pdf(item.pdf)">
+            下载<el-icon>
+              <Download />
+            </el-icon>
+          </el-button>
+          <span style="
+              float: right;
+              text-align: right;
+              margin-top: 8px;
+              color: grey;
+              font-size: 15px;
+              margin-right: 150px;
+            ">
+            被引次数：
+            <span style="color: #2d94d4">
+              {{ item.n_citation }}
+            </span>
+          </span>
+          <span style="
+              float: right;
+              text-align: right;
+              margin-top: 8px;
+              color: grey;
+              font-size: 15px;
+              margin-right: 50px;
+            ">
             发表时间：
             <span style="color: #2d94d4">
               {{ item.year }}
@@ -189,70 +308,22 @@
       </el-card>
     </div>
     <div class="footer">
-      <el-pagination
-        background
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="items.length"
-      />
+      <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        :total="items.length" />
     </div>
   </div>
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
-const areaChoices = ["标题","期刊","作者","领域","机构","关键词"]
-const relationChoices = ["且","或","非"]
-const methodChoices = ["精确","模糊"]
-const searchRequests = ref([
-  {
-    select:"标题",
-    relation:"且",
-    method:"精确",
-    str: "",
-  },
-  {
-    select:"标题",
-    relation:"且",
-    method:"精确",
-    str: "",
-  },
-])
-const searchChoice = ref("")
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
-const dialogVisible = ref(false);
 const minyear = ref();
 const maxyear = ref();
-const years = ref([
-  1999,
-  2000,
-  2001,
-  2002,
-  2003,
-  2004,
-  2005,
-  2006,
-  2007,
-  2008,
-  2009,
-  2010,
-  2011,
-  2012,
-  2013,
-  2014,
-  2015,
-  2016,
-  2017,
-  2018,
-  2019,
-  2020,
-  2021,
-  2022,
-  2023,
-]);
+const years = ref([1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,]);
 const authorList = ref([
   {
     name: "adam",
@@ -282,16 +353,6 @@ const journalList = ref([
   },
 ]);
 const getList = async () => {
-  // await httpInstance
-  //   .post('/page_get', {
-  //     workId: userStore.pages.proId,
-  //   })
-  //   .then((res) => {
-  //     console.log(res.results)
-  //     items.value = res.results
-  //     //url.value = res.results[0].protoInclude;
-  //     // router.push({ path: '/project' })
-  //   })
   items.value = [
     {
       title: "alpha",
@@ -358,177 +419,280 @@ const paginatedData = computed(() => {
   const end = start + pageSize.value;
   return items.value.slice(start, end);
 });
+const searchType = ref("");
+const searchTypes = ["文献", "作者", "机构"]
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
 };
-// watchEffect(() => {
-//   console.log('value:', value.value)
-// })
-// watchEffect(() => {
-//   console.log('lazyValue:', lazyValue.value)
-// })
-// function onChange (e: Event) {
-//   console.log('change e:', e)
-// }
-// function onEnter (e: KeyboardEvent) {
-//   console.log('enter e:', e)
-// }
+const gotoAdvancedSearch = () => {
+  router.push({ name: 'advancedSearch' })
+}
 onMounted(async () => {
   getList();
 });
-// export default {
-//   data() {
-//     return {
-//       search: "",
-//       collectShow: false,
-//       tab: null,
-//       page: 1,
-//       pageSize: 10,
-//       pageNum: "1",
-//       Num: 0,
-//       CurrentPageData: [],
-//       selects: ["默认", "出版年份", "引用数"],
-//       selectMethod: "推荐排序",
-//       paperInfo: [],
-//       orderBy: "default",
-//       overlay: false,
-//       absolute: false,
-//       opacity: 0.5, //透明度
-//       citeStyle: [{ name: "引用类型", text: "引用文本" }],
-//       keyword: null,
-//       TypeNum: [],
-//       tagData: [],
-//       posturl: "gan",
-//       formdata: {},
-//       paperID: "",
-//       isCollect: false,
-//       tag_list: "",
-//       authorList: [{
-//           name: "adam",
-//           status: "b",
-//         },{
-//           name: "bane",
-//           status: "b",
-//         },{
-//           name: "cypher",
-//           status: "b",
-//         },],
-//       journalList: [
-//         {
-//           name: "first",
-//           status: "b",
-//         },{
-//           name: "second",
-//           status: "b",
-//         },{
-//           name: "third",
-//           status: "b",
-//         },
-//       ],
-//       new: 0,
-//       journal: "",
-//       author: "",
-//       minyear: "",
-//       maxyear: "",
-//       years: [1984, 2077],
-//       pickauthor: "",
-//       pickjournal: "",
-//     };
-//   },
-// };
 </script>
-<style scoped>
-.logo-img {
-  height: 100%;
-  margin-top: auto;
-}
-.pageHeader {
-  background-color: white;
-  height: 10vh;
+<style scoped lang="scss">
+.searchBox {
+  height: 60px;
   display: flex;
-  flex-direction: row;
+  margin: 40px 20px 20px 20px;
+  // box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  // border-bottom-left-radius: 5px;
+  /* 左下角 */
+  //  border-bottom-right-radius: 5px;
+  /* 右下角 */
+
+  .menu1 {
+    width: 20%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  .search {
+    width: 60%;
+    padding: 10px;
+
+    .searchbar {
+      font-size: 14px;
+      font-family: arial, sans-serif;
+      color: #202124;
+      display: flex;
+      z-index: 3;
+      height: 50px;
+      background: white;
+      border: 1px solid #dfe1e5;
+      box-shadow: none;
+      border-radius: 24px;
+      margin: 0 auto;
+      width: auto;
+      max-width: 1000px;
+    }
+
+    .searchbar:hover {
+      box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
+      border-color: rgba(223, 225, 229, 0);
+    }
+
+    .searchbar-wrapper {
+      flex: 1;
+      display: flex;
+      padding: 5px 8px 0 14px;
+    }
+
+    .searchbar-left {
+      font-size: 14px;
+      font-family: arial, sans-serif;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      padding-right: 13px;
+      margin-top: -5px;
+    }
+
+    .search-icon-wrapper {
+      margin: auto;
+    }
+
+    .search-icon {
+      margin-top: 3px;
+      color: #9aa0a6;
+      height: 20px;
+      line-height: 20px;
+      width: 20px;
+    }
+
+    .searchbar-icon {
+      display: inline-block;
+      fill: currentColor;
+      height: 24px;
+      line-height: 24px;
+      position: relative;
+      width: 24px;
+    }
+
+    .searchbar-center {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .searchbar-input-spacer {
+      color: transparent;
+      flex: 100%;
+      white-space: pre;
+      height: 34px;
+      font-size: 16px;
+    }
+
+    .searchbar-input {
+      background-color: transparent;
+      border: none;
+      margin: 0;
+      padding: 0;
+      color: rgba(0, 0, 0, .87);
+      word-wrap: break-word;
+      outline: none;
+      display: flex;
+      flex: 100%;
+      margin-top: -37px;
+      height: 34px;
+      font-size: 16px;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .searchbar-right {
+      display: flex;
+      flex: 0 0 auto;
+      margin-top: -5px;
+      align-items: stretch;
+      flex-direction: row
+    }
+
+    .searchbar-clear-icon {
+      margin-right: 12px
+    }
+
+    .voice-search {
+      flex: 1 0 auto;
+      display: flex;
+      cursor: pointer;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      outline: none;
+      padding: 0 8px;
+      width: 2.8em;
+    }
+  }
+
+  .menu2 {
+    width: 15%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+
+    .btn {
+      margin-top: 5px;
+
+      .box {
+        width: 100%;
+        height: auto;
+        float: left;
+        transition: .1s linear;
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        margin: 0 5px;
+        background: transparent;
+        text-transform: uppercase;
+        font-weight: 900;
+        border-radius: 10px;
+
+      }
+    }
+
+    // background-color: rgb(255, 192, 192);
+
+
+    .box:before {
+      position: absolute;
+      content: '';
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+    }
+
+    .box:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+    }
+
+    .box:hover {
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+    }
+
+    // .box:hover:before {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .3s;
+    // }
+
+    // .box:hover:after {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .5s;
+    // }
+
+    button {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+    }
+  }
 }
-.logo-box {
-  margin-left: 5vw;
-  display: flex;
-  margin-right: 5vw;
-  cursor: pointer;
-}
-.search-btn {
-  text-align: center;
-  line-height: 10vh;
-  margin-right: 3vw;
-}
-.search-btn span {
-  cursor: pointer;
-  font-size: 17px;
-  transition: 0.3s;
-}
-.search-btn span:hover {
-  color: #1e88e5;
-}
-.login-btn {
-  margin-left: 10vw;
-  line-height: 10vh;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-}
-.login-btn span {
-  cursor: pointer;
-  font-size: 17px;
-  transition: 0.3s;
-}
-.login-btn span:hover {
-  color: #1e88e5;
-}
-.user-box {
-  margin-left: 7vw;
-  line-height: 10vh;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-}
-.aa {
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.go {
-  transform: rotate(-180deg);
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.select-box {
-  position: absolute;
-  top: 10vh;
-  right: 1vw;
-  width: 15%;
-  z-index: 1000;
-}
-.search-box {
-  margin-left: 5vw;
-  margin-right: 5vw;
-  width: 40%;
-}
-.text-ellipsis-two {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-.focusChange:hover {
-  text-decoration: underline;
-  color: #006064;
-  cursor: pointer;
-}
-.paper-title:hover {
-  cursor: pointer;
-}
-.clickchange:hover {
-  text-decoration: underline;
-  color: #006064;
-  cursor: pointer;
+
+.result {
+  height: 1000px;
+  margin: 40px 20px 20px 20px;
+
+  .left {
+    .conditionBox {
+      margin: 0 20px 0 0;
+      height: 600px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      background-color: #fafafa;
+
+      .title {
+        margin: 0 20px;
+        padding-top: 10px;
+        height: 60px;
+        line-height: 40px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+        border-bottom: 1px solid rgb(222, 222, 222);
+      }
+
+      .main {
+        margin-top: 10px;
+
+        .paper {
+          margin: 10px 20px 0 10px;
+          border-top: 1px solid rgb(222, 222, 222);
+
+        }
+      }
+    }
+  }
+
+  .right {
+    .res {
+      border: 1px;
+    }
+  }
 }
 </style>

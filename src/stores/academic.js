@@ -24,7 +24,6 @@ export const useAcademicStore = defineStore('academic', () => {
         ],
         institution:'CICLing',
     }
-
     const essayDetail = {
           "authorships": [
             {

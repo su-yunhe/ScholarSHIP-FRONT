@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/userStore'
 import router from '@/router/index'
 // 创建axios实例
 const httpInstance = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://127.0.0.1:8000/api',
   timeout: 5000
 })
 // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
