@@ -80,7 +80,7 @@ const inputVisible = ref(false)
 const InputRef = ref<InstanceType<typeof ElInput>>()
 
 const loadTags = () => {
-    httpInstance.post("/api/label_star_get_all",{
+    httpInstance.post("/label_star_get_all",{
         userid: 1
     }).then((res) => {
         console.log(res)
@@ -105,7 +105,7 @@ const deleteTag = () => {
     let tag = dynamicTags[dynamicTags.indexOf(closingTag)]
     dynamicTags.splice(dynamicTags.indexOf(closingTag), 1)
     deleteDialogVisible.value = false
-    httpInstance.post("/api/label_delete",{
+    httpInstance.post("/label_delete",{
         userid: 1,
         id: tag.id,
         isDelete: 1
@@ -124,9 +124,12 @@ const showInput = () => {
 const handleInputConfirm = () => {
   if (inputValue.value) {
     if(inputValue.value.length > 10){
-        alert("标签名不能超过十个字符")
+        ElMessage({
+                message: "收藏夹命名不能超过10个字符",
+                type: 'warning',
+            })
     }else{
-        httpInstance.post("api/label_star_add",{
+        httpInstance.post("/label_star_add",{
         userid: 1,
         name: inputValue.value
     }).then((res) => {

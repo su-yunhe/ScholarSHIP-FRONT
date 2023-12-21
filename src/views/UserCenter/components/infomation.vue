@@ -20,8 +20,7 @@
             </div>
             <div>
               <span>
-                <!-- 个人介绍: {{ userIntro }} -->
-                个人介绍:abababa
+                个人介绍: {{ userIntro }}
               </span>
               <span>
                 <Edit @click="editIntro" style="width: 1em; height: 1em; margin-right: 8px; cursor: pointer;" />

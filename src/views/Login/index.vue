@@ -152,7 +152,7 @@ const doLogin = () => {
     ElMessage({ type: 'warning', message: '请勾选同意隐私和服务条款' })
   }else{
     console.log(1)
-    httpInstance.post('/user_login',{
+    httpInstance.post('user_login',{
       userName: form.value.userName,
       password: form.value.password,
       agree: form.value.agree
@@ -183,7 +183,7 @@ const register  = () => {
   }else if(!agree.value){
     ElMessage({ type: 'warning', message: '请勾选同意隐私和服务条款' })
   }else{
-    httpInstance.post('/register',registerForm.value).then(res => {
+    httpInstance.post('register',registerForm.value).then(res => {
       console.log(res)
       if(res.error == 0){
         userStore.userInfo = res.data
