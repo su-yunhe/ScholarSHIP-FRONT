@@ -1,22 +1,21 @@
 <template>
     <div class="scholarContainer">
             <div class="scholarTopHeaderBar">
-                <img src="../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
+                <img src="../../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
-                    <div class="scholar-information-name">{{ scholarStore.scholarInfo.real_name }}</div>
-                    <div class="scholar-information-organization">{{ scholarStore.scholarInfo.organization }}</div>
-                    <div class="scholar-information-brief">{{ scholarStore.scholarInfo.introdunction }}</div>
+                    <div class="scholar-information-name">{{ scholarInfo.name }}</div>
+                    <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.citationNum }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.citation }}</div>
                             <div class="scholar-indicator-dec">被引数</div>
                         </div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarStore.scholarInfo.impactIndex }}</div>
+                            <div class="scholar-indicator-num">{{ scholarInfo.hIndex }}</div>
                             <div class="scholar-indicator-dec">影响力指数</div>
                         </div>
                     </div>
@@ -36,13 +35,13 @@
 
 <script>
 import {useScholarStore} from '../../../stores/scholar'
-
+import httpInstance from '@/utils/http'
 import unremoved from './unremoved.vue';
 import links from '../links.vue';
 import datas from '../datas.vue';
 import removed from './removed.vue'
 export default {
-    name: 'scholar',
+    name: 'personalScholar',
     components: {
         unremoved,
         links,
@@ -51,19 +50,8 @@ export default {
     },
     data() {
         return {
-            scholarStore: useScholarStore(),
             tagName:'unremoved',
-            scholarInfo:{
-                scholar_id:1,
-                organization:'BUAA',
-                introdunction:'balabala',
-                real_name:'S.Harmost',
-            },
-            name:'S.Harmost',
-            briefIntrodunction:'xxxxxxxxxxxxx',
-            essayNum: 7,
-            citationNum: 6,
-            impactIndex: 1,
+            scholarInfo:{},
         }
     },
     methods:{
@@ -71,26 +59,63 @@ export default {
             if(this.tagName != 'unremoved'){
                 this.tagName = 'unremoved';
             }
-            console.log(this.tagName);
         },
         clickDatas(){
             if(this.tagName != 'datas'){
                 this.tagName = 'datas';
             }
-            console.log(this.tagName);
         },
         clickLinks(){
             if(this.tagName != 'links'){
                 this.tagName = 'links';
             }
-            console.log(this.tagName);
         },
         clickRemoved(){
             if(this.tagName != 'removed'){
                 this.tagName = 'removed';
             }
-            console.log(this.tagName);
+        },
+        async getScholarInfo(){
+            let scholarID = "A5040654425";
+            let userID = 1;
+            await httpInstance.post('/get_scholar', {scholarID : scholarID, userID : userID}).then(res => res.data).then(res => {
+            if (res.error === 0) {
+                this.scholarInfo = res.data;
+            }
+            });
+        },
+        async getEssayList(scholarStore){
+            let scholarID = "A5023888391";
+            let userID = 1;
+            //unremoved
+            await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
+                if (res.data.error === 0) {
+                    scholarStore.essayList = res.data.result;
+                    console.log("unremoved papers:", scholarStore.essayList);
+                }
+            });
+            //removed
+            await httpInstance.get(`/get_works?author_id=${scholarID}&status=false`).then((res) => {
+                if (res.data.error === 0) {
+                    scholarStore.removedEssayList = res.data.result;
+                    console.log("removed papers:", scholarStore.removedEssayList);
+                }
+            });
+        },
+        getGraphData(scholarStore){
+            let root_id = "A5040654425";
+            httpInstance.get(`/get_relation_map?root_id=${root_id}`).then(res => {
+                console.log("get_relation_map res:", res.data.result.data);
+                scholarStore.graph_data = res.data.result.data;
+                // console.log("get_relation_map res:", res);
+            })
         }
+    },
+    created(){
+        const scholarStore = useScholarStore();
+        this.getScholarInfo(scholarStore);
+        this.getEssayList(scholarStore);
+        this.getGraphData(scholarStore);
     }
 }
 </script>

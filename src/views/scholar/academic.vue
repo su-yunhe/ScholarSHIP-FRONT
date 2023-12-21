@@ -15,6 +15,7 @@
             </div>
         </div>
         <el-pagination
+            v-if="essayNum!=0"
             @current-change="currentPageChange"
             v-model:current-page="currentPage"
             :page-size="5"
@@ -42,6 +43,7 @@ const essayList = ref([]);
 const currentPage = ref(1);
 
 onMounted(() => {
+    essayNum.value = 0;
   setTimeout(()=>{
         console.log("academic paper:",scholarStore.essayList);
         essayList.value = scholarStore.essayList;
@@ -63,7 +65,9 @@ const enterEssay = (essay) => {//进入文献展示页
     router.push(`/academic/${essay_id}`);
 }
 const enterScholarPortal = (author) => {//进入相应学者门户
-    console.log('enter scholar portal:',author);
+    let scholar_id = author.id.split('/')[3];
+    console.log('enter scholar portal:',scholar_id);
+    router.push(`/scholar/${scholar_id}`);
 }
 const download = (essay) => {//下载文献
     console.log('download:',essay);

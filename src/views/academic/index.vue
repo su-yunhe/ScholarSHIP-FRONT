@@ -188,8 +188,9 @@ export default {
             link.click();
         },
         enterScholarPortal(author){
-            console.log('enter scholar portal:',author);
-            this.$router.push('/scholar');
+            let scholar_id = author.author.id.split('/')[3];
+            console.log('enter scholar portal:',scholar_id);
+            this.$router.push(`/scholar/${scholar_id}`);
         },
         essayCollection(){
             this.collectionDialogVisible = true;

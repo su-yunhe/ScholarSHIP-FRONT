@@ -1,7 +1,8 @@
 <template>
     <div class="scholarContainer">
             <div class="scholarTopHeaderBar">
-                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">                <div class="scholar-information">
+                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
+                <div class="scholar-information">
                     <div class="scholar-information-name">{{ scholarInfo.name }}</div>
                     <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
@@ -50,7 +51,9 @@ export default {
     data() {
         return {
             tagName:'academic',
+            scholarID: null,
             scholarInfo:{},
+            monitoredRoute: null,
         }
     },
     methods:{
@@ -79,9 +82,8 @@ export default {
             
         },
         async getScholarInfo(){
-            let scholarID = "A5040654425";
             let userID = 1;
-            await httpInstance.post('/get_scholar', {scholarID : scholarID, userID : userID}).then(res => res.data).then(res => {
+            await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
             if (res.error === 0) {
                 console.log("get scholarInfo res:", res);
                 this.scholarInfo = res.data;
@@ -89,10 +91,9 @@ export default {
             });
         },
         async getEssayList(scholarStore){
-            let scholarID = "A5023888391";
             let userID = 1;
             console.log("balabala");
-            await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
+            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
                 console.log("papers1:", res);
                 if (res.data.error === 0) {
                     scholarStore.essayList = res.data.result;
@@ -102,20 +103,32 @@ export default {
             console.log("balabala2");
         },
         getGraphData(scholarStore){
-            let root_id = "A5040654425";
-            httpInstance.get(`/get_relation_map?root_id=${root_id}`).then(res => {
+            httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
                 console.log("get_relation_map res:", res.data.result.data);
                 scholarStore.graph_data = res.data.result.data;
-                // console.log("get_relation_map res:", res);
             })
-            }
+        },
+        loading(){
+            this.scholarID = this.$route.path.split("/")[2];
+            const scholarStore = useScholarStore();
+            this.getScholarInfo(scholarStore);
+            this.getEssayList(scholarStore);
+            this.getGraphData(scholarStore);
+        }
     },
     created(){
-        const scholarStore = useScholarStore();
-        this.getScholarInfo(scholarStore);
-        this.getEssayList(scholarStore);
-        this.getGraphData(scholarStore);
-    }}
+        this.loading();
+    },
+    watch: {
+        $route(newRoute) {
+            this.monitoredRoute = newRoute; // 将新的路由信息保存到组件的monitoredRoute属性中
+            // 执行其他操作或调用其他方法
+            console.log("route:",this.monitoredRoute);
+            this.loading();
+        },
+  },
+
+    }
 </script>
 
 <style scoped>

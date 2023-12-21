@@ -32,7 +32,7 @@ const router = createRouter({
       component: Institution
     },
     {
-      path: '/scholar',
+      path: '/scholar/:scholar_id',
       name: 'scholar',
       component: ScholarView
     },
