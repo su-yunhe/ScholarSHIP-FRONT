@@ -40,7 +40,6 @@ import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
-const scholarStore = useScholarStore();
 export default {
     name: 'scholar',
     components: {
@@ -105,8 +104,9 @@ export default {
         getGraphData(scholarStore){
             let root_id = "A5040654425";
             httpInstance.get(`/get_relation_map?root_id=${root_id}`).then(res => {
-                console.log("get_relation_map res:", res);
-                scholarStore.graph_data = res;
+                console.log("get_relation_map res:", res.data.result.data);
+                scholarStore.graph_data = res.data.result.data;
+                // console.log("get_relation_map res:", res);
             })
             }
     },

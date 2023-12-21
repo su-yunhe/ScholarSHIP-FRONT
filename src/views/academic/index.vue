@@ -91,7 +91,6 @@
 </template>
 
 <script>
-import { useAcademicStore } from '@/stores/academic';
 import axios from 'axios';
 import httpInstance from '@/utils/http'
 export default {
