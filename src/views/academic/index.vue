@@ -8,7 +8,6 @@
         <div class="essay-abstractBox">
             <div>摘要：</div>
             <div>{{ essay.abstract }}</div>
-            <div v-if="loading">加载中...</div>
         </div>
         <!-- 描述信息 -->
         <div class="essay-dec">
@@ -32,7 +31,7 @@
             <div>{{ essay.publication_date }}</div>
         </div>
         <div class="essay-operation">
-            <el-tag class="op-share" @click="citeDialogVisible = true"><el-icon><Link /></el-icon>引用</el-tag>
+            <el-tag class="op-share" @click="getCitation"><el-icon><Link /></el-icon>引用</el-tag>
             <a :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
             <el-tag class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
             <a :href="essay.primary_location?essay.primary_location.landing_page_url:null" target="_blank" ><el-tag class="op-read" type="danger"><el-icon><View /></el-icon>阅读</el-tag></a>
@@ -40,19 +39,24 @@
         </div>
         <div class="essay-essays">
             <div v-if="referenced_works_num!=0">引用文章</div>
-            <a v-for="work in essay.referenced_works" :key="work" :href="work" target="_blank">{{ work }}</a>
+            <a v-for="work in essay.referenced_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
         </div>
         <div class="essay-essays">
             <div v-if="related_works_num!=0">相关文章</div>
-            <a v-for="work in essay.related_works" :key="work" :href="work" target="_blank">{{ work }}</a>
+            <a v-for="work in essay.related_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
         </div>
     </div>
     <!-- 引用对话框 -->
     <el-dialog
         title="引用"
         v-model="citeDialogVisible"
-        width="30%"
+        width="40%"
         >
+        <div>引用格式：</div>
+            <div>
+                <el-button @click="changeFormat(format)" v-for="format in ['IEEE','GB/T7714','BibText','Chicago']" :key="format">{{ format }}</el-button>
+                <!-- <span></span> -->
+            </div>
         <div class="citeContent">{{ citeString }}</div>
         <div class="dialog-footer">
             <el-button @click="citeDialogVisible = false">取 消</el-button>
@@ -104,12 +108,16 @@ export default {
             collectionDialogVisible: false,
             addCollectionVisible:false,
             citeString: 'yinyongshishisshishiq[1]',
+            citeStringIEEE: 'yinyongshishisshishiq[1]',
+            citeStringGB: 'yinyongshishisshishiq[1]',
+            citeStringBib: 'yinyongshishisshishiq[1]',
+            citeStringChicago: 'yinyongshishisshishiq[1]',
             collectionId:0,
             collectionName: null,
             referenced_works_num: 0,
             related_works_num:0,
             essay: {},
-            loading: true,
+            format: 'IEEE',
             // essay:{
             //     id:1,
             //     title:'NLP (natural language processing) for NLP (naturallanguage programming)',
@@ -162,6 +170,47 @@ export default {
         }
     },
     methods:{
+        getCitation(){
+            let work_id = this.$route.path.split("/")[2];
+            this.citeDialogVisible = true;
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=IEEE`).then((res) => {
+                console.log("get IEEE citation:",res);
+                this.citeString = res.data.result;
+                this.citeStringIEEE = res.data.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
+                console.log("get GB citation:",res);
+                this.citeStringGB = res.data.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
+                console.log("get Bib citation:",res);
+                this.citeStringBib = res.data.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
+                console.log("get Chicago citation:",res);
+                this.citeStringChicago = res.data.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+        },
+        changeFormat(format){
+            this.format = format;
+            console.log('change format to:',this.format);
+            if(this.format === 'IEEE')
+                this.citeString = this.citeStringIEEE;
+            else if(this.format === 'GB/T7714')
+                this.citeString = this.citeStringGB
+            else if(this.format === 'BibText')
+                this.citeString = this.citeStringBib
+            else if(this.format === 'Chicago')
+                this.citeString = this.citeStringChicago
+        },
         copyCiteString(content) {
             let aux = document.createElement("input");
             aux.setAttribute("value", content);
@@ -219,20 +268,40 @@ export default {
             this.addCollectionVisible = false;
         },
         getEssayDetail(work_id, author_id){
-            httpInstance.get(`/get_detail?work_id=${work_id}&author_id=${author_id}`).then((res) => {
+            httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${author_id}`).then((res) => {
                 console.log("get essay detail:",res);
                 this.essay = res.data.result;
-                this.referenced_works_num = this.essay.referenced_works.length;
-                this.related_works_num = this.essay.related_works.length;
+                // this.referenced_works_num = this.essay.referenced_works.length;
+                // this.related_works_num = this.essay.related_works.length;
+                this.referenced_works_num = 0;
+                this.related_works_num = 0;
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
+        },
+        getReferencedAndRelated(work_id, author_id){
+            httpInstance.get(`/get_referenced_related?work_id=${work_id}&user_id=${author_id}`).then((res) => {
+                console.log("get referenced and related:",res);
+                this.essay.referenced_works = res.data.result.referenced_works;
+                this.essay.related_works = res.data.result.related_works;
+                this.referenced_works_num = this.essay.referenced_works.length;
+                this.related_works_num = this.essay.related_works.length;
+            }).catch((error)=>{
+                console.log("get referenced and related error:",error);
+            })
+        },
+        enterEssay(essay){//进入引用参考文献展示页
+            console.log('enter essay:',essay,essay.id);
+            let essay_id = essay.id.split('/')[3]
+            console.log("essay_id:",essay_id)
+            router.push(`/academic/${essay_id}`);
         }
     },
     mounted(){
         let work_id = this.$route.path.split("/")[2];
         let author_id = "A5023888392";
         this.getEssayDetail(work_id, author_id);
+        this.getReferencedAndRelated(work_id, author_id);
         console.log("essay:",this.essay);
     }
 }
