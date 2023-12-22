@@ -51,6 +51,7 @@ export default {
     data() {
         return {
             tagName:'unremoved',
+            scholarID: "A5023888391",
             scholarInfo:{},
         }
     },
@@ -76,40 +77,34 @@ export default {
             }
         },
         async getScholarInfo(){
-            let scholarID = "A5040654425";
             let userID = 1;
-            await httpInstance.post('/get_scholar', {scholarID : scholarID, userID : userID}).then(res => res.data).then(res => {
-            if (res.error === 0) {
-                this.scholarInfo = res.data;
-            }
+            await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
+                console.log("get scholarInfo res:", res);
+                this.scholarInfo = res;
             });
         },
         async getEssayList(scholarStore){
-            let scholarID = "A5023888391";
             let userID = 1;
-            //unremoved
-            await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
-                if (res.data.error === 0) {
-                    scholarStore.essayList = res.data.result;
+            console.log("balabala");
+            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
+                if (res.error === 0) {
+                    scholarStore.essayList = res.result;
                     console.log("unremoved papers:", scholarStore.essayList);
                 }
             });
-            //removed
-            await httpInstance.get(`/get_works?author_id=${scholarID}&status=false`).then((res) => {
-                if (res.data.error === 0) {
-                    scholarStore.removedEssayList = res.data.result;
+            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=false`).then((res) => {
+                if (res.error === 0) {
+                    scholarStore.removedEssayList = res.result;
                     console.log("removed papers:", scholarStore.removedEssayList);
                 }
             });
         },
         getGraphData(scholarStore){
-            let root_id = "A5040654425";
-            httpInstance.get(`/get_relation_map?root_id=${root_id}`).then(res => {
-                console.log("get_relation_map res:", res.data.result.data);
-                scholarStore.graph_data = res.data.result.data;
-                // console.log("get_relation_map res:", res);
+            httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
+                console.log("get_relation_map res:", res.result);
+                scholarStore.graph_data = res.result;
             })
-        }
+        },
     },
     created(){
         const scholarStore = useScholarStore();

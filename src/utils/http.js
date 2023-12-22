@@ -28,45 +28,47 @@ httpInstance.interceptors.request.use(config => {
 
 // axios响应式拦截器
 httpInstance.interceptors.response.use(function (res) {
-  if (res.data.error !== 0) {
-    // 统一错误提示
+  console.log("axios拦截:",res,res.data.error);
+  // if (res.data.error !== 0) {
+  //   // 统一错误提示
 
-    if (res.data.error === 401 || res.data.error === 402) {
-      console.log(1)
-      ElMessageBox.confirm(
-        '该操作需要先完成登录~',
-        '提示',
-        {
-          confirmButtonText: '去登录',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
-        .then(() => {
-          router.push({ path: '/login' })
-        })
-        .catch(() => {
-          ElMessage({
-            type: 'info',
-            message: '取消',
-          })
-        })
-    }
-    ElMessage({
-      type: 'warning',
-      message: res.data.msg
-    })
+  //   if (res.data.error === 401 || res.data.error === 402) {
+  //     console.log(1)
+  //     ElMessageBox.confirm(
+  //       '该操作需要先完成登录~',
+  //       '提示',
+  //       {
+  //         confirmButtonText: '去登录',
+  //         cancelButtonText: '取消',
+  //         type: 'warning',
+  //       }
+  //     )
+  //       .then(() => {
+  //         router.push({ path: '/login' })
+  //       })
+  //       .catch(() => {
+  //         ElMessage({
+  //           type: 'info',
+  //           message: '取消',
+  //         })
+  //       })
+  //   }
+  //   ElMessage({
+  //     type: 'warning',
+  //     message: res.data.msg
+  //   })
 
-    return Promise.reject(res)
-  }
-  else {
-    console.log("请求成功")
-    // ElMessage({
-    //   type: 'success',
-    //   message: res.data.msg
-    // })
-    return res.data
-  }
+  //   return Promise.reject(res)
+  // }
+  // else {
+  //   console.log("请求成功")
+  //   // ElMessage({
+  //   //   type: 'success',
+  //   //   message: res.data.msg
+  //   // })
+  //   return res.data
+  // }
+  return res.data;
 })
 
 

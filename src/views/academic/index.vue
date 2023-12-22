@@ -270,7 +270,7 @@ export default {
         getEssayDetail(work_id, author_id){
             httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${author_id}`).then((res) => {
                 console.log("get essay detail:",res);
-                this.essay = res.data.result;
+                this.essay = res.result;
                 // this.referenced_works_num = this.essay.referenced_works.length;
                 // this.related_works_num = this.essay.related_works.length;
                 this.referenced_works_num = 0;
@@ -282,8 +282,8 @@ export default {
         getReferencedAndRelated(work_id, author_id){
             httpInstance.get(`/get_referenced_related?work_id=${work_id}&user_id=${author_id}`).then((res) => {
                 console.log("get referenced and related:",res);
-                this.essay.referenced_works = res.data.result.referenced_works;
-                this.essay.related_works = res.data.result.related_works;
+                this.essay.referenced_works = res.result.referenced_works;
+                this.essay.related_works = res.result.related_works;
                 this.referenced_works_num = this.essay.referenced_works.length;
                 this.related_works_num = this.essay.related_works.length;
             }).catch((error)=>{

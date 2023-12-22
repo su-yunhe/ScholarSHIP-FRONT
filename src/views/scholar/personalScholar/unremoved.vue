@@ -94,8 +94,10 @@ const remove = (essay) => {//下架文献
     let work_id = essay.id.split('/')[3];
     httpInstance.post("/change_status", JSON.stringify({work_id: work_id})).then(res => {
         console.log("change_status:", res);
-        update();
-        loading();
+        essayList.value = essayList.value.filter(item=>item != essay);
+        displayEssays.value = essayList.value.slice(0,5);
+        essayNum.value = essayList.length;
+        scholarStore.essayList = essayList.value;
     })
 }
 const update = async() => {

@@ -84,10 +84,8 @@ export default {
         async getScholarInfo(){
             let userID = 1;
             await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
-            if (res.error === 0) {
                 console.log("get scholarInfo res:", res);
-                this.scholarInfo = res.data;
-            }
+                this.scholarInfo = res;
             });
         },
         async getEssayList(scholarStore){
@@ -95,8 +93,8 @@ export default {
             console.log("balabala");
             await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
                 console.log("papers1:", res);
-                if (res.data.error === 0) {
-                    scholarStore.essayList = res.data.result;
+                if (res.error === 0) {
+                    scholarStore.essayList = res.result;
                     console.log("papers2:", scholarStore.essayList);
                 }
             });
@@ -104,8 +102,8 @@ export default {
         },
         getGraphData(scholarStore){
             httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
-                console.log("get_relation_map res:", res.data.result.data);
-                scholarStore.graph_data = res.data.result.data;
+                console.log("get_relation_map res:", res.result);
+                scholarStore.graph_data = res.result;
             })
         },
         loading(){
