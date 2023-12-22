@@ -1,74 +1,69 @@
 <template>
-  <div id="introduction">
-    <div id="intro1">
-      <div id="walnuts" style="float: left;">
-        <div style="font-size: 60px;font-weight:bold;color: rgb(73, 149, 248);">
-          <span style="color: rgba(97, 134, 243);margin: 0;">S</span>
-          <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
-          <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
-          <span style="color: rgba(107, 168, 87);margin-left: 2px;">o</span>
-          <span style="color: rgba(97, 134, 243);margin-left: 2px;">l</span>
-          <span style="color: rgba(200, 65, 48);margin-left: 2px;">a</span>
-          <span style="color: rgba(233, 187, 18);margin-left: 2px;">r</span>
-          <span style="color: rgba(107, 168, 87);margin-left: 2px;">S</span>
-          <span style="color: rgba(97, 134, 243);margin-left: 2px;">H</span>
-          <span style="color: rgba(200, 65, 48);margin-left: 2px;">I</span>
-          <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
+    <div id="introduction">
+        <div id="intro1">
+            <div id="walnuts" style="float: left;">
+                <div style="font-size: 60px;font-weight:bold;color: rgb(73, 149, 248);">
+                  <span style="color: rgba(97, 134, 243);margin: 0;" class="scholarship">S</span>
+                  <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
+                  <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
+                  <span style="color: rgba(107, 168, 87);margin-left: 2px;">o</span>
+                  <span style="color: rgba(97, 134, 243);margin-left: 2px;">l</span>
+                  <span style="color: rgba(200, 65, 48);margin-left: 2px;">a</span>
+                  <span style="color: rgba(233, 187, 18);margin-left: 2px;">r</span>
+                  <span style="color: rgba(107, 168, 87);margin-left: 2px;">S</span>
+                  <span style="color: rgba(97, 134, 243);margin-left: 2px;">H</span>
+                  <span style="color: rgba(200, 65, 48);margin-left: 2px;">I</span>
+                  <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
+                </div>
+                <div style="padding-top: 10px;">
+                  <div class="input__container">
+                    <div class="shadow__input"></div>
+                    <span id="dropdown_span">
+                      <el-dropdown @command="handleCommand">
+                        <span class="el-dropdown-link" style="font-weight:bold;font-size: 18px;">
+                          {{ok}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+                        </span>
+                        <template #dropdown>
+                          <el-dropdown-menu>
+                            <el-dropdown-item command="a" @click="ok='文献'">文献</el-dropdown-item>
+                            <el-dropdown-item command="b" @click="ok='学者'">学者</el-dropdown-item>
+                            <el-dropdown-item command="c" @click="ok='机构'">机构</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </template>
+                      </el-dropdown>
+                    </span>
+                    <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索" style="font-weight:bold;font-size: 18px;">
+                    <button class="input__button__shadow" id="search_button" @click="search">
+                      <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
+                        <path d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z" fill-rule="evenodd" fill="#17202A"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <div class="introList1">
+                        <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
+                        <el-text style="margin-left: 20px;" class="mx-1" size="large">一站式学术成果分享平台</el-text>
+                    </div>
+                    <div class="introList1">
+                        <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
+                        <el-text style="margin-left: 20px;" class="mx-1" size="large">完善的检索与展示系统</el-text>
+                    </div>
+                    <div class="introList1">
+                        <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
+                        <el-text style="margin-left: 20px;" class="mx-1" size="large">ScholarSHIP-载您遨游学术海洋</el-text>
+                    </div>
+                </div>
+                <div class="start">
+                    <div style="font-size: 20px;" @click="startNow">
+                        快速开始
+                        <el-icon><ArrowRightBold /></el-icon>
+                    </div>
+                </div>
+            </div>
+            <img style="background:transparent;width: 50vw;" src="/src/assets/images/intro1.png" class="image" />
         </div>
-        <div style="padding-top: 10px;">
-          <div class="input__container">
-            <div class="shadow__input"></div>
-            <span id="dropdown_span">
-              <el-dropdown @command="handleCommand">
-                <span class="el-dropdown-link" style="font-weight:bold;font-size: 18px;">
-                  {{ ok }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </span>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item command="a" @click="ok = '文献'">文献</el-dropdown-item>
-                    <el-dropdown-item command="b" @click="ok = '学者'">学者</el-dropdown-item>
-                    <el-dropdown-item command="c" @click="ok = '机构'">机构</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
-            </span>
-            <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索"
-              style="font-weight:bold;font-size: 18px;">
-            <button class="input__button__shadow" id="search_button" @click="search">
-              <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
-                <path
-                  d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z"
-                  fill-rule="evenodd" fill="#17202A"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div style="margin-top: 30px;">
-          <div class="introList1">
-            <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
-            <el-text style="margin-left: 20px;" class="mx-1" size="large">一站式学术成果分享平台</el-text>
-          </div>
-          <div class="introList1">
-            <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
-            <el-text style="margin-left: 20px;" class="mx-1" size="large">完善的检索与展示系统</el-text>
-          </div>
-          <div class="introList1">
-            <el-icon color="rgb(73, 149, 248)"><Select /></el-icon>
-            <el-text style="margin-left: 20px;" class="mx-1" size="large">ScholarSHIP-载您遨游学术海洋</el-text>
-          </div>
-        </div>
-        <div class="start">
-          <div style="font-size: 20px;" @click="startNow">
-            快速开始
-            <el-icon>
-              <ArrowRightBold />
-            </el-icon>
-          </div>
-        </div>
-      </div>
-      <img style="background:transparent;width: 50vw;" src="/src/assets/images/intro1.png" class="image" />
     </div>
-  </div>
 </template>
 
 
@@ -126,13 +121,12 @@ const search = () => {
   background-size: 100% 100%;
 }
 
-#walnuts {
-  padding-top: 100px;
-  padding-left: 150px;
-
-  .container-input {
-    position: relative;
-  }
+#walnuts{
+    padding-top: 100px;
+    padding-left: 150px;
+.container-input {
+  position: relative;
+}
 
   #dropdown_span {
     width: 100px;
@@ -140,9 +134,10 @@ const search = () => {
     outline: 0;
   }
 
-  #dropdown_span :focus {
-    max-width: 100px;
-  }
+#dropdown_span :focus{
+  max-width: 100px;
+  outline: none;
+}
 
   .el-dropdown-link {
     cursor: pointer;
@@ -151,33 +146,31 @@ const search = () => {
     align-items: center;
   }
 
-  .input__container {
-    position: relative;
-    background: rgba(255, 255, 255, 0.664);
-    padding: 10px 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    border-radius: 22px;
-    // max-width: 300px;
-    height: 66px;
-    transition: transform 400ms;
-    transform-style: preserve-3d;
-    // transform: rotateX(15deg) rotateY(-20deg);
-    perspective: 500px;
-    transition: 0.7s ease-in-out;
-  }
+.input__container {
+  position: relative;
+  background: rgba(255, 255, 255, 0.664);
+  padding: 10px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border-radius: 22px;
+  // max-width: 300px;
+  height: 66px;
+  transition: transform 400ms;
+  transform-style: preserve-3d;
+  // transform: rotateX(15deg) rotateY(-20deg);
+  perspective: 500px;
+  transition: 0.7s ease-in-out;
+
+  z-index: 10;
+}
 
   // .input__container :hover{
   //   width: 60vw;
   //   transition: 0.7s ease-in-out;
   // }
 
-  // .input__container :focus{
-  //   width: 60vw;
-  //   transition: 0.7s ease-in-out;
-  // }
 
   #search_button {
     width: 60px;
@@ -222,20 +215,28 @@ const search = () => {
   }
 
 
-  .input__search {
-    width: 100%;
-    height: 80%;
-    border-radius: 20px;
-    outline: 2px solid #4995f8;
-    border: none;
-    padding: 8px;
-    position: relative;
-  }
+.input__search {
+  width: 100%;
+  height: 80%;
+  border-radius: 20px;
+  outline: 2px solid #4995f8;
+  border: none;
+  padding: 8px;
+  position: relative;
+  z-index: 999;
+}
 }
 
 
-.introList1 {
-  margin-bottom: 15px;
+.introList1{
+    margin-bottom: 15px;
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.introList1 :hover{
+  scale: 1.25;
+  transition: 0.3s;
 }
 
 .introList2 {
