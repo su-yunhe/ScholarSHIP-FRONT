@@ -3,7 +3,7 @@
         <div id="intro1">
             <div id="walnuts" style="float: left;">
                 <div style="font-size: 60px;font-weight:bold;color: rgb(73, 149, 248);">
-                  <span style="color: rgba(97, 134, 243);margin: 0;">S</span>
+                  <span style="color: rgba(97, 134, 243);margin: 0;" class="scholarship">S</span>
                   <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
                   <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
                   <span style="color: rgba(107, 168, 87);margin-left: 2px;">o</span>
@@ -125,7 +125,6 @@ const search = () => {
 #walnuts{
     padding-top: 100px;
     padding-left: 150px;
-    
 .container-input {
   position: relative;
 }
@@ -138,6 +137,7 @@ const search = () => {
 
 #dropdown_span :focus{
   max-width: 100px;
+  outline: none;
 }
 
 .el-dropdown-link {
@@ -163,6 +163,8 @@ const search = () => {
   // transform: rotateX(15deg) rotateY(-20deg);
   perspective: 500px;
   transition: 0.7s ease-in-out;
+
+  z-index: 10;
 }
 
 // .input__container :hover{
@@ -170,10 +172,6 @@ const search = () => {
 //   transition: 0.7s ease-in-out;
 // }
 
-// .input__container :focus{
-//   width: 60vw;
-//   transition: 0.7s ease-in-out;
-// }
 
 #search_button{
   width: 60px;
@@ -226,12 +224,20 @@ const search = () => {
   border: none;
   padding: 8px;
   position: relative;
+  z-index: 999;
 }
 }
 
 
 .introList1{
     margin-bottom: 15px;
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.introList1 :hover{
+  scale: 1.25;
+  transition: 0.3s;
 }
 
 .introList2{
