@@ -1,5 +1,10 @@
 <template>
-    <div class="scholarContainer">
+    <div class="scholarContainer"
+        v-loading="loadingTag"
+        element-loading-text="拼命加载中"
+        element-loading-background="white"
+        >
+        <div v-if="!loadingTag">
             <div class="scholarTopHeaderBar">
                 <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
@@ -30,10 +35,9 @@
             <div class="scholar-tagContent">
                 <component :is="tagName"></component>
             </div>
-        
+        </div>
     </div>
 </template>
-
 
 <script>
 import {useScholarStore} from '../../stores/scholar'
@@ -50,9 +54,10 @@ export default {
     },
     data() {
         return {
+            loadingTag: true,
             tagName:'academic',
             scholarID: null,
-            scholarInfo:{},
+            scholarInfo:null,
             monitoredRoute: null,
         }
     },
@@ -86,6 +91,7 @@ export default {
             await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
                 console.log("get scholarInfo res:", res);
                 this.scholarInfo = res;
+                
             });
         },
         async getEssayList(scholarStore){
@@ -96,6 +102,7 @@ export default {
                 if (res.error === 0) {
                     scholarStore.essayList = res.result;
                     console.log("papers2:", scholarStore.essayList);
+                    this.loadingTag = false;
                 }
             });
             console.log("balabala2");
@@ -107,9 +114,13 @@ export default {
             })
         },
         loading(){
+            this.loadingTag = true;
             this.scholarID = this.$route.path.split("/")[2];
             const scholarStore = useScholarStore();
+            scholarStore.essayList = [];
+            console.log("清空essayList：",scholarStore.essayList);
             this.getScholarInfo(scholarStore);
+
             this.getEssayList(scholarStore);
             this.getGraphData(scholarStore);
         }

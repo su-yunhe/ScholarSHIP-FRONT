@@ -69,12 +69,16 @@ const format = ref('IEEE');
 
 onMounted(() => {
     essayNum.value = 0;
-    setTimeout(()=>{
-        console.log("unremoved academic paper:",scholarStore.essayList);
-        essayList.value = scholarStore.essayList;
-        displayEssays.value = essayList.value.slice(0,5);
-        essayNum.value = scholarStore.essayList.length;
-    }, 3000);
+    if(scholarStore.essayList.length == 0){
+        setTimeout(()=>{
+            console.log("unremoved academic paper:",scholarStore.essayList);
+            loading();
+        }, 3000);
+    }
+    else{
+        loading();
+    }
+    
 });
 
 const currentPageChange = (value) => {
@@ -117,25 +121,29 @@ const getCitation = (essay) => {//引用文献
         citeString.value = res.result;
         citeStringIEEE.value = res.result;
     }).catch((error)=>{
-        console.log("get essay detail error:",error);
+        citeString.value = "未获取到该格式的引用";
+        citeStringIEEE.value = "未获取到该格式的引用";
     })
     httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
         console.log("get GB citation:",res);
         citeStringGB.value = res.result;
     }).catch((error)=>{
         console.log("get essay detail error:",error);
+        citeStringGB.value = "未获取到该格式的引用";
     })
     httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
         console.log("get Bib citation:",res);
         citeStringBib.value = res.result;
     }).catch((error)=>{
         console.log("get essay detail error:",error);
+        citeStringBib.value = "未获取到该格式的引用";
     })
     httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
         console.log("get Chicago citation:",res);
         citeStringChicago.value = res.result;
     }).catch((error)=>{
         console.log("get essay detail error:",error);
+        citeStringChicago.value = "未获取到该格式的引用";
     })
 }
 const changeFormat = (format_) => {

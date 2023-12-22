@@ -1,5 +1,10 @@
 <template>
-    <div class="scholarContainer">
+    <div class="scholarContainer"
+        v-loading="loadingTag"
+        element-loading-text="拼命加载中"
+        element-loading-background="white"
+        >
+        <div v-if="!loadingTag">
             <div class="scholarTopHeaderBar">
                 <img src="../../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
@@ -29,7 +34,7 @@
             <div class="scholar-tagContent">
                 <component :is="tagName"></component>
             </div>
-        
+        </div>
     </div>
 </template>
 
@@ -50,6 +55,7 @@ export default {
     },
     data() {
         return {
+            loadingTag: true,
             tagName:'unremoved',
             scholarID: "A5023888391",
             scholarInfo:{},
@@ -90,6 +96,7 @@ export default {
                 if (res.error === 0) {
                     scholarStore.essayList = res.result;
                     console.log("unremoved papers:", scholarStore.essayList);
+                    this.loadingTag = false;
                 }
             });
             await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=false`).then((res) => {
@@ -107,7 +114,9 @@ export default {
         },
     },
     created(){
+        this.loadingTag = true;
         const scholarStore = useScholarStore();
+        scholarStore.essayList = [];
         this.getScholarInfo(scholarStore);
         this.getEssayList(scholarStore);
         this.getGraphData(scholarStore);

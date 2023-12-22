@@ -10,6 +10,7 @@ import RelationGraph from 'relation-graph/vue3'
 import './mock/'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import moment from 'moment'
+
 // import Vue from 'vue'
 // import 'vue-social-share/dist/client.css'
 // 引入初始化样式文件
@@ -41,6 +42,7 @@ app.use(ElementPlusIconsVue)
 // Vue.use(Share)
 
 app.use(RelationGraph)
+
 app.mount('#app')
 
 router.afterEach((to, from, next) => {
