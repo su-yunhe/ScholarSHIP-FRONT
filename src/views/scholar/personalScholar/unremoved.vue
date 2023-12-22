@@ -11,11 +11,27 @@
                 <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
                 <span class="essay-indicator-op" @click="remove(essay)"><el-icon><Delete /></el-icon>下架</span>
                 <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
-                <span class="essay-indicator-op" @click="cite(essay)"><el-icon><Link /></el-icon>引用</span>
+                <span class="essay-indicator-op" @click="getCitation(essay)"><el-icon><Link /></el-icon>引用</span>
                 <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
                 
             </div>
         </div>
+        <!-- 引用对话框 -->
+        <el-dialog
+            title="引用"
+            v-model="citeDialogVisible"
+            width="50%"
+            >
+            <div>引用格式：</div>
+                <div>
+                    <el-button @click="changeFormat(format)" v-for="format in ['IEEE','GB/T7714','BibText','Chicago']" :key="format">{{ format }}</el-button>
+                </div>
+            <div class="citeContent">{{ citeString }}</div>
+            <div class="dialog-footer">
+                <el-button @click="citeDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="copyCiteString(citeString)">复 制</el-button>
+            </div>
+        </el-dialog>
         <el-pagination
             v-if="essayNum!=0"
             @current-change="currentPageChange"
@@ -43,12 +59,21 @@ const essayNum = ref();
 const displayEssays = ref([]); // 记得进入页面时初始化
 const essayList = ref([]);
 const currentPage = ref(1);
+let citeDialogVisible = ref(false);
+const citeString = ref('');
+const citeStringIEEE = ref('');
+const citeStringGB = ref('');
+const citeStringBib = ref('');
+const citeStringChicago = ref('');
+const format = ref('IEEE');
 
 onMounted(() => {
     essayNum.value = 0;
     setTimeout(()=>{
         console.log("unremoved academic paper:",scholarStore.essayList);
-        loading();
+        essayList.value = scholarStore.essayList;
+        displayEssays.value = essayList.value.slice(0,5);
+        essayNum.value = scholarStore.essayList.length;
     }, 3000);
 });
 
@@ -83,8 +108,67 @@ const downloadPDF = async(pdfUrl) => {//需要注释掉main.js中的mock引用�
     document.body.appendChild(link);
     link.click();
 }
-const cite = (essay) => {//生成文献引用格式
-    console.log('cite:',essay);
+
+const getCitation = (essay) => {//引用文献
+    let work_id = essay.id.split("/")[3];
+    citeDialogVisible.value = true;
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=IEEE`).then((res) => {
+        console.log("get IEEE citation:",res);
+        citeString.value = res.result;
+        citeStringIEEE.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
+        console.log("get GB citation:",res);
+        citeStringGB.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
+        console.log("get Bib citation:",res);
+        citeStringBib.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
+        console.log("get Chicago citation:",res);
+        citeStringChicago.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+}
+const changeFormat = (format_) => {
+    format.value = format_;
+    console.log('change format to:',format.value);
+    if(format.value === 'IEEE')
+        citeString.value = citeStringIEEE.value;
+    else if(format.value === 'GB/T7714')
+        citeString.value = citeStringGB.value;
+    else if(format.value === 'BibText')
+        citeString.value = citeStringBib.value;
+    else if(format.value === 'Chicago')
+        citeString.value = citeStringChicago.value;
+}
+const copyCiteString = (content) => {
+    let aux = document.createElement("input");
+    aux.setAttribute("value", content);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+    if (content !== null) {
+        ElMessage({
+            type: 'success',
+            message: '引用已复制至剪贴板',
+          })
+    } else {
+        ElMessage({
+            type: 'error',
+            message: '引用格式为空',
+          })
+    }
+    citeDialogVisible.value = false;
 }
 const collection = (essay) => {//收藏文献
     console.log('collection:',essay);
@@ -96,25 +180,10 @@ const remove = (essay) => {//下架文献
         console.log("change_status:", res);
         essayList.value = essayList.value.filter(item=>item != essay);
         displayEssays.value = essayList.value.slice(0,5);
-        essayNum.value = essayList.length;
+        essayNum.value = essayList.value.length;
         scholarStore.essayList = essayList.value;
+        scholarStore.removedEssayList.push(essay);
     })
-}
-const update = async() => {
-    let scholarID = "A5023888391";
-    let userID = 1;
-    //unremoved
-    await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
-        if (res.data.error === 0) {
-            scholarStore.essayList = res.data.result;
-        }
-    });
-    //removed
-    await httpInstance.get(`/get_works?author_id=${scholarID}&status=false`).then((res) => {
-        if (res.data.error === 0) {
-            scholarStore.removedEssayList = res.data.result;
-        }
-    });
 }
 const loading = () => {
     essayList.value = scholarStore.essayList;
