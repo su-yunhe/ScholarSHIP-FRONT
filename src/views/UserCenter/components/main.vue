@@ -10,22 +10,22 @@
                         </el-icon> 个人中心
                     </div>
                 </transition>
-                <div>
+                <div class="card_left">
                     <transition transition name="fade">
                         <Infomation v-show="show_aside[1]"></Infomation>
                     </transition>
                 </div>
-                <div>
+                <div class="card_left">
                     <transition transition name="fade">
                         <Screening v-show="show_aside[2]"></Screening>
                     </transition>
                 </div>
-                <div>
+                <div class="card_left">
                     <transition transition name="fade">
                         <Followings v-show="show_aside[3]"></Followings>
                     </transition>
                 </div>
-                <div>
+                <div class="card_left">
                     <transition transition name="fade">
                         <History v-show="show_aside[4]"></History>
                     </transition>
@@ -55,7 +55,13 @@
     transform: translateX(-50px);
 }
 
-.fade_right-enter-active,
+.card_left {
+    /* overflow: hidden;
+    border: 1px solid black;
+    border-radius: 20px; */
+}
+
+/* .fade_right-enter-active,
 .fade_right-leave-active {
     transition: all 1s ease;
 }
@@ -66,7 +72,7 @@
     {
     opacity: 0;
     transform: translateX(50px);
-}
+} */
 </style>
 
 <script setup>

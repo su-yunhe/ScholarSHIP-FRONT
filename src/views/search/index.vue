@@ -620,6 +620,7 @@ onMounted(async () => {
 
     #dropdown_span :focus {
       max-width: 100px;
+      outline: none;
     }
 
     .el-dropdown-link {

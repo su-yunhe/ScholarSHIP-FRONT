@@ -13,15 +13,15 @@ const logout = () => {
 
 <template>
   <Header />
-  <router-view v-slot="{ Component }">
+  <!-- <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
       <component :is="Component" />
     </transition>
-  </router-view>
+  </router-view> -->
 
-  <!-- <Transition>
+  <Transition name="fade" mode="out-in">
     <RouterView />
-  </Transition> -->
+  </Transition>
 </template>
 
 <style scoped lang="scss">
@@ -32,7 +32,7 @@ header {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: all 0.7s ease;
 }
 
 .fade-enter-from,
