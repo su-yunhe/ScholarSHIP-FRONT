@@ -211,90 +211,6 @@ margin-right: 50px;
                 </span>
               </div>
             </div>
-            <!-- <div>
-              <el-button style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                " @click="cite(item)">
-                引用<el-icon>
-                  <Link />
-                </el-icon>
-              </el-button>
-              <el-button style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                " @click="toDocument(item.id)">
-                详情<el-icon>
-                  <DataAnalysis />
-                </el-icon>
-              </el-button>
-              <el-button style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                " @click="changeCollectIconToTrue(item.id)">
-                收藏<el-icon>
-                  <FolderAdd />
-                </el-icon>
-              </el-button>
-              <el-button style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                " @click="gourl(item)">
-                来源<el-icon>
-                  <Position />
-                </el-icon>
-              </el-button>
-              <el-button style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                " @click="pdf(item.pdf)">
-                下载<el-icon>
-                  <Download />
-                </el-icon>
-              </el-button>
-              <span style="
-                  float: right;
-                  text-align: right;
-                  margin-top: 8px;
-                  color: grey;
-                  font-size: 15px;
-                  margin-right: 150px;
-                ">
-                被引次数：
-                <span style="color: #2d94d4">
-                  {{ item.cite }}
-                </span>
-              </span>
-              <span style="
-                  float: right;
-                  text-align: right;
-                  margin-top: 8px;
-                  color: grey;
-                  font-size: 15px;
-                  margin-right: 50px;
-                ">
-                发表时间：
-                <span style="color: #2d94d4">
-                  {{ item.date }}
-                </span>
-              </span>
-            </div>
-            <br /> -->
           </div>
         </div>
       </el-col>
@@ -302,148 +218,8 @@ margin-right: 50px;
   </div>
 
   <div>
-    <!-- <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
-      <div style="font-size: 18px; height: 80px">
-        <div
-          style="
-            float: left;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            margin-left: 0px;
-          "
-        >
-          筛选方式
-        </div>
-      </div>
-    </div>
-    <div v-for="item in items" style="margin-top: 15px">
-      <el-card>
-        <div>
-          <div>{{ item.title }}</div>
-          <span
-            v-for="a in item.authors"
-            style="
-              border: solid 1px;
-              color: orange;
-              margin-left: 10px;
-              margin-right: 10px;
-            "
-            >{{ a }}</span
-          >
-          <div>{{ item.brief }}</div>
-          <span
-            v-for="k in item.keywords"
-            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
-            >{{ k }}</span
-          >
-        </div>
-        <div>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="cite(item)"
-          >
-            引用<el-icon>
-              <Link />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="toDocument(item.title, item.id)"
-          >
-            详情<el-icon>
-              <DataAnalysis />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="changeCollectIconToTrue(item.id)"
-          >
-            收藏<el-icon>
-              <FolderAdd />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="gourl(item)"
-          >
-            来源<el-icon>
-              <Position />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="pdf(item.pdf)"
-          >
-            下载<el-icon>
-              <Download />
-            </el-icon>
-          </el-button>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 150px;
-            "
-          >
-            被引次数：
-            <span style="color: #2d94d4">
-              {{ item.n_citation }}
-            </span>
-          </span>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 50px;
-            "
-          >
-            发表时间：
-            <span style="color: #2d94d4">
-              {{ item.year }}
-            </span>
-          </span>
-        </div>
-      </el-card>
-    </div> -->
     <el-divider></el-divider>
-    <div>
+    <div class="footer">
       <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
         :total="pageFullLength" />
     </div>
@@ -1211,5 +987,9 @@ onMounted(async () => {
   margin-left: 10px;
   background-color: #fafafa;
 
+}
+
+.footer {
+  height: 50px;
 }
 </style>
