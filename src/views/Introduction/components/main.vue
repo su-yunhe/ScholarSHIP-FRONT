@@ -3,7 +3,7 @@
         <div id="intro1">
             <div id="walnuts" style="float: left;">
                 <div style="font-size: 60px;font-weight:bold;color: rgb(73, 149, 248);">
-                  <span style="color: rgba(97, 134, 243);margin: 0;">S</span>
+                  <span style="color: rgba(97, 134, 243);margin: 0;" class="scholarship">S</span>
                   <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
                   <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
                   <span style="color: rgba(107, 168, 87);margin-left: 2px;">o</span>
@@ -69,7 +69,7 @@
 
 <script setup>
 // import router from '@/router'
-import { Select,ArrowRightBold, Briefcase, Comment, EditPen, Opportunity, ArrowDown} from '@element-plus/icons-vue'
+import { Select, ArrowRightBold, Briefcase, Comment, EditPen, Opportunity, ArrowDown } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { ElMessage } from 'element-plus'
@@ -80,31 +80,31 @@ const router = useRouter()
 var ok = "文献";
 
 const startNow = () => {
-  if(userStore.userInfo.username != ''){
-    router.push({name:'team'})
-  }else{
-    router.push({name:'login'})
+  if (userStore.userInfo.username != '') {
+    router.push({ name: 'team' })
+  } else {
+    router.push({ name: 'login' })
   }
 }
 const search = () => {
   var name = document.getElementById("text").value;
-  if (name==""){
+  if (name == "") {
     ElMessage({
-    message: '请勿搜索空字段',
-    grouping: true,
-    type: 'warning',
+      message: '请勿搜索空字段',
+      grouping: true,
+      type: 'warning',
     })
     console.log("空字段");
     return;
   }
-  if (ok=="文献"){
-    console.log("文献+"+name);
-  } else if (ok=="学者"){
-    console.log("学者+"+name);
+  if (ok == "文献") {
+    console.log("文献+" + name);
+  } else if (ok == "学者") {
+    console.log("学者+" + name);
   } else {
-    console.log("机构+"+name);
+    console.log("机构+" + name);
   }
-  document.getElementById("text").value="";
+  document.getElementById("text").value = "";
 }
 
 // const handleCommand = (command: string | number | object) => {
@@ -114,7 +114,6 @@ const search = () => {
 </script>
 
 <style scoped lang="scss">
-
 #introduction {
   width: 100%;
   min-height: 90vh;
@@ -125,27 +124,27 @@ const search = () => {
 #walnuts{
     padding-top: 100px;
     padding-left: 150px;
-    
 .container-input {
   position: relative;
 }
 
-#dropdown_span {
-  width: 100px;
-  border: 0;
-  outline: 0;
-}
+  #dropdown_span {
+    width: 100px;
+    border: 0;
+    outline: 0;
+  }
 
 #dropdown_span :focus{
   max-width: 100px;
+  outline: none;
 }
 
-.el-dropdown-link {
-  cursor: pointer;
-  color: black;
-  display: flex;
-  align-items: center;
-}
+  .el-dropdown-link {
+    cursor: pointer;
+    color: black;
+    display: flex;
+    align-items: center;
+  }
 
 .input__container {
   position: relative;
@@ -163,59 +162,57 @@ const search = () => {
   // transform: rotateX(15deg) rotateY(-20deg);
   perspective: 500px;
   transition: 0.7s ease-in-out;
+
+  z-index: 10;
 }
 
-// .input__container :hover{
-//   width: 60vw;
-//   transition: 0.7s ease-in-out;
-// }
-
-// .input__container :focus{
-//   width: 60vw;
-//   transition: 0.7s ease-in-out;
-// }
-
-#search_button{
-  width: 60px;
-}
+  // .input__container :hover{
+  //   width: 60vw;
+  //   transition: 0.7s ease-in-out;
+  // }
 
 
-.shadow__input {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  bottom: 0;
-  z-index: -1;
-  filter: blur(30px);
-  border-radius: 20px;
-  background-color: #999cff;
-  background-image: radial-gradient(at 85% 51%, hsla(60,60%,61%,1) 0px, transparent 50%),
-    radial-gradient(at 74% 68%, hsla(235,69%,77%,1) 0px, transparent 50%),
-    radial-gradient(at 64% 79%, hsla(284,72%,73%,1) 0px, transparent 50%),
-    radial-gradient(at 75% 16%, hsla(283,60%,72%,1) 0px, transparent 50%),
-    radial-gradient(at 90% 65%, hsla(153,70%,64%,1) 0px, transparent 50%),
-    radial-gradient(at 91% 83%, hsla(283,74%,69%,1) 0px, transparent 50%),
-    radial-gradient(at 72% 91%, hsla(213,75%,75%,1) 0px, transparent 50%);
-}
+  #search_button {
+    width: 60px;
+  }
 
 
-.input__button__shadow {
-  cursor: pointer;
-  border: none;
-  background: none;
-  transition: transform 400ms, background 400ms;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  padding: 5px;
-}
+  .shadow__input {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+    filter: blur(30px);
+    border-radius: 20px;
+    background-color: #999cff;
+    background-image: radial-gradient(at 85% 51%, hsla(60, 60%, 61%, 1) 0px, transparent 50%),
+      radial-gradient(at 74% 68%, hsla(235, 69%, 77%, 1) 0px, transparent 50%),
+      radial-gradient(at 64% 79%, hsla(284, 72%, 73%, 1) 0px, transparent 50%),
+      radial-gradient(at 75% 16%, hsla(283, 60%, 72%, 1) 0px, transparent 50%),
+      radial-gradient(at 90% 65%, hsla(153, 70%, 64%, 1) 0px, transparent 50%),
+      radial-gradient(at 91% 83%, hsla(283, 74%, 69%, 1) 0px, transparent 50%),
+      radial-gradient(at 72% 91%, hsla(213, 75%, 75%, 1) 0px, transparent 50%);
+  }
 
-.input__button__shadow:hover {
-  background: rgba(255, 255, 255, 0.411);
-}
+
+  .input__button__shadow {
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: transform 400ms, background 400ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    padding: 5px;
+  }
+
+  .input__button__shadow:hover {
+    background: rgba(255, 255, 255, 0.411);
+  }
 
 
 .input__search {
@@ -226,28 +223,37 @@ const search = () => {
   border: none;
   padding: 8px;
   position: relative;
+  z-index: 999;
 }
 }
 
 
 .introList1{
     margin-bottom: 15px;
+    transition: 0.3s;
+    z-index: 999;
 }
 
-.introList2{
-    margin-bottom: 30px;
-    margin-left: 20px;
-    font-size: 20px;
-    font-weight: bold;
+.introList1 :hover{
+  scale: 1.25;
+  transition: 0.3s;
 }
 
-.introList3{
-    margin-bottom: 30px;
-    margin-left: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 30px;
+.introList2 {
+  margin-bottom: 30px;
+  margin-left: 20px;
+  font-size: 20px;
+  font-weight: bold;
 }
+
+.introList3 {
+  margin-bottom: 30px;
+  margin-left: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
 .start {
   background-color: rgb(73, 149, 248);
   height: 50px;
@@ -270,26 +276,27 @@ const search = () => {
   color: rgb(73, 149, 248);
 }
 
-#intro2{
-    padding-top: 50px;
-    padding-left: 50px;
-    margin-bottom: 500px;
+#intro2 {
+  padding-top: 50px;
+  padding-left: 50px;
+  margin-bottom: 500px;
 }
 
-#intro3{
-    padding-left: 50px;
-    margin-bottom: 500px;
+#intro3 {
+  padding-left: 50px;
+  margin-bottom: 500px;
 }
 
-#intro4{
-    padding-left: 50px;
-    margin-bottom: 500px;
+#intro4 {
+  padding-left: 50px;
+  margin-bottom: 500px;
 }
 
-#intro5{
-    padding-left: 50px;
-    margin-bottom: 50px;
+#intro5 {
+  padding-left: 50px;
+  margin-bottom: 50px;
 }
+
 .bottom {
   margin-top: 13px;
   line-height: 12px;
@@ -314,7 +321,7 @@ const search = () => {
   background: rgba(246, 248, 242, 0.858);
   transition: all 0.4s;
   border-radius: 10px;
-  box-shadow: 0px 0px 5px 3px  rgba(152, 150, 150, 0.532);
+  box-shadow: 0px 0px 5px 3px rgba(152, 150, 150, 0.532);
   font-size: 30px;
   font-weight: 900;
 }
@@ -323,7 +330,7 @@ const search = () => {
   border-radius: 15px;
   cursor: pointer;
   transform: scale(1.2);
-  box-shadow: 0px 0px 5px 3px  rgba(152, 150, 150, 0.532);
+  box-shadow: 0px 0px 5px 3px rgba(152, 150, 150, 0.532);
   background: #e3f0c4;
 }
 
@@ -531,7 +538,7 @@ const search = () => {
   box-shadow: rgba(100, 100, 111, 0.2) -10px 10px 20px 0px;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  background: rgba(255,237,237,0.2);
+  background: rgba(255, 237, 237, 0.2);
   transition: all 0.5s ease-in-out;
 }
 
@@ -615,9 +622,9 @@ const search = () => {
   border-radius: 50px;
   background: #fdeded;
   box-shadow: 20px 20px 60px #bebebe,
-               -20px -20px 60px #f7f2f280;
+    -20px -20px 60px #f7f2f280;
   background-image: url('src/assets/images/intro3.jpg');
-  -webkit-background-size:cover;
+  -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
@@ -630,9 +637,9 @@ const search = () => {
   border-radius: 50px;
   background: #fdeded;
   box-shadow: 20px 20px 60px #bebebe,
-               -20px -20px 60px #f7f2f280;
+    -20px -20px 60px #f7f2f280;
   background-image: url('src/assets/images/intro3.jpg');
-  -webkit-background-size:cover;
+  -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
@@ -645,9 +652,9 @@ const search = () => {
   border-radius: 50px;
   background: #fdeded;
   box-shadow: 20px 20px 60px #bebebe,
-               -20px -20px 60px #f7f2f280;
+    -20px -20px 60px #f7f2f280;
   background-image: url('src/assets/images/intro3.jpg');
-  -webkit-background-size:cover;
+  -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
@@ -656,64 +663,62 @@ const search = () => {
 
 
 .bottomButton {
- position: relative;
- display: flex;
- justify-content: center;
- align-items: center;
- border-radius: 5px;
- background: rgb(73, 149, 248);
- font-family: "Montserrat", sans-serif;
- box-shadow: 0px 6px 24px 0px rgba(0, 0, 0, 0.2);
- overflow: hidden;
- border: none;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background: rgb(73, 149, 248);
+  font-family: "Montserrat", sans-serif;
+  box-shadow: 0px 6px 24px 0px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: none;
 }
 
 .bottomButton:after {
- content: " ";
- width: 0%;
- height: 100%;
- background: #d4f176;
- position: absolute;
- transition: all 0.4s ease-in-out;
- right: 0;
+  content: " ";
+  width: 0%;
+  height: 100%;
+  background: #d4f176;
+  position: absolute;
+  transition: all 0.4s ease-in-out;
+  right: 0;
 }
 
 .bottomButton:hover::after {
- right: auto;
- left: 0;
- width: 100%;
+  right: auto;
+  left: 0;
+  width: 100%;
 }
 
 .bottomButton span {
- text-align: center;
- text-decoration: none;
- width: 100%;
- padding: 18px 25px;
- color: #fff;
- font-size: 1.125em;
- font-weight: 700;
- letter-spacing: 0.3em;
- z-index: 20;
- transition: all 0.3s ease-in-out;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 18px 25px;
+  color: #fff;
+  font-size: 1.125em;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  z-index: 20;
+  transition: all 0.3s ease-in-out;
 }
 
 .bottomButton:hover span {
- color: #183153;
- animation: scaleUp 0.3s ease-in-out;
+  color: #183153;
+  animation: scaleUp 0.3s ease-in-out;
 }
 
 @keyframes scaleUp {
- 0% {
-  transform: scale(1);
- }
+  0% {
+    transform: scale(1);
+  }
 
- 50% {
-  transform: scale(0.95);
- }
+  50% {
+    transform: scale(0.95);
+  }
 
- 100% {
-  transform: scale(1);
- }
-}
-
-</style>
+  100% {
+    transform: scale(1);
+  }
+}</style>

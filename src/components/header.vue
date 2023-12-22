@@ -17,11 +17,19 @@ const toLogout = () => {
   })
   router.replace({ path: '/intro' })
 }
+
+const toHomePage = () => {
+  router.replace({ path: '/intro' })
+}
+
+const toUserCenter = () => {
+  router.replace({ path: '/UserCenter' })
+}
 </script>
 
 <template>
   <div class="header">
-    <div class="logo">
+    <div class="logo" @click="toHomePage()">
       <span style="color: rgba(97, 134, 243); margin-left: 2px;">S</span>
       <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
@@ -56,7 +64,7 @@ const toLogout = () => {
     </div>
     <div class="menu2" v-else>
       <button class="btn">
-        <span class="box">
+        <span class="box" @click="toUserCenter()">
           <el-icon style="position: relative; top: 2px;">
             <User />
           </el-icon>
@@ -100,6 +108,10 @@ const toLogout = () => {
     font-weight: bold;
     font-size: 30px;
     // background-color: pink;
+  }
+
+  .logo :hover{
+    cursor: pointer;
   }
 
   .menu1 {

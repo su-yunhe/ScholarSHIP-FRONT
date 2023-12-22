@@ -1,297 +1,216 @@
 <template>
   <div class="searchBox">
-    <div class="menu1" @click="gotoAdvancedSearch">高级搜索</div>
-    <!-- <el-select v-model="searchType" mutiple placeholder="文献" style="margin-top:15px">
-      <el-option v-for="s in searchTypes" :label="s" :value="s" :key="s"></el-option>
-    </el-select> -->
+    <div class="menu1">
+      <button class="btn" @click="gotoAdvancedSearch()">
+        <span class="box">
+          <el-icon style="position: relative; top: 2px;">
+            <Search />
+          </el-icon>
+          高级搜索
+        </span>
+      </button>
+    </div>
     <div class="search">
-      <div class="searchbar">
-        <div class="searchbar-wrapper">
-          <div class="searchbar-left">
-            <div class="search-icon-wrapper">
-              <span class="search-icon searchbar-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path
-                    d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                  ></path>
-                </svg>
+      <div style="padding-top: 10px; margin-left: 50px;">
+        <div class="input__container">
+          <div class="shadow__input"></div>
+          <span id="dropdown_span">
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link" style="font-weight:10px;font-size: 14px;">
+                {{ ok }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
               </span>
-            </div>
-          </div>
-
-          <div class="searchbar-center">
-            <div class="searchbar-input-spacer"></div>
-
-            <input
-              type="text"
-              class="searchbar-input"
-              maxlength="2048"
-              name="q"
-              autocapitalize="off"
-              autocomplete="off"
-              title="Search"
-              role="combobox"
-              placeholder="search in ScholarSHIP"
-            />
-          </div>
-
-          <div class="searchbar-right">
-            <svg
-              class="voice-search"
-              role="button"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="a" @click="ok = '文献'">文献</el-dropdown-item>
+                  <el-dropdown-item command="b" @click="ok = '学者'">学者</el-dropdown-item>
+                  <el-dropdown-item command="c" @click="ok = '机构'">机构</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </span>
+          <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索"
+            style="font-size: 14px;">
+          <button class="input__button__shadow" id="search_button" @click="search">
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
               <path
-                fill="#4285f4"
-                d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z"
-              ></path>
-              <path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path>
-              <path
-                fill="#fbbc05"
-                d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z"
-              ></path>
-              <path
-                fill="#ea4335"
-                d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z"
-              ></path>
+                d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z"
+                fill-rule="evenodd" fill="#17202A"></path>
             </svg>
-          </div>
+          </button>
         </div>
       </div>
+
     </div>
   </div>
   <div class="result">
-    <el-row :gutter="20">
+    <el-row :gutter="10">
       <el-col :span="5">
         <div class="left">
           <div class="conditionBox">
             <div class="title">筛选方式</div>
             <div class="main">
-              <div class="year">
-                <div style="text-align: center; font-weight: bold; color: #7e7e7e">
-                  年份
-                </div>
-                <el-row :gutter="6">
-                  <el-col :span="11">
-                    <el-select
-                      v-model="minyear"
-                      mutiple
-                      placeholder="最早年份"
-                      style="margin: 5px 0 5px 10px"
-                    >
-                      <el-option
-                        v-for="y in years"
-                        :label="y"
-                        :value="y"
-                        :key="y"
-                      ></el-option>
-                    </el-select>
-                  </el-col>
-                  <el-col :span="2">
-                    <div style="text-align: center; line-height: 40px">~</div>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-select
-                      v-model="maxyear"
-                      mutiple
-                      placeholder="最晚年份"
-                      style="margin: 5px 10px 5px 0"
-                    >
-                      <el-option
-                        v-for="y in years"
-                        :label="y"
-                        :value="y"
-                        :key="y"
-                      ></el-option>
-                    </el-select>
-                  </el-col>
-                </el-row>
-              </div>
               <div class="paper">
-                <div
-                  style="
-                    margin: 10px 0 10px 0;
-                    text-align: center;
-                    font-weight: bold;
-                    color: #7e7e7e;
-                  "
-                >
-                  期刊
-                </div>
-                <div v-for="i in institutionList">
-                  <el-checkbox @click="getIns(i.name)" size="large" />
-                  {{i.name}}&nbsp({{i.count}})
-                </div>
-              </div>
-              <div class="paper">
-                <div
-                  style="
-                    margin: 10px 0 10px 0;
-                    text-align: center;
-                    font-weight: bold;
-                    color: #7e7e7e;
-                  "
-                >
-                  作者
-                </div>
-                <div v-for="i in authorList">
-                  <el-checkbox @click="getIns(i.name)" size="large" />
-                  {{i.name}}&nbsp({{i.count}})
-                </div>
-              </div>
-              <div class="paper">
-                <div
-                  style="
-                    margin: 10px 0 10px 0;
-                    text-align: center;
-                    font-weight: bold;
-                    color: #7e7e7e;
-                  "
-                >
-                  主题
-                </div>
-                <div v-for="i in conceptList">
-                  <el-checkbox @click="getIns(i.name)" size="large" />
-                  {{i.name}}&nbsp({{i.count}})
-                </div>
+                <el-collapse v-model="activeName" accordion>
+                  <el-collapse-item title="日期" name="1">
+                    <el-row :gutter="6">
+                      <el-col :span="11">
+                        <el-select v-model="minyear" mutiple placeholder="最早年份" style="margin: 5px 0 5px 5px">
+                          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="2">
+                        <div style="text-align: center; line-height: 40px">~</div>
+                      </el-col>
+                      <el-col :span="11">
+                        <el-select v-model="maxyear" mutiple placeholder="最晚年份" style="margin: 5px 5px 5px 0">
+                          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                        </el-select>
+                      </el-col>
+                    </el-row>
+                  </el-collapse-item>
+                  <el-collapse-item title="作者" name="2">
+                    <div v-for="i in authorList" style="font-size: 13px;">
+                      <el-checkbox @click="getIns(i.name)" />
+                      {{ i.name }}&nbsp({{ i.count }})
+                    </div>
+                  </el-collapse-item>
+                  <el-collapse-item title="主题" name="3">
+                    <div v-for="i in conceptList" style="font-size: 13px;">
+                      <el-checkbox @click="getIns(i.name)" />
+                      {{ i.name }}&nbsp({{ i.count }})
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
               </div>
             </div>
           </div>
         </div>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="19">
         <div class="right">
-          <div v-for="item in items" style="margin-top: 15px">
+          <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div>{{ item.title }}</div>
-              <span
-                v-for="a in item.author"
-                style="
+              <div class="title"> {{ item.title }}</div>
+              <!-- <div>{{ item.title }}</div> -->
+              <div class="info1">
+                <el-row>
+                  <el-col :span="12">
+                    <div class="author">
+                      <span style="margin-left:30px; font-size: 12px;">作者：</span>
+                      <span v-for="a in item.author" style="
                   border: solid 1px;
-                  color: rgb(255, 205, 113);
-                  margin: 15px 10px 0 10px;
+                  color: rgb(45,118,80);
+                  margin: 15px 5px 0 0 ;
                   padding: 0 5px 0 5px;
                   border-radius: 5px;
-                "
-                @click=gotoAuthor(a)
-                >{{ a }}</span
-              >
-              <div>{{ item.abstract }}</div>
-              <span
-                v-for="k in item.keywords"
-                style="
-                  border: solid 1px;
-                  color: green;
-                  margin-left: 10px;
-                  margin-right: 10px;
-                "
-                >{{ k }}</span
-              >
-            </div>
-            <div>
-              <el-button
-                style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                "
-                @click="cite(item)"
-              >
-                引用<el-icon>
-                  <Link />
-                </el-icon>
-              </el-button>
-              <el-button
-                style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                "
-                @click="toDocument(item.id)"
-              >
-                详情<el-icon>
-                  <DataAnalysis />
-                </el-icon>
-              </el-button>
-              <el-button
-                style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                "
-                @click="changeCollectIconToTrue(item.id)"
-              >
-                收藏<el-icon>
-                  <FolderAdd />
-                </el-icon>
-              </el-button>
-              <el-button
-                style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                "
-                @click="gourl(item)"
-              >
-                来源<el-icon>
-                  <Position />
-                </el-icon>
-              </el-button>
-              <el-button
-                style="
-                  background-color: transparent;
-                  box-shadow: none;
-                  font-weight: 300;
-                  float: left;
-                  text-align: left;
-                "
-                @click="pdf(item.pdf)"
-              >
-                下载<el-icon>
-                  <Download />
-                </el-icon>
-              </el-button>
-              <span
-                style="
-                  float: right;
-                  text-align: right;
-                  margin-top: 8px;
-                  color: grey;
-                  font-size: 15px;
-                  margin-right: 150px;
-                "
-              >
-                被引次数：
-                <span style="color: #2d94d4">
-                  {{ item.cite }}
+                  /* background-color: gray; */
+                  font-size: 12px;  
+                " @click=gotoAuthor(a)>{{ a }}</span>
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <span style="margin-left:30px; font-size: 12px;">关键词：</span>
+                    <span v-for="k in item.keywords" style="
+                  background-color: rgb(45,118,80);
+                  margin: 15px 5px 0 0 ;
+                  padding: 0 5px 0 5px;
+                  border-radius: 5px;
+                  color: rgb(255, 255, 255);
+                  font-size: 12px;">{{ k }}</span>
+                  </el-col>
+                </el-row>
+              </div>
+              <div style="height:30px; margin-top: 5px; margin-left:30px; font-size: 12px; color: #747474;">
+                <span>摘要：</span>
+                {{ item.abstract }}
+              </div>
+              <div style="margin-left: 27px; margin-top:8px; background-color: #ff4242;">
+
+                <el-button size="small" style="
+background-color: transparent;
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="cite(item)">
+                  引用<el-icon>
+                    <Link />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" style="
+background-color: transparent;
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="toDocument(item.title, item.id)">
+                  详情<el-icon>
+                    <DataAnalysis />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" style="
+background-color: transparent;
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="changeCollectIconToTrue(item.id)">
+                  收藏<el-icon>
+                    <FolderAdd />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" style="
+background-color: transparent;
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="gourl(item)">
+                  来源<el-icon>
+                    <Position />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" style="
+background-color: transparent;
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="pdf(item.pdf)">
+                  下载<el-icon>
+                    <Download />
+                  </el-icon>
+                </el-button>
+
+
+                <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 150px;
+">
+                  被引次数：
+                  <span style="color: #2d94d4">
+                    {{ item.cite }}
+                  </span>
                 </span>
-              </span>
-              <span
-                style="
-                  float: right;
-                  text-align: right;
-                  margin-top: 8px;
-                  color: grey;
-                  font-size: 15px;
-                  margin-right: 50px;
-                "
-              >
-                发表时间：
-                <span style="color: #2d94d4">
-                  {{ item.date }}
+                <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 50px;
+">
+                  发表时间：
+                  <span style="color: #2d94d4">
+                    {{ item.date }}
+                  </span>
                 </span>
-              </span>
+              </div>
             </div>
-            <br />
           </div>
         </div>
       </el-col>
@@ -299,155 +218,10 @@
   </div>
 
   <div>
-    <!-- <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
-      <div style="font-size: 18px; height: 80px">
-        <div
-          style="
-            float: left;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            margin-left: 0px;
-          "
-        >
-          筛选方式
-        </div>
-      </div>
-    </div>
-    <div v-for="item in items" style="margin-top: 15px">
-      <el-card>
-        <div>
-          <div>{{ item.title }}</div>
-          <span
-            v-for="a in item.authors"
-            style="
-              border: solid 1px;
-              color: orange;
-              margin-left: 10px;
-              margin-right: 10px;
-            "
-            >{{ a }}</span
-          >
-          <div>{{ item.brief }}</div>
-          <span
-            v-for="k in item.keywords"
-            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
-            >{{ k }}</span
-          >
-        </div>
-        <div>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="cite(item)"
-          >
-            引用<el-icon>
-              <Link />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="toDocument(item.title, item.id)"
-          >
-            详情<el-icon>
-              <DataAnalysis />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="changeCollectIconToTrue(item.id)"
-          >
-            收藏<el-icon>
-              <FolderAdd />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="gourl(item)"
-          >
-            来源<el-icon>
-              <Position />
-            </el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="pdf(item.pdf)"
-          >
-            下载<el-icon>
-              <Download />
-            </el-icon>
-          </el-button>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 150px;
-            "
-          >
-            被引次数：
-            <span style="color: #2d94d4">
-              {{ item.n_citation }}
-            </span>
-          </span>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 50px;
-            "
-          >
-            发表时间：
-            <span style="color: #2d94d4">
-              {{ item.year }}
-            </span>
-          </span>
-        </div>
-      </el-card>
-    </div> -->
     <el-divider></el-divider>
-    <div>
-      <el-pagination
-        background
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="pageFullLength"
-      />
+    <div class="footer">
+      <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        :total="pageFullLength" />
     </div>
   </div>
 </template>
@@ -461,6 +235,7 @@ const lazyValue = ref("");
 const items = ref([]);
 const minyear = ref();
 const maxyear = ref();
+const activeName = ref('1')
 const years = ref([
   1999,
   2000,
@@ -710,7 +485,7 @@ const getList = async () => {
     },
   ];
   for (var i = 0; i < items.value.length; i++) {
-    items.value[i].abstract = items.value[i].abstract.substr(0, 20) + "...";
+    items.value[i].abstract = items.value[i].abstract.substr(0, 340) + "...";
   }
 };
 const getIns = (name) => {
@@ -728,7 +503,7 @@ const gotoAdvancedSearch = () => {
 };
 const gotoAuthor = (name) => {
   var str = "/scholar/" + name;
-  router.push({ path:str });
+  router.push({ path: str });
 };
 onMounted(async () => {
   getList();
@@ -751,124 +526,312 @@ onMounted(async () => {
     text-align: center;
     font-weight: bold;
     font-size: 15px;
+
+    .btn {
+      margin-top: 16px;
+      margin-left: 100px;
+
+      .box {
+        width: 100%;
+        height: auto;
+        float: left;
+        transition: .1s linear;
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        margin: 0 5px;
+        background: transparent;
+        text-transform: uppercase;
+        font-weight: 550;
+        border-radius: 10px;
+
+      }
+    }
+
+    .box:before {
+      position: absolute;
+      content: '';
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+    }
+
+    .box:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+    }
+
+    .box:hover {
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+    }
+
+    // .box:hover:before {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .3s;
+    // }
+
+    // .box:hover:after {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .5s;
+    // }
+
+    button {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+    }
   }
 
   .search {
     width: 60%;
     padding: 10px;
 
-    .searchbar {
-      font-size: 14px;
-      font-family: arial, sans-serif;
-      color: #202124;
-      display: flex;
-      z-index: 3;
-      height: 50px;
-      background: white;
-      border: 1px solid #dfe1e5;
-      box-shadow: none;
-      border-radius: 24px;
-      margin: 0 auto;
-      width: auto;
-      max-width: 1000px;
-    }
-
-    .searchbar:hover {
-      box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
-      border-color: rgba(223, 225, 229, 0);
-    }
-
-    .searchbar-wrapper {
-      flex: 1;
-      display: flex;
-      padding: 5px 8px 0 14px;
-    }
-
-    .searchbar-left {
-      font-size: 14px;
-      font-family: arial, sans-serif;
-      color: #202124;
-      display: flex;
-      align-items: center;
-      padding-right: 13px;
-      margin-top: -5px;
-    }
-
-    .search-icon-wrapper {
-      margin: auto;
-    }
-
-    .search-icon {
-      margin-top: 3px;
-      color: #9aa0a6;
-      height: 20px;
-      line-height: 20px;
-      width: 20px;
-    }
-
-    .searchbar-icon {
-      display: inline-block;
-      fill: currentColor;
-      height: 24px;
-      line-height: 24px;
+    .container-input {
       position: relative;
-      width: 24px;
     }
 
-    .searchbar-center {
-      display: flex;
-      flex: 1;
-      flex-wrap: wrap;
-    }
-
-    .searchbar-input-spacer {
-      color: transparent;
-      flex: 100%;
-      white-space: pre;
-      height: 34px;
-      font-size: 16px;
-    }
-
-    .searchbar-input {
-      background-color: transparent;
-      border: none;
-      margin: 0;
-      padding: 0;
-      color: rgba(0, 0, 0, 0.87);
-      word-wrap: break-word;
-      outline: none;
-      display: flex;
-      flex: 100%;
-      margin-top: -37px;
-      height: 34px;
-      font-size: 16px;
-      max-width: 100%;
-      width: 100%;
-    }
-
-    .searchbar-right {
-      display: flex;
-      flex: 0 0 auto;
-      margin-top: -5px;
-      align-items: stretch;
-      flex-direction: row;
-    }
-
-    .searchbar-clear-icon {
-      margin-right: 12px;
-    }
-
-    .voice-search {
-      flex: 1 0 auto;
-      display: flex;
-      cursor: pointer;
-      align-items: center;
+    #dropdown_span {
+      width: 100px;
       border: 0;
-      background: transparent;
-      outline: none;
-      padding: 0 8px;
-      width: 2.8em;
+      outline: 0;
     }
+
+    #dropdown_span :focus {
+      max-width: 100px;
+      outline: none;
+    }
+
+    .el-dropdown-link {
+      cursor: pointer;
+      color: black;
+      display: flex;
+      align-items: center;
+    }
+
+    .input__container {
+      position: relative;
+      background: rgba(255, 255, 255, 0.664);
+      padding: 10px 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      border-radius: 22px;
+      // max-width: 300px;
+      height: 50px;
+      transition: transform 400ms;
+      transform-style: preserve-3d;
+      // transform: rotateX(15deg) rotateY(-20deg);
+      perspective: 500px;
+      transition: 0.7s ease-in-out;
+    }
+
+    // .input__container :hover{
+    //   width: 60vw;
+    //   transition: 0.7s ease-in-out;
+    // }
+
+    // .input__container :focus{
+    //   width: 60vw;
+    //   transition: 0.7s ease-in-out;
+    // }
+
+    #search_button {
+      width: 60px;
+    }
+
+
+    // .shadow__input {
+    //   content: "";
+    //   position: absolute;
+    //   width: 100%;
+    //   height: 100%;
+    //   left: 0;
+    //   bottom: 0;
+    //   z-index: -1;
+    //   filter: blur(10px);
+    //   border-radius: 20px;
+    //   background-color: #999cff;
+    //   background-image: radial-gradient(at 85% 51%, hsla(60, 60%, 61%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 74% 68%, rgb(231, 237, 156) 0px, transparent 50%),
+    //     radial-gradient(at 64% 79%, hsla(284, 72%, 73%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 75% 16%, hsla(283, 60%, 72%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 90% 65%, hsla(153, 70%, 64%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 91% 83%, hsla(283, 74%, 69%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 72% 91%, hsla(213, 75%, 75%, 1) 0px, transparent 50%);
+    // }
+
+
+    .input__button__shadow {
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: transform 400ms, background 400ms;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .input__button__shadow:hover {
+      background: rgba(255, 255, 255, 0.411);
+    }
+
+
+    .input__search {
+      width: 1000px;
+      height: 30px;
+      border-radius: 20px;
+      outline: 1px solid rgb(45, 118, 80);
+      border: none;
+      padding: 20px;
+      position: relative;
+      // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+      transition: 0.7s;
+    }
+
+    .input__search:hover {
+      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+      transition: 0.7s;
+    }
+
+    // .searchbar {
+    //   font-size: 14px;
+    //   font-family: arial, sans-serif;
+    //   color: #202124;
+    //   display: flex;
+    //   z-index: 3;
+    //   height: 50px;
+    //   background: white;
+    //   border: 1px solid #dfe1e5;
+    //   box-shadow: none;
+    //   border-radius: 24px;
+    //   margin: 0 auto;
+    //   width: auto;
+    //   max-width: 1000px;
+    // }
+
+    // .searchbar:hover {
+    //   box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
+    //   border-color: rgba(223, 225, 229, 0);
+    // }
+
+    // .searchbar-wrapper {
+    //   flex: 1;
+    //   display: flex;
+    //   padding: 5px 8px 0 14px;
+    // }
+
+    // .searchbar-left {
+    //   font-size: 14px;
+    //   font-family: arial, sans-serif;
+    //   color: #202124;
+    //   display: flex;
+    //   align-items: center;
+    //   padding-right: 13px;
+    //   margin-top: -5px;
+    // }
+
+    // .search-icon-wrapper {
+    //   margin: auto;
+    // }
+
+    // .search-icon {
+    //   margin-top: 3px;
+    //   color: #9aa0a6;
+    //   height: 20px;
+    //   line-height: 20px;
+    //   width: 20px;
+    // }
+
+    // .searchbar-icon {
+    //   display: inline-block;
+    //   fill: currentColor;
+    //   height: 24px;
+    //   line-height: 24px;
+    //   position: relative;
+    //   width: 24px;
+    // }
+
+    // .searchbar-center {
+    //   display: flex;
+    //   flex: 1;
+    //   flex-wrap: wrap;
+    // }
+
+    // .searchbar-input-spacer {
+    //   color: transparent;
+    //   flex: 100%;
+    //   white-space: pre;
+    //   height: 34px;
+    //   font-size: 16px;
+    // }
+
+    // .searchbar-input {
+    //   background-color: transparent;
+    //   border: none;
+    //   margin: 0;
+    //   padding: 0;
+    //   color: rgba(0, 0, 0, 0.87);
+    //   word-wrap: break-word;
+    //   outline: none;
+    //   display: flex;
+    //   flex: 100%;
+    //   margin-top: -37px;
+    //   height: 34px;
+    //   font-size: 16px;
+    //   max-width: 100%;
+    //   width: 100%;
+    // }
+
+    // .searchbar-right {
+    //   display: flex;
+    //   flex: 0 0 auto;
+    //   margin-top: -5px;
+    //   align-items: stretch;
+    //   flex-direction: row;
+    // }
+
+    // .searchbar-clear-icon {
+    //   margin-right: 12px;
+    // }
+
+    // .voice-search {
+    //   flex: 1 0 auto;
+    //   display: flex;
+    //   cursor: pointer;
+    //   align-items: center;
+    //   border: 0;
+    //   background: transparent;
+    //   outline: none;
+    //   padding: 0 8px;
+    //   width: 2.8em;
+    // }
   }
 
   .menu2 {
@@ -931,19 +894,6 @@ onMounted(async () => {
       box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
     }
 
-    // .box:hover:before {
-    //   border-color: #262626;
-    //   height: 100%;
-    //   transform: translateX(0);
-    //   transition: .3s transform linear, .3s height linear .3s;
-    // }
-
-    // .box:hover:after {
-    //   border-color: #262626;
-    //   height: 100%;
-    //   transform: translateX(0);
-    //   transition: .3s transform linear, .3s height linear .5s;
-    // }
 
     button {
       color: black;
@@ -962,8 +912,9 @@ onMounted(async () => {
 
   .left {
     .conditionBox {
-      margin: 0 20px 0 0;
-      height: 600px;
+      margin: 15px 20px 0 0;
+      // height: 600px;
+      border-radius: 5px;
       box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       background-color: #fafafa;
 
@@ -975,7 +926,7 @@ onMounted(async () => {
         text-align: center;
         font-weight: bold;
         font-size: 18px;
-        border-bottom: 1px solid rgb(222, 222, 222);
+        // border-bottom: 1px solid rgb(222, 222, 222);
       }
 
       .main {
@@ -990,9 +941,56 @@ onMounted(async () => {
   }
 
   .right {
+    .res:hover {
+      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+      transition: 0.2s;
+    }
+
     .res {
+      height: 135px;
       border: 1px;
+      // background-color: pink;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      background-color: #fafafa;
+      border-radius: 5px;
+      transition: 0.2s;
+
+      .title {
+        padding-left: 30px;
+        padding-top: 5px;
+        height: 40px;
+        line-height: 40px;
+        // background-color: #00810f;
+        font-weight: 15px;
+        font-size: 19px;
+      }
+
+      .info {}
+
+      .author {
+        // background-color: greenyellow;
+      }
     }
   }
+}
+
+::v-deep .el-collapse-item__header {
+  color: #7e7e7e;
+  font-weight: bold;
+  text-align: center;
+  background-color: #fafafa !important;
+  position: relative;
+  margin-left: 10px;
+}
+
+::v-deep .el-collapse-item__content {
+  text-align: left;
+  margin-left: 10px;
+  background-color: #fafafa;
+
+}
+
+.footer {
+  height: 50px;
 }
 </style>
