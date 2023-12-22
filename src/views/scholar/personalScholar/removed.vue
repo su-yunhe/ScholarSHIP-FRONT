@@ -42,7 +42,9 @@ const currentPage = ref(1);
 
 onMounted(() => {
     console.log("removed academic paper:",scholarStore.removedEssayList);
-    loading();
+    essayList.value = scholarStore.removedEssayList;
+    displayEssays.value = essayList.value.slice(0,5);
+    essayNum.value = scholarStore.removedEssayList.length;
 });
 
 const currentPageChange = (value) => {
@@ -68,30 +70,10 @@ const upload = (essay) => {//上架文献
         console.log("change_status:", res);
         essayList.value = essayList.value.filter(item=>item != essay);
         displayEssays.value = essayList.value.slice(0,5);
-        essayNum.value = essayList.length;
+        essayNum.value = essayList.value.length;
         scholarStore.removedEssayList = essayList.value;
+        scholarStore.essayList.push(essay);
     })
-}
-const update = async() => {
-    let scholarID = "A5023888391";
-    let userID = 1;
-    //unremoved
-    await httpInstance.get(`/get_works?author_id=${scholarID}&status=true`).then((res) => {
-        if (res.data.error === 0) {
-            scholarStore.essayList = res.data.result;
-        }
-    });
-    //removed
-    await httpInstance.get(`/get_works?author_id=${scholarID}&status=false`).then((res) => {
-        if (res.data.error === 0) {
-            scholarStore.removedEssayList = res.data.result;
-        }
-    });
-}
-const loading = () => {
-    essayList.value = scholarStore.removedEssayList;
-    displayEssays.value = essayList.value.slice(0,5);
-    essayNum.value = scholarStore.removedEssayList.length;
 }
 
 </script>
