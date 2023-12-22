@@ -50,17 +50,17 @@
     <el-dialog
         title="引用"
         v-model="citeDialogVisible"
-        width="40%"
+        width="50%"
         >
         <div>引用格式：</div>
             <div>
-                <el-button @click="changeFormat(format)" v-for="format in ['IEEE','GB/T7714','BibText','Chicago']" :key="format">{{ format }}</el-button>
+                <el-button @click="changeFormat(format_)" v-for="format_ in ['IEEE','GB/T7714','BibText','Chicago']" :key="format_">{{ format_ }}</el-button>
                 <!-- <span></span> -->
             </div>
         <div class="citeContent">{{ citeString }}</div>
         <div class="dialog-footer">
             <el-button @click="citeDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="copyCiteString(citeString);citeDialogVisible = false">复 制</el-button>
+            <el-button type="primary" @click="copyCiteString(citeString)">复 制</el-button>
         </div>
     </el-dialog>
     <!-- 收藏对话框 -->
@@ -106,11 +106,11 @@ export default {
             citeDialogVisible: false,
             collectionDialogVisible: false,
             addCollectionVisible:false,
-            citeString: 'yinyongshishisshishiq[1]',
-            citeStringIEEE: 'yinyongshishisshishiq[1]',
-            citeStringGB: 'yinyongshishisshishiq[1]',
-            citeStringBib: 'yinyongshishisshishiq[1]',
-            citeStringChicago: 'yinyongshishisshishiq[1]',
+            citeString: '',
+            citeStringIEEE: '',
+            citeStringGB: '',
+            citeStringBib: '',
+            citeStringChicago: '',
             collectionId:0,
             collectionName: null,
             referenced_works_num: 0,
@@ -174,26 +174,26 @@ export default {
             this.citeDialogVisible = true;
             httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=IEEE`).then((res) => {
                 console.log("get IEEE citation:",res);
-                this.citeString = res.data.result;
-                this.citeStringIEEE = res.data.result;
+                this.citeString = res.result;
+                this.citeStringIEEE = res.result;
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
             httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
                 console.log("get GB citation:",res);
-                this.citeStringGB = res.data.result;
+                this.citeStringGB = res.result;
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
             httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
                 console.log("get Bib citation:",res);
-                this.citeStringBib = res.data.result;
+                this.citeStringBib = res.result;
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
             httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
                 console.log("get Chicago citation:",res);
-                this.citeStringChicago = res.data.result;
+                this.citeStringChicago = res.result;
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
@@ -222,7 +222,7 @@ export default {
             } else {
                 this.$message.error("引用格式为空");
             }
-            citeDialogVisible = false;
+            this.citeDialogVisible = false;
         },
         async downloadPDF(pdfUrl) {//需要注释掉main.js中的mock引用才能打开下载的pdf文件
             const response = await axios.get(pdfUrl,{
