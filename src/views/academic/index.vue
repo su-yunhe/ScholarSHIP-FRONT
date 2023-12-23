@@ -37,8 +37,8 @@
         </div>
         <div class="essay-operation">
             <el-tag class="op-share" @click="getCitation"><el-icon><Link /></el-icon>引用</el-tag>
-            <a :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
-            <el-tag class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
+            <a v-if="essay.primary_location.pdf_url!=null" :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
+            <el-tag v-if="essay.primary_location.pdf_url!=null" class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
             <a :href="essay.primary_location?essay.primary_location.landing_page_url:null" target="_blank" ><el-tag class="op-read" type="danger"><el-icon><View /></el-icon>阅读</el-tag></a>
             <el-tag class="op-collection" @click="essayCollection" type="warning"><el-icon><Star /></el-icon>收藏</el-tag>
         </div>
@@ -253,19 +253,21 @@ export default {
             this.collectionName = null;
             this.addCollectionVisible = false;
         },
-        getEssayDetail(work_id, author_id){
-            httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${author_id}`).then((res) => {
-                console.log("get essay detail:",res);
+        getEssayDetail(work_id, user_id){
+            httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${user_id}`).then((res) => {
+                console.log("get essay detail:",res,res.result.doi.split('/'));
                 this.essay = res.result;
                 this.loadingTag = false;
                 this.referenced_works_num = 0;
                 this.related_works_num = 0;
+                let doi = this.essay.doi;
+                this.essay.doi = doi.split('/')[3]+'/'+doi.split('/')[4];
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
         },
-        getReferencedAndRelated(work_id, author_id){
-            httpInstance.get(`/get_referenced_related?work_id=${work_id}&user_id=${author_id}`).then((res) => {
+        getReferencedAndRelated(work_id, user_id){
+            httpInstance.get(`/get_referenced_related?work_id=${work_id}&user_id=${user_id}`).then((res) => {
                 console.log("get referenced and related:",res);
                 this.essay.referenced_works = res.result.referenced_works;
                 this.essay.related_works = res.result.related_works;
@@ -285,10 +287,10 @@ export default {
     mounted(){
         this.loadingTag = true;
         let work_id = this.$route.path.split("/")[2];
-        let author_id = "A5023888392";
-        this.getEssayDetail(work_id, author_id);
+        let user_id = 1;
+        this.getEssayDetail(work_id, user_id);
         
-        this.getReferencedAndRelated(work_id, author_id);
+        this.getReferencedAndRelated(work_id, user_id);
         console.log("essay:",this.essay);
     },
 }

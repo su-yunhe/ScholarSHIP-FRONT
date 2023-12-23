@@ -8,12 +8,12 @@
    
   <script>
   import {useScholarStore} from '../../stores/scholar'
-  // const scholarStore = useScholarStore();
   export default {
     name: 'links',
     components: { },
     data() {
       return {
+        monitoredRoute: null,
         scholarStore : useScholarStore(),
         g_loading: true,
         demoname: '---',
@@ -39,8 +39,10 @@
     created() {
     },
     mounted() {
-      this.demoname = this.$route.params.demoname;
-      this.setGraphData();
+      setTimeout(()=>{
+        this.demoname = this.$route.params.demoname;
+        this.setGraphData();
+        }, 1000);
     },
     methods: {
         setGraphData() {
@@ -55,6 +57,7 @@
         onNodeClick(nodeObject){
             console.log('点击节点:',nodeObject);
             //可以借此跳转门户
+            this.$router.push(`/scholar/${nodeObject.id}`);
         },
         onLineClick(lineObject, linkObject, $event) {
           console.log('点击连线:', lineObject);
@@ -71,8 +74,8 @@
             }
         }
         },
-    }
-  };
+    },
+}
   </script>
    
   <!-- Add "scoped" attribute to limit CSS to this component only -->
