@@ -16,7 +16,7 @@
                   <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
                 </div>
                 <div style="padding-top: 10px;">
-                  <div class="input__container">
+                  <div class="input__container" onmouseover=" this.style.scale='1.1';" onmouseout="this.style.scale='1.0';" tabindex="0">
                     <div class="shadow__input"></div>
                     <span id="dropdown_span">
                       <el-dropdown @command="handleCommand">
@@ -32,7 +32,7 @@
                         </template>
                       </el-dropdown>
                     </span>
-                    <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索" style="font-weight:bold;font-size: 18px;">
+                    <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索" style="font-weight:bold;font-size: 18px;" onmouseover=" this.style.outline='3px solid #4995f8';" onmouseout="this.style.outline='2px solid grey';">
                     <button class="input__button__shadow" id="search_button" @click="search">
                       <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
                         <path d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z" fill-rule="evenodd" fill="#17202A"></path>
@@ -161,7 +161,7 @@ const search = () => {
   transform-style: preserve-3d;
   // transform: rotateX(15deg) rotateY(-20deg);
   perspective: 500px;
-  transition: 0.7s ease-in-out;
+  transition: 0.5s ease-in-out;
 
   z-index: 10;
 }
@@ -219,11 +219,12 @@ const search = () => {
   width: 100%;
   height: 80%;
   border-radius: 20px;
-  outline: 2px solid #4995f8;
+  outline: 2px solid grey;
   border: none;
   padding: 8px;
   position: relative;
   z-index: 999;
+  transition: 0.3s;
 }
 }
 

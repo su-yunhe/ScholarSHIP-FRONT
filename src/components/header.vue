@@ -3,6 +3,8 @@ import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const router = useRouter()
+// 不显示搜索框的路径
+const excludedPaths = ['/intro', '/login', '/search', '/AdvancedSearch'];
 console.log(userStore.userInfo)
 
 const toLogin = () => {
@@ -25,11 +27,19 @@ const toHomePage = () => {
 const toUserCenter = () => {
   router.replace({ path: '/UserCenter' })
 }
+
+const toAdvancedSearch = () => {
+  router.replace({ path: '/AdvancedSearch' })
+}
+
+const toSearch = () => {
+  router.replace({ path: '/search' })
+}
 </script>
 
 <template>
   <div class="header">
-    <div class="logo" @click="toHomePage()">
+    <div class="logo" style="cursor: pointer;" @click="toHomePage()">
       <span style="color: rgba(97, 134, 243); margin-left: 2px;">S</span>
       <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
@@ -42,11 +52,22 @@ const toUserCenter = () => {
       <span style="color: rgba(200, 65, 48);margin-left: 2px;">I</span>
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
     </div>
-    <div class="menu1">高级搜索</div>
+    <div class="menu1">
+      <button v-if="router.currentRoute.value.fullPath!= '/AdvancedSearch'" class="btn"  @click="toAdvancedSearch()">
+        <span class="box">
+          高级搜索
+        </span>
+      </button>
+      <button v-else class="btn"  @click="toSearch()">
+        <span class="box">
+          普通搜索
+        </span>
+      </button>
+    </div>
 
 
     <div class="search">
-      <div class="form-control">
+      <div v-if="!excludedPaths.includes(router.currentRoute.value.fullPath)" class="form-control">
         <input class="input input-alt" placeholder="搜索......" required="" type="text">
         <span class="input-border input-border-alt"></span>
       </div>
@@ -110,7 +131,7 @@ const toUserCenter = () => {
     // background-color: pink;
   }
 
-  .logo :hover{
+  .logo :hover {
     cursor: pointer;
   }
 
@@ -120,6 +141,84 @@ const toUserCenter = () => {
     text-align: center;
     // font-weight: bold;
     font-size: 15px;
+
+    .btn {
+      margin-top: 5px;
+
+      .box {
+        width: 100%;
+        height: auto;
+        float: left;
+        transition: .1s linear;
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        margin: 0 5px;
+        background: transparent;
+        text-transform: uppercase;
+        font-weight: 550;
+        border-radius: 10px;
+
+      }
+    }
+
+    // background-color: rgb(255, 192, 192);
+
+
+    .box:before {
+      position: absolute;
+      content: '';
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+    }
+
+    .box:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+    }
+
+    .box:hover {
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+    }
+
+    // .box:hover:before {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .3s;
+    // }
+
+    // .box:hover:after {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .5s;
+    // }
+
+    button {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+    }
   }
 
   .search {

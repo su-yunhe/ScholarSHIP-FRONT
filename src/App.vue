@@ -19,7 +19,7 @@ const logout = () => {
     </transition>
   </router-view> -->
 
-  <Transition name="fade" mode="out-in">
+  <Transition name="fade_main" mode="out-in">
     <RouterView />
   </Transition>
 </template>
@@ -30,13 +30,13 @@ header {
   max-height: 100vh;
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.fade_main-enter-active,
+.fade_main-leave-active {
   transition: all 0.7s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.fade_main-enter-from,
+.fade_main-leave-to {
   opacity: 0;
 }
 
