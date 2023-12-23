@@ -68,15 +68,22 @@ const format = ref('IEEE');
 
 onMounted(() => {
     essayNum.value = 0;
-  setTimeout(()=>{
-        console.log("academic paper:",scholarStore.essayList);
-        essayList.value = scholarStore.essayList;
-        displayEssays.value = essayList.value.slice(0,5);
-        
-        essayNum.value = scholarStore.essayList.length;
-    }, 3000);
+    if(scholarStore.essayList.length == 0){
+        setTimeout(()=>{
+            console.log("academic paper:",scholarStore.essayList);
+            loading();
+        }, 3000);
+    }
+    else{
+        loading();
+    }
+    
 });
-
+const loading = () => {
+    essayList.value = scholarStore.essayList;
+    displayEssays.value = essayList.value.slice(0,5);
+    essayNum.value = scholarStore.essayList.length;
+}
 const currentPageChange = (value) => {
     displayEssays.value = essayList.value.slice( (value-1)*5, 5+(value-1)*5);
     currentPage.value = value;

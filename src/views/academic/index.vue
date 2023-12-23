@@ -1,5 +1,10 @@
 <template>
-    <div class="academicContainer">
+    <div class="academicContainer"
+        v-loading="loadingTag"
+        element-loading-text="拼命加载中"
+        element-loading-background="white"
+    >
+    <div v-if="!loadingTag">
         <div class="essay-name">{{ essay.title }}</div>
         <div class="essay-author">
             <span v-for="authorship in essay.authorships" :key="authorship" @click="enterScholarPortal(authorship)">{{ authorship.author.display_name }},</span>
@@ -45,6 +50,8 @@
             <div v-if="related_works_num!=0">相关文章</div>
             <a v-for="work in essay.related_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
         </div>
+    </div>
+        
     </div>
     <!-- 引用对话框 -->
     <el-dialog
@@ -103,6 +110,7 @@ export default {
     },
     data() {
         return {
+            loadingTag: true,
             citeDialogVisible: false,
             collectionDialogVisible: false,
             addCollectionVisible:false,
@@ -117,28 +125,6 @@ export default {
             related_works_num:0,
             essay: {},
             format: 'IEEE',
-            // essay:{
-            //     id:1,
-            //     title:'NLP (natural language processing) for NLP (naturallanguage programming)',
-            //     year:2023,
-            //     n_citation:10,
-            //     url:'xx',
-            //     doi:'10.1007/11671299 34',
-            //     abstract:'Natural Language Processing holds great promise for making computer interfaces that are easier to use for people, sincepeople will (hopefully) be able to talk to the computer in their owm language, rather than learn a specialized language otcomputer commands For proeramming. however. thenecessity of a formal proerammine laneuaee for communicating witha computer has always been taken for granted. We would',
-            //     keywords:['xdxxxx','sssddsds'],
-            //     authors:[
-            //         {
-            //             name:'Rada Mihalcea'
-            //         },
-            //         {
-            //             name:'Rada Mihalcea'
-            //         },
-            //         {
-            //             name:'Rada Mihalcea'
-            //         },
-            //     ],
-            //     institution:'CICLing',
-            // },
             collections:[
                 {
                     id:1,
@@ -271,8 +257,7 @@ export default {
             httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${author_id}`).then((res) => {
                 console.log("get essay detail:",res);
                 this.essay = res.result;
-                // this.referenced_works_num = this.essay.referenced_works.length;
-                // this.related_works_num = this.essay.related_works.length;
+                this.loadingTag = false;
                 this.referenced_works_num = 0;
                 this.related_works_num = 0;
             }).catch((error)=>{
@@ -298,12 +283,14 @@ export default {
         }
     },
     mounted(){
+        this.loadingTag = true;
         let work_id = this.$route.path.split("/")[2];
         let author_id = "A5023888392";
         this.getEssayDetail(work_id, author_id);
+        
         this.getReferencedAndRelated(work_id, author_id);
         console.log("essay:",this.essay);
-    }
+    },
 }
 </script>
 
