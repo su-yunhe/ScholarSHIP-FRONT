@@ -95,17 +95,9 @@
               <div class="info1">
                 <el-row>
                   <el-col :span="12">
-                    <div class="author">
+                    <div>
                       <span style="margin-left:30px; font-size: 12px;">作者：</span>
-                      <span v-for="a in item.author" style="
-                  border: solid 1px;
-                  color: rgb(45,118,80);
-                  margin: 15px 5px 0 0 ;
-                  padding: 0 5px 0 5px;
-                  border-radius: 5px;
-                  /* background-color: gray; */
-                  font-size: 12px;  
-                " @click=gotoAuthor(a)>{{ a }}</span>
+                      <span class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a }}</span>
                     </div>
                   </el-col>
                   <el-col :span="12">
@@ -120,14 +112,14 @@
                   </el-col>
                 </el-row>
               </div>
-              <div style="height:30px; margin-top: 5px; margin-left:30px; font-size: 12px; color: #747474;">
-                <span>摘要：</span>
+              <div
+                style="max-height: 35px; max-width: 95%; margin-top: 5px; margin-left:30px; font-size: 12px; color: #747474; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                 {{ item.abstract }}
               </div>
-              <div style="margin-left: 27px; margin-top:8px; background-color: #ff4242;">
 
-                <el-button size="small" style="
-background-color: transparent;
+
+              <div style="margin-left: 27px; margin-top:8px;">
+                <el-button size="small" type="primary" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
@@ -137,8 +129,7 @@ text-align: left;
                     <Link />
                   </el-icon>
                 </el-button>
-                <el-button size="small" style="
-background-color: transparent;
+                <el-button size="small" type="success" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
@@ -148,8 +139,7 @@ text-align: left;
                     <DataAnalysis />
                   </el-icon>
                 </el-button>
-                <el-button size="small" style="
-background-color: transparent;
+                <el-button size="small" type="success" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
@@ -159,8 +149,7 @@ text-align: left;
                     <FolderAdd />
                   </el-icon>
                 </el-button>
-                <el-button size="small" style="
-background-color: transparent;
+                <el-button size="small" type="warning" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
@@ -170,8 +159,7 @@ text-align: left;
                     <Position />
                   </el-icon>
                 </el-button>
-                <el-button size="small" style="
-background-color: transparent;
+                <el-button size="small" type="warning" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
@@ -181,8 +169,6 @@ text-align: left;
                     <Download />
                   </el-icon>
                 </el-button>
-
-
                 <span style="
 float: right;
 text-align: right;
@@ -485,7 +471,7 @@ const getList = async () => {
     },
   ];
   for (var i = 0; i < items.value.length; i++) {
-    items.value[i].abstract = items.value[i].abstract.substr(0, 340) + "...";
+    items.value[i].abstract = "摘要：" + items.value[i].abstract;
   }
 };
 const getIns = (name) => {
@@ -511,10 +497,12 @@ onMounted(async () => {
 </script>
 <style scoped lang="scss">
 .searchBox {
-  height: 60px;
+  height: 90px;
   display: flex;
-  margin: 40px 20px 20px 20px;
-  // box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  margin: 40px 0px 20px 0px;
+  background-color: rgb(45, 118, 80);
+
+  box-shadow: rgba(45, 118, 80, 10) 0px 2px 8px;
   // border-bottom-left-radius: 5px;
   /* 左下角 */
   //  border-bottom-right-radius: 5px;
@@ -528,8 +516,8 @@ onMounted(async () => {
     font-size: 15px;
 
     .btn {
-      margin-top: 16px;
-      margin-left: 100px;
+      margin-top: 20px;
+      margin-left: 0px;
 
       .box {
         width: 100%;
@@ -545,8 +533,9 @@ onMounted(async () => {
         background: transparent;
         text-transform: uppercase;
         font-weight: 550;
-        border-radius: 10px;
-
+        border-radius: 30px;
+        // color: white;
+        background-color: rgb(195, 209, 197);
       }
     }
 
@@ -947,7 +936,7 @@ onMounted(async () => {
     }
 
     .res {
-      height: 135px;
+      height: 145px;
       border: 1px;
       // background-color: pink;
       box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
@@ -969,6 +958,18 @@ onMounted(async () => {
 
       .author {
         // background-color: greenyellow;
+        border: solid 1px;
+        color: rgb(45, 118, 80);
+        margin: 15px 5px 0 0;
+        padding: 0 5px 0 5px;
+        border-radius: 5px;
+        /* background-color: gray; */
+        font-size: 12px;
+      }
+
+      .author :hover {
+        background-color: rgb(45, 118, 80);
+        color: white;
       }
     }
   }
