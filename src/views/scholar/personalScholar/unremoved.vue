@@ -9,8 +9,9 @@
             <div class="essay-indicators">
                 <span class="essay-indicator">被引用数：{{essay.cited_by_count}}</span>
                 <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
-                <span class="essay-indicator-op" @click="remove(essay)"><el-icon><Delete /></el-icon>下架</span>
-                <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
+                <span class="essay-indicator-op" @click="removeDialog(essay)"><el-icon><Delete /></el-icon>下架</span>
+                <a :href="essay.pdf_url" target="_blank"><span class="essay-indicator-op"><el-icon><Reading /></el-icon>pdf预览</span></a>
+                <!-- <span class="essay-indicator-op" @click="download(essay.pdf_url)"><el-icon><Download /></el-icon>下载</span> -->
                 <span class="essay-indicator-op" @click="getCitation(essay)"><el-icon><Link /></el-icon>引用</span>
                 <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
                 
@@ -32,6 +33,22 @@
                 <el-button type="primary" @click="copyCiteString(citeString)">复 制</el-button>
             </div>
         </el-dialog>
+        <!--下架对话框-->
+        <el-dialog
+            v-model="removeDialogVisible"
+            title="提示"
+            width="30%"
+        >
+        <span>是否下架该文献</span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="removeDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="remove">
+                确认
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
         <el-pagination
             v-if="essayNum!=0"
             @current-change="currentPageChange"
@@ -50,6 +67,8 @@ import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../../stores/scholar'
 const scholarStore = useScholarStore();
 import httpInstance from '@/utils/http'
+import axios from 'axios'
+import { treeEmits } from 'element-plus/es/components/tree-v2/src/virtual-tree';
 const router = useRouter()
 const IDForm = ref({
     scholarID: 'A5023888391',
@@ -66,6 +85,8 @@ const citeStringGB = ref('');
 const citeStringBib = ref('');
 const citeStringChicago = ref('');
 const format = ref('IEEE');
+let removeDialogVisible = ref(false);
+const removeEssay= ref({});
 
 onMounted(() => {
     essayNum.value = 0;
@@ -97,11 +118,9 @@ const enterScholarPortal = (author) => {//进入相应学者门户
     let scholar_id = author.id.split('/')[3]
     router.push(`/scholar/${scholar_id}`);
 }
-const download = (essay) => {//下载文献
-    console.log('download:',essay);
-}
-const downloadPDF = async(pdfUrl) => {//需要注释掉main.js中的mock引用才能打开下载的pdf文件
-    const response = await axios.get(pdfUrl,{
+
+const download = async(pdf_url) => {//下载文献
+    const response = await axios.get(pdf_url,{
         responseType: 'blob', // 必须指定为blob类型才能下载
     });
     console.log("download",response);
@@ -181,17 +200,21 @@ const copyCiteString = (content) => {
 const collection = (essay) => {//收藏文献
     console.log('collection:',essay);
 }
-const remove = (essay) => {//下架文献
-    console.log('remove:',essay,essay.id.split('/')[3]);
-    let work_id = essay.id.split('/')[3];
+const removeDialog = (essay) => {//下架文献
+    removeEssay.value = essay;
+    removeDialogVisible.value = true;
+}
+const remove = () => {//下架文献
+    let work_id = removeEssay.value.id.split('/')[3];
     httpInstance.post("/change_status", JSON.stringify({work_id: work_id})).then(res => {
         console.log("change_status:", res);
-        essayList.value = essayList.value.filter(item=>item != essay);
+        essayList.value = essayList.value.filter(item=>item != removeEssay.value);
         displayEssays.value = essayList.value.slice(0,5);
         essayNum.value = essayList.value.length;
         scholarStore.essayList = essayList.value;
-        scholarStore.removedEssayList.push(essay);
+        scholarStore.removedEssayList.push(removeEssay.value);
     })
+    removeDialogVisible.value = false;
 }
 const loading = () => {
     essayList.value = scholarStore.essayList;
