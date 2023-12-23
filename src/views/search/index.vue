@@ -3,7 +3,7 @@
     <div class="menu1">
       <button class="btn" @click="gotoAdvancedSearch()">
         <span class="box">
-          <el-icon style="position: relative; top: 2px">
+          <el-icon style="position: relative; top: 2px;">
             <Search />
           </el-icon>
           高级搜索
@@ -11,55 +11,35 @@
       </button>
     </div>
     <div class="search">
-      <div style="padding-top: 10px; margin-left: 50px">
+      <div style="padding-top: 10px; margin-left: 50px;">
         <div class="input__container">
           <div class="shadow__input"></div>
           <span id="dropdown_span">
             <el-dropdown @command="handleCommand">
-              <span class="el-dropdown-link" style="font-weight: 10px; font-size: 14px">
+              <span class="el-dropdown-link" style="font-weight:10px;font-size: 14px;">
                 {{ ok }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="a" @click="ok = '文献'"
-                    >文献</el-dropdown-item
-                  >
-                  <el-dropdown-item command="b" @click="ok = '学者'"
-                    >学者</el-dropdown-item
-                  >
-                  <el-dropdown-item command="c" @click="ok = '机构'"
-                    >机构</el-dropdown-item
-                  >
+                  <el-dropdown-item command="a" @click="ok = '文献'">文献</el-dropdown-item>
+                  <el-dropdown-item command="b" @click="ok = '学者'">学者</el-dropdown-item>
+                  <el-dropdown-item command="c" @click="ok = '机构'">机构</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </span>
-          <input
-            @keydown.enter="search"
-            type="text"
-            name="text"
-            id="text"
-            class="input__search"
-            placeholder="在此处搜索"
-            style="font-size: 14px"
-          />
+          <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索"
+            style="font-size: 14px;">
           <button class="input__button__shadow" id="search_button" @click="search">
-            <svg
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              height="20px"
-              width="20px"
-            >
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
               <path
                 d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z"
-                fill-rule="evenodd"
-                fill="#17202A"
-              ></path>
+                fill-rule="evenodd" fill="#17202A"></path>
             </svg>
           </button>
         </div>
       </div>
+
     </div>
   </div>
   <div class="result">
@@ -74,62 +54,28 @@
                   <el-collapse-item title="日期" name="1">
                     <el-row :gutter="6">
                       <el-col :span="11">
-                        <el-select
-                          v-model="minyear"
-                          mutiple
-                          placeholder="最早年份"
-                          style="margin: 5px 0 5px 5px"
-                        >
-                          <el-option
-                            v-for="y in years"
-                            :label="y"
-                            :value="y"
-                            :key="y"
-                          ></el-option>
+                        <el-select v-model="minyear" mutiple placeholder="最早年份" style="margin: 5px 0 5px 5px">
+                          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
                         </el-select>
                       </el-col>
                       <el-col :span="2">
                         <div style="text-align: center; line-height: 40px">~</div>
                       </el-col>
                       <el-col :span="11">
-                        <el-select
-                          v-model="maxyear"
-                          mutiple
-                          placeholder="最晚年份"
-                          style="margin: 5px 5px 5px 0"
-                        >
-                          <el-option
-                            v-for="y in years"
-                            :label="y"
-                            :value="y"
-                            :key="y"
-                          ></el-option>
+                        <el-select v-model="maxyear" mutiple placeholder="最晚年份" style="margin: 5px 5px 5px 0">
+                          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
                         </el-select>
                       </el-col>
                     </el-row>
                   </el-collapse-item>
-                  <el-collapse-item
-                    title="作者"
-                    name="2"
-                    v-show="!(defaultType === '作者')"
-                  >
-                    <div v-for="i in authorList" style="font-size: 13px">
+                  <el-collapse-item title="作者" name="2">
+                    <div v-for="i in authorList" style="font-size: 13px;">
                       <el-checkbox @click="getIns(i.name)" />
                       {{ i.name }}&nbsp({{ i.count }})
                     </div>
                   </el-collapse-item>
-                  <el-collapse-item
-                    title="机构"
-                    name="3"
-                    v-show="!(defaultType === '机构')"
-                  >
-                    <div v-for="i in institutionList" style="font-size: 13px">
-                      <el-checkbox @click="getIns(i.name)" />
-                      {{ i.name }}&nbsp({{ i.count }})
-                    </div>
-                  </el-collapse-item>
-                  <el-collapse-item title="主题" name="4">
-                    <div v-for="i in conceptList" style="font-size: 13px">
+                  <el-collapse-item title="主题" name="3">
+                    <div v-for="i in conceptList" style="font-size: 13px;">
                       <el-checkbox @click="getIns(i.name)" />
                       {{ i.name }}&nbsp({{ i.count }})
                     </div>
@@ -144,28 +90,9 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div
-                class="title"
-                @click="toDocument(item.id)"
-                v-show="defaultType === '文献'"
-              >
-                {{ item.title }}
-              </div>
-              <div
-                class="title"
-                @click="toAuthor(item.id)"
-                v-show="defaultType === '作者'"
-              >
-                {{ item.name }}
-              </div>
-              <div
-                class="title"
-                @click="toInstitution(item.id)"
-                v-show="defaultType === '机构'"
-              >
-                {{ item.name }}
-              </div>
-              <div v-show="defaultType === '文献'">
+              <div class="title"> {{ item.title }}</div>
+              <!-- <div>{{ item.title }}</div> -->
+              <div class="info1">
                 <el-row>
                   <el-col :span="12">
                     <div>
@@ -174,19 +101,14 @@
                     </div>
                   </el-col>
                   <el-col :span="12">
-                    <span style="margin-left: 30px; font-size: 12px">关键词：</span>
-                    <span
-                      v-for="k in item.keywords"
-                      style="
-                        background-color: rgb(45, 118, 80);
-                        margin: 15px 5px 0 0;
-                        padding: 0 5px 0 5px;
-                        border-radius: 5px;
-                        color: rgb(255, 255, 255);
-                        font-size: 12px;
-                      "
-                      >{{ k }}</span
-                    >
+                    <span style="margin-left:30px; font-size: 12px;">关键词：</span>
+                    <span v-for="k in item.keywords" style="
+                  background-color: rgb(45,118,80);
+                  margin: 15px 5px 0 0 ;
+                  padding: 0 5px 0 5px;
+                  border-radius: 5px;
+                  color: rgb(255, 255, 255);
+                  font-size: 12px;">{{ k }}</span>
                   </el-col>
                 </el-row>
               </div>
@@ -244,106 +166,33 @@ float: left;
 text-align: left;
 " @click="pdf(item.pdf)">
                   下载<el-icon>
-
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 150px;
-                  "
-                >
->>>>>>> eebbb4ef13d8c74dec851e7fee087afc380fa28b
+                    <Download />
+                  </el-icon>
+                </el-button>
+                <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 150px;
+">
                   被引次数：
                   <span style="color: #2d94d4">
                     {{ item.cite }}
                   </span>
                 </span>
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 50px;
-                  "
-                >
+                <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 50px;
+">
                   发表时间：
                   <span style="color: #2d94d4">
                     {{ item.date }}
-                  </span>
-                </span>
-              </div>
-              <div
-                style="margin-left: 27px; margin-top: 8px; background-color: #ff4242"
-                v-show="defaultType === '作者'"
-              >
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 150px;
-                  "
-                >
-                  文献数：
-                  <span style="color: #2d94d4">
-                    {{ item.works_count }}
-                  </span>
-                </span>
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 50px;
-                  "
-                >
-                  被引次数：
-                  <span style="color: #2d94d4">
-                    {{ item.cite }}
-                  </span>
-                </span>
-              </div>
-              <div
-                style="margin-left: 27px; margin-top: 8px; background-color: #ff4242"
-                v-show="defaultType === '机构'"
-              >
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 150px;
-                  "
-                >
-                  文献数：
-                  <span style="color: #2d94d4">
-                    {{ item.works_count }}
-                  </span>
-                </span>
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 50px;
-                  "
-                >
-                  被引次数：
-                  <span style="color: #2d94d4">
-                    {{ item.cite }}
                   </span>
                 </span>
               </div>
@@ -357,13 +206,8 @@ text-align: left;
   <div>
     <el-divider></el-divider>
     <div class="footer">
-      <el-pagination
-        background
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="pageFullLength"
-      />
+      <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        :total="pageFullLength" />
     </div>
   </div>
 </template>
@@ -371,13 +215,13 @@ text-align: left;
 import { ref, watchEffect, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
-const ok = ref("文献");
-const defaultType = ref("机构");
+const value = ref("");
 const input = ref("");
+const lazyValue = ref("");
 const items = ref([]);
 const minyear = ref();
 const maxyear = ref();
-const activeName = ref("1");
+const activeName = ref('1')
 const years = ref([
   1999,
   2000,
@@ -421,100 +265,83 @@ const paginatedData = computed(() => {
 const getList = async () => {
   pageFullLength.value = 7;
   items.value = [
-    // {
-    //   id: "W2160378127",
-    //   title:
-    //     "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-    //   abstract:
-    //     "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-    //   organization: "Oxford University Press",
-    //   author: ["Kazutaka Katoh", "Daron M. Standley"],
-    //   cite: 28654,
-    //   date: "2013-01-16",
-    //   keywords: ["sequence"],
-    //   source: "Molecular Biology and Evolution",
-    // },
-    // {
-    //   id: "W2160378127",
-    //   title:
-    //     "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-    //   abstract:
-    //     "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-    //   organization: "Oxford University Press",
-    //   author: ["Kazutaka Katoh", "Daron M. Standley"],
-    //   cite: 28654,
-    //   date: "2013-01-16",
-    //   keywords: ["sequence"],
-    //   source: "Molecular Biology and Evolution",
-    // },
-    // {
-    //   id: "W2160378127",
-    //   title:
-    //     "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-    //   abstract:
-    //     "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-    //   organization: "Oxford University Press",
-    //   author: ["Kazutaka Katoh", "Daron M. Standley"],
-    //   cite: 28654,
-    //   date: "2013-01-16",
-    //   keywords: ["sequence"],
-    //   source: "Molecular Biology and Evolution",
-    // },
-    // {
-    //   id: "W2160378127",
-    //   title:
-    //     "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-    //   abstract:
-    //     "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-    //   organization: "Oxford University Press",
-    //   author: ["Kazutaka Katoh", "Daron M. Standley"],
-    //   cite: 28654,
-    //   date: "2013-01-16",
-    //   keywords: ["sequence"],
-    //   source: "Molecular Biology and Evolution",
-    // },
-    // {
-    //   id: "W2160378127",
-    //   title:
-    //     "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-    //   abstract:
-    //     "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-    //   organization: "Oxford University Press",
-    //   author: ["Kazutaka Katoh", "Daron M. Standley"],
-    //   cite: 28654,
-    //   date: "2013-01-16",
-    //   keywords: ["sequence"],
-    //   source: "Molecular Biology and Evolution",
-    // },
-    // {
-    //   id: "W2160378127",
-    //   title:
-    //     "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-    //   abstract:
-    //     "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-    //   organization: "Oxford University Press",
-    //   author: ["Kazutaka Katoh", "Daron M. Standley"],
-    //   cite: 28654,
-    //   date: "2013-01-16",
-    //   keywords: ["sequence"],
-    //   source: "Molecular Biology and Evolution",
-    // },
-    // {
-    //   id: "A5088635085",
-    //   name: "Xiafan Gan",
-    //   cite: 101,
-    //   works_count: 10,
-    //   institution: "Shanghai Maritime University",
-    //   concept: "Engineering",
-    // },
     {
-      id: "I4210166468",
-      name: "Beijing Aerospace Flight Control Center",
-      country: "China",
-      city: "Beijing",
-      cite: 10098,
-      works_count: 2224,
-      concept: ["Computer science", "Engineering", "Physics"],
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
     },
   ];
   institutionList.value = [
@@ -648,7 +475,7 @@ const getList = async () => {
   }
 };
 const getIns = (name) => {
-  console.log(name);
+  console.log(name)
 };
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
@@ -660,12 +487,8 @@ const toDocument = (id) => {
 const gotoAdvancedSearch = () => {
   router.push({ name: "advancedSearch" });
 };
-const toAuthor = (id) => {
-  var str = "/scholar/" + id;
-  router.push({ path: str });
-};
-const toInstitution = (id) => {
-  var str = "/institution/" + id;
+const gotoAuthor = (name) => {
+  var str = "/scholar/" + name;
   router.push({ path: str });
 };
 onMounted(async () => {
@@ -700,7 +523,7 @@ onMounted(async () => {
         width: 100%;
         height: auto;
         float: left;
-        transition: 0.1s linear;
+        transition: .1s linear;
         position: relative;
         display: block;
         overflow: hidden;
@@ -710,19 +533,15 @@ onMounted(async () => {
         background: transparent;
         text-transform: uppercase;
         font-weight: 550;
-<<<<<<< HEAD
         border-radius: 30px;
         // color: white;
         background-color: rgb(195, 209, 197);
-=======
-        border-radius: 10px;
->>>>>>> eebbb4ef13d8c74dec851e7fee087afc380fa28b
       }
     }
 
     .box:before {
       position: absolute;
-      content: "";
+      content: '';
       left: 0;
       bottom: 0;
       height: 4px;
@@ -735,7 +554,7 @@ onMounted(async () => {
 
     .box:after {
       position: absolute;
-      content: "";
+      content: '';
       top: 0;
       left: 0;
       width: 100%;
@@ -832,6 +651,7 @@ onMounted(async () => {
       width: 60px;
     }
 
+
     // .shadow__input {
     //   content: "";
     //   position: absolute;
@@ -852,6 +672,7 @@ onMounted(async () => {
     //     radial-gradient(at 72% 91%, hsla(213, 75%, 75%, 1) 0px, transparent 50%);
     // }
 
+
     .input__button__shadow {
       cursor: pointer;
       border: none;
@@ -868,6 +689,7 @@ onMounted(async () => {
       background: rgba(255, 255, 255, 0.411);
     }
 
+
     .input__search {
       width: 1000px;
       height: 30px;
@@ -883,9 +705,7 @@ onMounted(async () => {
     }
 
     .input__search:hover {
-      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
-        rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
-        rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
       transition: 0.7s;
     }
 
@@ -1063,6 +883,7 @@ onMounted(async () => {
       box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
     }
 
+
     button {
       color: black;
       text-decoration: none;
@@ -1110,9 +931,7 @@ onMounted(async () => {
 
   .right {
     .res:hover {
-      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,
-        rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,
-        rgba(0, 0, 0, 0.07) 0px 16px 16px;
+      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
       transition: 0.2s;
     }
 
@@ -1135,8 +954,7 @@ onMounted(async () => {
         font-size: 19px;
       }
 
-      .info {
-      }
+      .info {}
 
       .author {
         // background-color: greenyellow;
@@ -1170,6 +988,7 @@ onMounted(async () => {
   text-align: left;
   margin-left: 10px;
   background-color: #fafafa;
+
 }
 
 .footer {
