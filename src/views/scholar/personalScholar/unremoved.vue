@@ -1,23 +1,56 @@
 <template>
     <div class="academicContent">
         <div class="essayNum">学者文献共<span>{{essayNum}}</span>篇</div>
-        <div class="essayBox" v-for="(essay, index) in displayEssays">
-            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.title}}</div>
+        <div class="essayBox" v-for="essay in displayEssays" :key="essay">
+            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.display_name}}</div>
             <div class="essayBox-author">
-                <span v-for="(author, key) in essay.authors" @click="enterScholarPortal(author)">{{author.name}},</span>
-            </div>
+                <span v-for="author in essay.authors" :key="author" @click="enterScholarPortal(author)">{{author.display_name}},</span>            </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
-                <span class="essay-indicator">被引用数：{{essay.n_citation}}</span>
-                <span class="essay-indicator">发表时间：{{essay.year}}</span>
-                <span class="essay-indicator-op" @click="remove(essay)"><el-icon><Delete /></el-icon>下架</span>
-                <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
-                <span class="essay-indicator-op" @click="cite(essay)"><el-icon><Link /></el-icon>引用</span>
+                <span class="essay-indicator">被引用数：{{essay.cited_by_count}}</span>
+                <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
+                <span class="essay-indicator-op" @click="removeDialog(essay)"><el-icon><Delete /></el-icon>下架</span>
+                <a :href="essay.pdf_url" target="_blank"><span class="essay-indicator-op"><el-icon><Reading /></el-icon>pdf预览</span></a>
+                <!-- <span class="essay-indicator-op" @click="download(essay.pdf_url)"><el-icon><Download /></el-icon>下载</span> -->
+                <span class="essay-indicator-op" @click="getCitation(essay)"><el-icon><Link /></el-icon>引用</span>
                 <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
                 
             </div>
         </div>
+        <!-- 引用对话框 -->
+        <el-dialog
+            title="引用"
+            v-model="citeDialogVisible"
+            width="50%"
+            >
+            <div>引用格式：</div>
+                <div>
+                    <el-button @click="changeFormat(format)" v-for="format in ['IEEE','GB/T7714','BibText','Chicago']" :key="format">{{ format }}</el-button>
+                </div>
+            <div class="citeContent">{{ citeString }}</div>
+            <div class="dialog-footer">
+                <el-button @click="citeDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="copyCiteString(citeString)">复 制</el-button>
+            </div>
+        </el-dialog>
+        <!--下架对话框-->
+        <el-dialog
+            v-model="removeDialogVisible"
+            title="提示"
+            width="30%"
+        >
+        <span>是否下架该文献</span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="removeDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="remove">
+                确认
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
         <el-pagination
+            v-if="essayNum!=0"
             @current-change="currentPageChange"
             :current-page.sync="currentPage"
             :page-size="5"
@@ -28,54 +61,165 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../../stores/scholar'
+const scholarStore = useScholarStore();
+import httpInstance from '@/utils/http'
+import axios from 'axios'
+import { treeEmits } from 'element-plus/es/components/tree-v2/src/virtual-tree';
+const router = useRouter()
+const IDForm = ref({
+    scholarID: 'A5023888391',
+    userID: 1,
+})
+const essayNum = ref();
+const displayEssays = ref([]); // 记得进入页面时初始化
+const essayList = ref([]);
+const currentPage = ref(1);
+let citeDialogVisible = ref(false);
+const citeString = ref('');
+const citeStringIEEE = ref('');
+const citeStringGB = ref('');
+const citeStringBib = ref('');
+const citeStringChicago = ref('');
+const format = ref('IEEE');
+let removeDialogVisible = ref(false);
+const removeEssay= ref({});
 
-export default {
-    name: 'academic',
-    components: {
-
-    },
-    data() {
-        return {
-            essayNum: 7,
-            displayEssays:[],//记得进入页面时初始化
-            essayList: [],
-            currentPage: 1,
-        }
-    },
-    methods:{
-        currentPageChange(value) {
-            this.displayEssays = this.essayList.slice( (value-1)*5, 5+(value-1)*5);
-            this.currentPage = value;
-            console.log(`当前页: ${value}`,this.displayEssays);
-        },
-        enterEssay(essay){//进入文献展示页
-            console.log('enter essay:',essay,essay.name);
-            this.$router.push('/academic');
-        },
-        enterScholarPortal(author){//进入相应学者门户
-            console.log('enter scholar portal:',author);
-        },
-        download(essay){//下载文献
-            console.log('download:',essay);
-        },
-        cite(essay){//生成文献引用格式
-            console.log('cite:',essay);
-        },
-        collection(essay){//收藏文献
-            console.log('collection:',essay);
-        },
-        remove(essay){//下架文献
-            console.log('remove:',essay);
-        },
-    },
-    created(){
-        const scholarStore = useScholarStore();
-        this.essayList = scholarStore.essayList;
-        this.essayNum = this.essayList.length;
-        this.displayEssays = this.essayList.slice(0,5);
+onMounted(() => {
+    essayNum.value = 0;
+    if(scholarStore.essayList.length == 0){
+        setTimeout(()=>{
+            console.log("unremoved academic paper:",scholarStore.essayList);
+            loading();
+        }, 3000);
     }
+    else{
+        loading();
+    }
+    
+});
+
+const currentPageChange = (value) => {
+    displayEssays.value = essayList.value.slice( (value-1)*5, 5+(value-1)*5);
+    currentPage.value = value;
+    console.log(`当前页: ${value}`,displayEssays.value);
+}
+const enterEssay = (essay) => {//进入文献展示页
+    console.log('enter essay:',essay,essay.id);
+    let essay_id = essay.id.split('/')[3]
+    console.log("essay_id:",essay_id)
+    router.push(`/academic/${essay_id}`);
+}
+const enterScholarPortal = (author) => {//进入相应学者门户
+    console.log('enter scholar portal:',author);
+    let scholar_id = author.id.split('/')[3]
+    router.push(`/scholar/${scholar_id}`);
+}
+
+const download = async(pdf_url) => {//下载文献
+    const response = await axios.get(pdf_url,{
+        responseType: 'blob', // 必须指定为blob类型才能下载
+    });
+    console.log("download",response);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'ScholarSHIP文献下载.pdf');
+    document.body.appendChild(link);
+    link.click();
+}
+
+const getCitation = (essay) => {//引用文献
+    let work_id = essay.id.split("/")[3];
+    citeDialogVisible.value = true;
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=IEEE`).then((res) => {
+        console.log("get IEEE citation:",res);
+        citeString.value = res.result;
+        citeStringIEEE.value = res.result;
+    }).catch((error)=>{
+        citeString.value = "未获取到该格式的引用";
+        citeStringIEEE.value = "未获取到该格式的引用";
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
+        console.log("get GB citation:",res);
+        citeStringGB.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+        citeStringGB.value = "未获取到该格式的引用";
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
+        console.log("get Bib citation:",res);
+        citeStringBib.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+        citeStringBib.value = "未获取到该格式的引用";
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
+        console.log("get Chicago citation:",res);
+        citeStringChicago.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+        citeStringChicago.value = "未获取到该格式的引用";
+    })
+}
+const changeFormat = (format_) => {
+    format.value = format_;
+    console.log('change format to:',format.value);
+    if(format.value === 'IEEE')
+        citeString.value = citeStringIEEE.value;
+    else if(format.value === 'GB/T7714')
+        citeString.value = citeStringGB.value;
+    else if(format.value === 'BibText')
+        citeString.value = citeStringBib.value;
+    else if(format.value === 'Chicago')
+        citeString.value = citeStringChicago.value;
+}
+const copyCiteString = (content) => {
+    let aux = document.createElement("input");
+    aux.setAttribute("value", content);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+    if (content !== null) {
+        ElMessage({
+            type: 'success',
+            message: '引用已复制至剪贴板',
+          })
+    } else {
+        ElMessage({
+            type: 'error',
+            message: '引用格式为空',
+          })
+    }
+    citeDialogVisible.value = false;
+}
+const collection = (essay) => {//收藏文献
+    console.log('collection:',essay);
+}
+const removeDialog = (essay) => {//下架文献
+    removeEssay.value = essay;
+    removeDialogVisible.value = true;
+}
+const remove = () => {//下架文献
+    let work_id = removeEssay.value.id.split('/')[3];
+    httpInstance.post("/change_status", JSON.stringify({work_id: work_id})).then(res => {
+        console.log("change_status:", res);
+        essayList.value = essayList.value.filter(item=>item != removeEssay.value);
+        displayEssays.value = essayList.value.slice(0,5);
+        essayNum.value = essayList.value.length;
+        scholarStore.essayList = essayList.value;
+        scholarStore.removedEssayList.push(removeEssay.value);
+    })
+    removeDialogVisible.value = false;
+}
+const loading = () => {
+    essayList.value = scholarStore.essayList;
+    displayEssays.value = essayList.value.slice(0,5);
+    essayNum.value = scholarStore.essayList.length;
 }
 </script>
 

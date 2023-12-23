@@ -7,19 +7,37 @@ const username = userStore.userInfo.username
 
 
 const logout = () => {
-  router.push({name:'login'})
+  router.push({ name: 'login' })
 }
 </script>
 
 <template>
+  <Header />
+  <!-- <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view> -->
 
-  <RouterView />
+  <Transition name="fade_main" mode="out-in">
+    <RouterView />
+  </Transition>
 </template>
 
 <style scoped lang="scss">
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+.fade_main-enter-active,
+.fade_main-leave-active {
+  transition: all 0.7s ease;
+}
+
+.fade_main-enter-from,
+.fade_main-leave-to {
+  opacity: 0;
 }
 
 .logo {
@@ -79,15 +97,14 @@ nav a:first-of-type {
   }
 }
 
-.el-menu-demo{
+.el-menu-demo {
   border-radius: 10px;
   box-shadow: 1px 1px 5px #888888;
 }
 
-.hello{
+.hello {
   position: absolute;
   margin-top: 18px;
   margin-left: 87%;
 }
-
 </style>

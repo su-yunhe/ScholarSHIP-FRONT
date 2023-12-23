@@ -1,231 +1,227 @@
 <template>
-  <div class="pageHeader">
-    <div class="logo-box" @click="goToHome">
-      <img src="../../assets/images/scholarAvator.jpg" class="logo-img" />
+  <div class="searchBox">
+    <div class="menu1">
+      <button class="btn" @click="gotoAdvancedSearch()">
+        <span class="box">
+          <el-icon style="position: relative; top: 2px;">
+            <Search />
+          </el-icon>
+          高级搜索
+        </span>
+      </button>
     </div>
-    <div class="search-btn" @click="dialogVisible = !dialogVisible">
-      <span>高级检索</span>
-    </div>
-    <el-dialog title="高级检索" width="70%" v-model="dialogVisible">
-      <el-card>
-        <div>高级检索</div>
-        <div v-for="(searchItem, i) in searchRequests" :key="i" style="margin-bottom: 0">
-          <el-select v-model="searchItem.select" mutiple placeholder="选项">
-            <el-option v-for="a in areaChoices" :label="a" :value="a" :key="a"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.relation" mutiple placeholder="选项">
-            <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
-          </el-select>
-          <el-select v-model="searchItem.method" mutiple placeholder="选项">
-            <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
-          </el-select>
-          <el-input v-model="searchItem.str"></el-input>
-        </div>
-      </el-card>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-input
-      v-model="input"
-      placeholder="搜索"
-      style="width: 600px; margin-top: 30px; margin-bottom: 20px"
-    ></el-input>
-    <el-button
-      style="width: 80px; margin-top: 30px; margin-left: 30px; margin-bottom: 20px"
-      >搜索</el-button
-    >
-  </div>
-  <div>
-    <div style="float: left; width: 250px; margin-left: 150px; margin-right: 20px">
-      <div style="font-size: 18px; height: 80px">
-        <div
-          style="
-            float: left;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            margin-left: 0px;
-          "
-        >
-          筛选方式
+    <div class="search">
+      <div style="padding-top: 10px; margin-left: 50px;">
+        <div class="input__container">
+          <div class="shadow__input"></div>
+          <span id="dropdown_span">
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link" style="font-weight:10px;font-size: 14px;">
+                {{ ok }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="a" @click="ok = '文献'">文献</el-dropdown-item>
+                  <el-dropdown-item command="b" @click="ok = '学者'">学者</el-dropdown-item>
+                  <el-dropdown-item command="c" @click="ok = '机构'">机构</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </span>
+          <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索"
+            style="font-size: 14px;">
+          <button class="input__button__shadow" id="search_button" @click="search">
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
+              <path
+                d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z"
+                fill-rule="evenodd" fill="#17202A"></path>
+            </svg>
+          </button>
         </div>
       </div>
-      <el-card width="" height="">
-        <el-select v-model="minyear" mutiple placeholder="最早年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
-        <div style="text-align: center">|</div>
-        <el-select v-model="maxyear" mutiple placeholder="最晚年份">
-          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
-        </el-select>
-        <el-divider></el-divider>
-        <el-table :data="journalList">
-          <el-table-column prop="name" label="期刊"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-        <el-table :data="authorList">
-          <el-table-column prop="name" label="作者"> </el-table-column>
-          <el-table-column prop="status" label="信息"> </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-      </el-card>
+
     </div>
-    <div v-for="item in paginatedData" style="margin-top: 15px">
-      <el-card>
-        <div>
-          <div>{{ item.title }}</div>
-          <span
-            v-for="a in item.authors"
-            style="
-              border: solid 1px;
-              color: orange;
-              margin-left: 10px;
-              margin-right: 10px;
-            "
-            >{{ a }}</span
-          >
-          <div>{{ item.brief }}</div>
-          <span
-            v-for="k in item.keywords"
-            style="border: solid 1px; color: green; margin-left: 10px; margin-right: 10px"
-            >{{ k }}</span
-          >
+  </div>
+  <div class="result">
+    <el-row :gutter="10">
+      <el-col :span="5">
+        <div class="left">
+          <div class="conditionBox">
+            <div class="title">筛选方式</div>
+            <div class="main">
+              <div class="paper">
+                <el-collapse v-model="activeName" accordion>
+                  <el-collapse-item title="日期" name="1">
+                    <el-row :gutter="6">
+                      <el-col :span="11">
+                        <el-select v-model="minyear" mutiple placeholder="最早年份" style="margin: 5px 0 5px 5px">
+                          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="2">
+                        <div style="text-align: center; line-height: 40px">~</div>
+                      </el-col>
+                      <el-col :span="11">
+                        <el-select v-model="maxyear" mutiple placeholder="最晚年份" style="margin: 5px 5px 5px 0">
+                          <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
+                        </el-select>
+                      </el-col>
+                    </el-row>
+                  </el-collapse-item>
+                  <el-collapse-item title="作者" name="2">
+                    <div v-for="i in authorList" style="font-size: 13px;">
+                      <el-checkbox @click="getIns(i.name)" />
+                      {{ i.name }}&nbsp({{ i.count }})
+                    </div>
+                  </el-collapse-item>
+                  <el-collapse-item title="主题" name="3">
+                    <div v-for="i in conceptList" style="font-size: 13px;">
+                      <el-checkbox @click="getIns(i.name)" />
+                      {{ i.name }}&nbsp({{ i.count }})
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="cite(item)"
-          >
-            引用<el-icon><Link /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="toDocument(item.title, item.id)"
-          >
-            详情<el-icon><DataAnalysis /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="changeCollectIconToTrue(item.id)"
-          >
-            收藏<el-icon><FolderAdd /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="gourl(item)"
-          >
-            来源<el-icon><Position /></el-icon>
-          </el-button>
-          <el-button
-            style="
-              background-color: transparent;
-              box-shadow: none;
-              font-weight: 300;
-              float: left;
-              text-align: left;
-            "
-            @click="pdf(item.pdf)"
-          >
-            下载<el-icon><Download /></el-icon>
-          </el-button>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 150px;
-            "
-          >
-            被引次数：
-            <span style="color: #2d94d4">
-              {{ item.n_citation }}
-            </span>
-          </span>
-          <span
-            style="
-              float: right;
-              text-align: right;
-              margin-top: 8px;
-              color: grey;
-              font-size: 15px;
-              margin-right: 50px;
-            "
-          >
-            发表时间：
-            <span style="color: #2d94d4">
-              {{ item.year }}
-            </span>
-          </span>
+      </el-col>
+      <el-col :span="19">
+        <div class="right">
+          <div v-for="item in paginatedData" style="margin-top: 15px">
+            <div class="res">
+              <div class="title"> {{ item.title }}</div>
+              <!-- <div>{{ item.title }}</div> -->
+              <div class="info1">
+                <el-row>
+                  <el-col :span="12">
+                    <div>
+                      <span style="margin-left:30px; font-size: 12px;">作者：</span>
+                      <span class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a }}</span>
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <span style="margin-left:30px; font-size: 12px;">关键词：</span>
+                    <span v-for="k in item.keywords" style="
+                  background-color: rgb(45,118,80);
+                  margin: 15px 5px 0 0 ;
+                  padding: 0 5px 0 5px;
+                  border-radius: 5px;
+                  color: rgb(255, 255, 255);
+                  font-size: 12px;">{{ k }}</span>
+                  </el-col>
+                </el-row>
+              </div>
+              <div
+                style="max-height: 35px; max-width: 95%; margin-top: 5px; margin-left:30px; font-size: 12px; color: #747474; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                {{ item.abstract }}
+              </div>
+
+
+              <div style="margin-left: 27px; margin-top:8px;">
+                <el-button size="small" type="primary" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="cite(item)">
+                  引用<el-icon>
+                    <Link />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" type="success" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="toDocument(item.title, item.id)">
+                  详情<el-icon>
+                    <DataAnalysis />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" type="success" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="changeCollectIconToTrue(item.id)">
+                  收藏<el-icon>
+                    <FolderAdd />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" type="warning" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="gourl(item)">
+                  来源<el-icon>
+                    <Position />
+                  </el-icon>
+                </el-button>
+                <el-button size="small" type="warning" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="pdf(item.pdf)">
+                  下载<el-icon>
+                    <Download />
+                  </el-icon>
+                </el-button>
+                <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 150px;
+">
+                  被引次数：
+                  <span style="color: #2d94d4">
+                    {{ item.cite }}
+                  </span>
+                </span>
+                <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 50px;
+">
+                  发表时间：
+                  <span style="color: #2d94d4">
+                    {{ item.date }}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-      </el-card>
-    </div>
+      </el-col>
+    </el-row>
+  </div>
+
+  <div>
+    <el-divider></el-divider>
     <div class="footer">
-      <el-pagination
-        background
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="items.length"
-      />
+      <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        :total="pageFullLength" />
     </div>
   </div>
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
-const areaChoices = ["标题","期刊","作者","领域","机构","关键词"]
-const relationChoices = ["且","或","非"]
-const methodChoices = ["精确","模糊"]
-const searchRequests = ref([
-  {
-    select:"标题",
-    relation:"且",
-    method:"精确",
-    str: "",
-  },
-  {
-    select:"标题",
-    relation:"且",
-    method:"精确",
-    str: "",
-  },
-])
-const searchChoice = ref("")
+import { useRouter } from "vue-router";
+const router = useRouter();
 const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
-const dialogVisible = ref(false);
 const minyear = ref();
 const maxyear = ref();
+const activeName = ref('1')
 const years = ref([
   1999,
   2000,
@@ -253,282 +249,749 @@ const years = ref([
   2022,
   2023,
 ]);
-const authorList = ref([
-  {
-    name: "adam",
-    status: "b",
-  },
-  {
-    name: "bane",
-    status: "b",
-  },
-  {
-    name: "cypher",
-    status: "b",
-  },
-]);
-const journalList = ref([
-  {
-    name: "first",
-    status: "b",
-  },
-  {
-    name: "second",
-    status: "b",
-  },
-  {
-    name: "third",
-    status: "b",
-  },
-]);
-const getList = async () => {
-  // await httpInstance
-  //   .post('/page_get', {
-  //     workId: userStore.pages.proId,
-  //   })
-  //   .then((res) => {
-  //     console.log(res.results)
-  //     items.value = res.results
-  //     //url.value = res.results[0].protoInclude;
-  //     // router.push({ path: '/project' })
-  //   })
-  items.value = [
-    {
-      title: "alpha",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "beta",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "cythor",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "destine",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "ethic",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "forkk",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-    {
-      title: "grabit",
-      authors: ["aa", "aa1"],
-      brief: "thanks",
-      keywords: ["avba", "gfdb"],
-      n_citation: 100,
-      year: 1991,
-    },
-  ];
-};
+const authorList = ref([]);
+const conceptList = ref([]);
+const institutionList = ref([]);
+const searchType = ref("");
+const searchTypes = ["文献", "作者", "机构"];
 const currentPage = ref(1);
-const pageSize = ref(5);
+const pageSize = ref(7);
+const pageFullLength = ref();
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
   return items.value.slice(start, end);
 });
+const getList = async () => {
+  pageFullLength.value = 7;
+  items.value = [
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+    {
+      id: "W2160378127",
+      title:
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+      abstract:
+        "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+      organization: "Oxford University Press",
+      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      cite: 28654,
+      date: "2013-01-16",
+      keywords: ["sequence"],
+      source: "Molecular Biology and Evolution",
+    },
+  ];
+  institutionList.value = [
+    {
+      name: "Carnegie Mellon University",
+      count: 1548,
+    },
+    {
+      name: "French National Centre for Scientific Research",
+      count: 1300,
+    },
+    {
+      name: "Beihang University",
+      count: 971,
+    },
+    {
+      name: "Software (Spain)",
+      count: 966,
+    },
+    {
+      name: "Technical University of Munich",
+      count: 875,
+    },
+    {
+      name: "Tsinghua University",
+      count: 807,
+    },
+    {
+      name: "University of California, Irvine",
+      count: 759,
+    },
+    {
+      name: "Chinese Academy of Sciences",
+      count: 734,
+    },
+    {
+      name: "University of Maryland, College Park",
+      count: 733,
+    },
+    {
+      name: "University of Southern California",
+      count: 725,
+    },
+  ];
+  authorList.value = [
+    {
+      name: "Shigeru Yamada",
+      count: 352,
+    },
+    {
+      name: "Barry Boehm",
+      count: 287,
+    },
+    {
+      name: "Alain Abran",
+      count: 270,
+    },
+    {
+      name: "Jan Bosch",
+      count: 256,
+    },
+    {
+      name: "Victor R. Basili",
+      count: 239,
+    },
+    {
+      name: "Taghi M. Khoshgoftaar",
+      count: 228,
+    },
+    {
+      name: "P. K. Kapur",
+      count: 184,
+    },
+    {
+      name: "Tadashi Dohi",
+      count: 182,
+    },
+    {
+      name: "Nasa Nasa",
+      count: 178,
+    },
+    {
+      name: "Rafael Prikladnicki",
+      count: 176,
+    },
+  ];
+  conceptList.value = [
+    {
+      name: "Computer science",
+      count: 395171,
+    },
+    {
+      name: "Software",
+      count: 334865,
+    },
+    {
+      name: "Programming language",
+      count: 218097,
+    },
+    {
+      name: "Operating system",
+      count: 175872,
+    },
+    {
+      name: "Software engineering",
+      count: 164045,
+    },
+    {
+      name: "Engineering",
+      count: 160045,
+    },
+    {
+      name: "Software development",
+      count: 93776,
+    },
+    {
+      name: "Mathematics",
+      count: 75815,
+    },
+    {
+      name: "Physics",
+      count: 68818,
+    },
+    {
+      name: "Artificial intelligence",
+      count: 67502,
+    },
+  ];
+  for (var i = 0; i < items.value.length; i++) {
+    items.value[i].abstract = "摘要：" + items.value[i].abstract;
+  }
+};
+const getIns = (name) => {
+  console.log(name)
+};
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
 };
-// watchEffect(() => {
-//   console.log('value:', value.value)
-// })
-// watchEffect(() => {
-//   console.log('lazyValue:', lazyValue.value)
-// })
-// function onChange (e: Event) {
-//   console.log('change e:', e)
-// }
-// function onEnter (e: KeyboardEvent) {
-//   console.log('enter e:', e)
-// }
+const toDocument = (id) => {
+  var str = "/academic/" + id;
+  router.push({ path: str });
+};
+const gotoAdvancedSearch = () => {
+  router.push({ name: "advancedSearch" });
+};
+const gotoAuthor = (name) => {
+  var str = "/scholar/" + name;
+  router.push({ path: str });
+};
 onMounted(async () => {
   getList();
 });
-// export default {
-//   data() {
-//     return {
-//       search: "",
-//       collectShow: false,
-//       tab: null,
-//       page: 1,
-//       pageSize: 10,
-//       pageNum: "1",
-//       Num: 0,
-//       CurrentPageData: [],
-//       selects: ["默认", "出版年份", "引用数"],
-//       selectMethod: "推荐排序",
-//       paperInfo: [],
-//       orderBy: "default",
-//       overlay: false,
-//       absolute: false,
-//       opacity: 0.5, //透明度
-//       citeStyle: [{ name: "引用类型", text: "引用文本" }],
-//       keyword: null,
-//       TypeNum: [],
-//       tagData: [],
-//       posturl: "gan",
-//       formdata: {},
-//       paperID: "",
-//       isCollect: false,
-//       tag_list: "",
-//       authorList: [{
-//           name: "adam",
-//           status: "b",
-//         },{
-//           name: "bane",
-//           status: "b",
-//         },{
-//           name: "cypher",
-//           status: "b",
-//         },],
-//       journalList: [
-//         {
-//           name: "first",
-//           status: "b",
-//         },{
-//           name: "second",
-//           status: "b",
-//         },{
-//           name: "third",
-//           status: "b",
-//         },
-//       ],
-//       new: 0,
-//       journal: "",
-//       author: "",
-//       minyear: "",
-//       maxyear: "",
-//       years: [1984, 2077],
-//       pickauthor: "",
-//       pickjournal: "",
-//     };
-//   },
-// };
 </script>
-<style scoped>
-.logo-img {
-  height: 100%;
-  margin-top: auto;
-}
-.pageHeader {
-  background-color: white;
-  height: 10vh;
+<style scoped lang="scss">
+.searchBox {
+  height: 90px;
   display: flex;
-  flex-direction: row;
+  margin: 40px 0px 20px 0px;
+  background-color: rgb(45, 118, 80);
+
+  box-shadow: rgba(45, 118, 80, 10) 0px 2px 8px;
+  // border-bottom-left-radius: 5px;
+  /* 左下角 */
+  //  border-bottom-right-radius: 5px;
+  /* 右下角 */
+
+  .menu1 {
+    width: 20%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+
+    .btn {
+      margin-top: 20px;
+      margin-left: 0px;
+
+      .box {
+        width: 100%;
+        height: auto;
+        float: left;
+        transition: .1s linear;
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        margin: 0 5px;
+        background: transparent;
+        text-transform: uppercase;
+        font-weight: 550;
+        border-radius: 30px;
+        // color: white;
+        background-color: rgb(195, 209, 197);
+      }
+    }
+
+    .box:before {
+      position: absolute;
+      content: '';
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+    }
+
+    .box:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+    }
+
+    .box:hover {
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+    }
+
+    // .box:hover:before {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .3s;
+    // }
+
+    // .box:hover:after {
+    //   border-color: #262626;
+    //   height: 100%;
+    //   transform: translateX(0);
+    //   transition: .3s transform linear, .3s height linear .5s;
+    // }
+
+    button {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+    }
+  }
+
+  .search {
+    width: 60%;
+    padding: 10px;
+
+    .container-input {
+      position: relative;
+    }
+
+    #dropdown_span {
+      width: 100px;
+      border: 0;
+      outline: 0;
+    }
+
+    #dropdown_span :focus {
+      max-width: 100px;
+      outline: none;
+    }
+
+    .el-dropdown-link {
+      cursor: pointer;
+      color: black;
+      display: flex;
+      align-items: center;
+    }
+
+    .input__container {
+      position: relative;
+      background: rgba(255, 255, 255, 0.664);
+      padding: 10px 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      border-radius: 22px;
+      // max-width: 300px;
+      height: 50px;
+      transition: transform 400ms;
+      transform-style: preserve-3d;
+      // transform: rotateX(15deg) rotateY(-20deg);
+      perspective: 500px;
+      transition: 0.7s ease-in-out;
+    }
+
+    // .input__container :hover{
+    //   width: 60vw;
+    //   transition: 0.7s ease-in-out;
+    // }
+
+    // .input__container :focus{
+    //   width: 60vw;
+    //   transition: 0.7s ease-in-out;
+    // }
+
+    #search_button {
+      width: 60px;
+    }
+
+
+    // .shadow__input {
+    //   content: "";
+    //   position: absolute;
+    //   width: 100%;
+    //   height: 100%;
+    //   left: 0;
+    //   bottom: 0;
+    //   z-index: -1;
+    //   filter: blur(10px);
+    //   border-radius: 20px;
+    //   background-color: #999cff;
+    //   background-image: radial-gradient(at 85% 51%, hsla(60, 60%, 61%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 74% 68%, rgb(231, 237, 156) 0px, transparent 50%),
+    //     radial-gradient(at 64% 79%, hsla(284, 72%, 73%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 75% 16%, hsla(283, 60%, 72%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 90% 65%, hsla(153, 70%, 64%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 91% 83%, hsla(283, 74%, 69%, 1) 0px, transparent 50%),
+    //     radial-gradient(at 72% 91%, hsla(213, 75%, 75%, 1) 0px, transparent 50%);
+    // }
+
+
+    .input__button__shadow {
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: transform 400ms, background 400ms;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .input__button__shadow:hover {
+      background: rgba(255, 255, 255, 0.411);
+    }
+
+
+    .input__search {
+      width: 1000px;
+      height: 30px;
+      border-radius: 20px;
+      outline: 1px solid rgb(45, 118, 80);
+      border: none;
+      padding: 20px;
+      position: relative;
+      // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+      transition: 0.7s;
+    }
+
+    .input__search:hover {
+      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+      transition: 0.7s;
+    }
+
+    // .searchbar {
+    //   font-size: 14px;
+    //   font-family: arial, sans-serif;
+    //   color: #202124;
+    //   display: flex;
+    //   z-index: 3;
+    //   height: 50px;
+    //   background: white;
+    //   border: 1px solid #dfe1e5;
+    //   box-shadow: none;
+    //   border-radius: 24px;
+    //   margin: 0 auto;
+    //   width: auto;
+    //   max-width: 1000px;
+    // }
+
+    // .searchbar:hover {
+    //   box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
+    //   border-color: rgba(223, 225, 229, 0);
+    // }
+
+    // .searchbar-wrapper {
+    //   flex: 1;
+    //   display: flex;
+    //   padding: 5px 8px 0 14px;
+    // }
+
+    // .searchbar-left {
+    //   font-size: 14px;
+    //   font-family: arial, sans-serif;
+    //   color: #202124;
+    //   display: flex;
+    //   align-items: center;
+    //   padding-right: 13px;
+    //   margin-top: -5px;
+    // }
+
+    // .search-icon-wrapper {
+    //   margin: auto;
+    // }
+
+    // .search-icon {
+    //   margin-top: 3px;
+    //   color: #9aa0a6;
+    //   height: 20px;
+    //   line-height: 20px;
+    //   width: 20px;
+    // }
+
+    // .searchbar-icon {
+    //   display: inline-block;
+    //   fill: currentColor;
+    //   height: 24px;
+    //   line-height: 24px;
+    //   position: relative;
+    //   width: 24px;
+    // }
+
+    // .searchbar-center {
+    //   display: flex;
+    //   flex: 1;
+    //   flex-wrap: wrap;
+    // }
+
+    // .searchbar-input-spacer {
+    //   color: transparent;
+    //   flex: 100%;
+    //   white-space: pre;
+    //   height: 34px;
+    //   font-size: 16px;
+    // }
+
+    // .searchbar-input {
+    //   background-color: transparent;
+    //   border: none;
+    //   margin: 0;
+    //   padding: 0;
+    //   color: rgba(0, 0, 0, 0.87);
+    //   word-wrap: break-word;
+    //   outline: none;
+    //   display: flex;
+    //   flex: 100%;
+    //   margin-top: -37px;
+    //   height: 34px;
+    //   font-size: 16px;
+    //   max-width: 100%;
+    //   width: 100%;
+    // }
+
+    // .searchbar-right {
+    //   display: flex;
+    //   flex: 0 0 auto;
+    //   margin-top: -5px;
+    //   align-items: stretch;
+    //   flex-direction: row;
+    // }
+
+    // .searchbar-clear-icon {
+    //   margin-right: 12px;
+    // }
+
+    // .voice-search {
+    //   flex: 1 0 auto;
+    //   display: flex;
+    //   cursor: pointer;
+    //   align-items: center;
+    //   border: 0;
+    //   background: transparent;
+    //   outline: none;
+    //   padding: 0 8px;
+    //   width: 2.8em;
+    // }
+  }
+
+  .menu2 {
+    width: 15%;
+    line-height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+
+    .btn {
+      margin-top: 5px;
+
+      .box {
+        width: 100%;
+        height: auto;
+        float: left;
+        transition: 0.1s linear;
+        position: relative;
+        display: block;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        margin: 0 5px;
+        background: transparent;
+        text-transform: uppercase;
+        font-weight: 900;
+        border-radius: 10px;
+      }
+    }
+
+    // background-color: rgb(255, 192, 192);
+
+    .box:before {
+      position: absolute;
+      content: "";
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      border-bottom: 4px solid transparent;
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(100%);
+    }
+
+    .box:after {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 4px solid transparent;
+      border-right: 4px solid transparent;
+      box-sizing: border-box;
+      transform: translateX(-100%);
+    }
+
+    .box:hover {
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+    }
+
+
+    button {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+    }
+  }
 }
-.logo-box {
-  margin-left: 5vw;
-  display: flex;
-  margin-right: 5vw;
-  cursor: pointer;
+
+.result {
+  height: 1000px;
+  margin: 40px 20px 20px 20px;
+
+  .left {
+    .conditionBox {
+      margin: 15px 20px 0 0;
+      // height: 600px;
+      border-radius: 5px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      background-color: #fafafa;
+
+      .title {
+        margin: 0 20px;
+        padding-top: 10px;
+        height: 60px;
+        line-height: 40px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+        // border-bottom: 1px solid rgb(222, 222, 222);
+      }
+
+      .main {
+        margin-top: 10px;
+
+        .paper {
+          margin: 10px 20px 0 10px;
+          border-top: 1px solid rgb(222, 222, 222);
+        }
+      }
+    }
+  }
+
+  .right {
+    .res:hover {
+      box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+      transition: 0.2s;
+    }
+
+    .res {
+      height: 145px;
+      border: 1px;
+      // background-color: pink;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      background-color: #fafafa;
+      border-radius: 5px;
+      transition: 0.2s;
+
+      .title {
+        padding-left: 30px;
+        padding-top: 5px;
+        height: 40px;
+        line-height: 40px;
+        // background-color: #00810f;
+        font-weight: 15px;
+        font-size: 19px;
+      }
+
+      .info {}
+
+      .author {
+        // background-color: greenyellow;
+        border: solid 1px;
+        color: rgb(45, 118, 80);
+        margin: 15px 5px 0 0;
+        padding: 0 5px 0 5px;
+        border-radius: 5px;
+        /* background-color: gray; */
+        font-size: 12px;
+      }
+
+      .author :hover {
+        background-color: rgb(45, 118, 80);
+        color: white;
+      }
+    }
+  }
 }
-.search-btn {
+
+::v-deep .el-collapse-item__header {
+  color: #7e7e7e;
+  font-weight: bold;
   text-align: center;
-  line-height: 10vh;
-  margin-right: 3vw;
+  background-color: #fafafa !important;
+  position: relative;
+  margin-left: 10px;
 }
-.search-btn span {
-  cursor: pointer;
-  font-size: 17px;
-  transition: 0.3s;
+
+::v-deep .el-collapse-item__content {
+  text-align: left;
+  margin-left: 10px;
+  background-color: #fafafa;
+
 }
-.search-btn span:hover {
-  color: #1e88e5;
-}
-.login-btn {
-  margin-left: 10vw;
-  line-height: 10vh;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-}
-.login-btn span {
-  cursor: pointer;
-  font-size: 17px;
-  transition: 0.3s;
-}
-.login-btn span:hover {
-  color: #1e88e5;
-}
-.user-box {
-  margin-left: 7vw;
-  line-height: 10vh;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-}
-.aa {
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.go {
-  transform: rotate(-180deg);
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.select-box {
-  position: absolute;
-  top: 10vh;
-  right: 1vw;
-  width: 15%;
-  z-index: 1000;
-}
-.search-box {
-  margin-left: 5vw;
-  margin-right: 5vw;
-  width: 40%;
-}
-.text-ellipsis-two {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-.focusChange:hover {
-  text-decoration: underline;
-  color: #006064;
-  cursor: pointer;
-}
-.paper-title:hover {
-  cursor: pointer;
-}
-.clickchange:hover {
-  text-decoration: underline;
-  color: #006064;
-  cursor: pointer;
+
+.footer {
+  height: 50px;
 }
 </style>

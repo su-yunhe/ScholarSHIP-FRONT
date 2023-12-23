@@ -1,21 +1,37 @@
 <template>
     <div class="academicContent">
         <div class="essayNum">已下架文献共<span>{{essayNum}}</span>篇</div>
-        <div class="essayBox" v-for="(essay, index) in displayEssays">
-            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.title}}</div>
+        <div class="essayBox" v-for="essay in displayEssays" :key="essay">            
+            <div class="essayBox-name" @click="enterEssay(essay)">{{essay.display_name}}</div>
             <div class="essayBox-author">
-                <span v-for="(author, key) in essay.authors" @click="enterScholarPortal(author)">{{author.name}},</span>
-            </div>
+                <span v-for="author in essay.authors" :key="author" @click="enterScholarPortal(author)">{{author.display_name}},</span>            </div>
             <div class="essayBox-abstract">{{essay.abstract}}</div>
             <div class="essay-indicators">
-                <span class="essay-indicator">被引用数：{{essay.n_citation}}</span>
-                <span class="essay-indicator">发表时间：{{essay.year}}</span>
-                <span class="essay-indicator-op" @click="upload(essay)"><el-icon><RefreshRight /></el-icon>重新上架</span>
+                <span class="essay-indicator">被引用数：{{essay.cited_by_count}}</span>
+                <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
+                <span class="essay-indicator-op" @click="uploadDialog(essay)"><el-icon><RefreshRight /></el-icon>重新上架</span>
             </div>
         </div>
+        <!--上架对话框-->
+        <el-dialog
+            v-model="uploadDialogVisible"
+            title="提示"
+            width="30%"
+        >
+        <span>是否重新上架该文献</span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="uploadDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="upload">
+                确认
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
         <el-pagination
+            v-if="essayNum!=0"
             @current-change="currentPageChange"
-            :current-page.sync="currentPage"
+            v-model:current-page="currentPage"
             :page-size="5"
             layout="prev, pager, next, jumper"
             :total="essayNum"
@@ -24,45 +40,62 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../../stores/scholar'
+const scholarStore = useScholarStore();
+import httpInstance from '@/utils/http'
+const router = useRouter()
+const IDForm = ref({
+    scholarID: 'A5023888391',
+    userID: 1,
+})
+const essayNum = ref();
+const displayEssays = ref([]); // 记得进入页面时初始化
+const essayList = ref([]);
+const currentPage = ref(1);
+let uploadDialogVisible = ref(false);
+const uploadEssay= ref({});
 
-export default {
-    name: 'removed',
-    components: {
+onMounted(() => {
+    console.log("removed academic paper:",scholarStore.removedEssayList);
+    essayList.value = scholarStore.removedEssayList;
+    displayEssays.value = essayList.value.slice(0,5);
+    essayNum.value = scholarStore.removedEssayList.length;
+});
 
-    },
-    data() {
-        return {
-            essayNum: 7,
-            displayEssays:[],//记得进入页面时初始化
-            essayList: [],
-            currentPage: 1,
-        }
-    },
-    methods:{
-        currentPageChange(value) {
-            this.displayEssays = this.essayList.slice( (value-1)*5, 5+(value-1)*5);
-            this.currentPage = value;
-            console.log(`当前页: ${value}`,this.displayEssays);
-        },
-        enterEssay(essay){//进入文献展示页
-            console.log('enter essay:',essay,essay.name);
-            this.$router.push('/academic');
-        },
-        enterScholarPortal(author){//进入相应学者门户
-            console.log('enter scholar portal:',author);
-        },
-        upload(essay){//上传文献
-            console.log('upload:',essay);
-        },
-    },
-    created(){
-        const scholarStore = useScholarStore();
-        this.essayList = scholarStore.removedEssayList;
-        this.essayNum = this.essayList.length;
-        this.displayEssays = this.essayList.slice(0,5);
-    }
+const currentPageChange = (value) => {
+    displayEssays.value = essayList.value.slice( (value-1)*5, 5+(value-1)*5);
+    currentPage.value = value;
+    console.log(`当前页: ${value}`,displayEssays.value);
+}
+const enterEssay = (essay) => {//进入文献展示页
+    console.log('enter essay:',essay,essay.id);
+    let essay_id = essay.id.split('/')[3]
+    console.log("essay_id:",essay_id)
+    router.push(`/academic/${essay_id}`);
+}
+const enterScholarPortal = (author) => {//进入相应学者门户
+    console.log('enter scholar portal:',author);
+    let scholar_id = author.id.split('/')[3]
+    router.push(`/scholar/${scholar_id}`);
+}
+const uploadDialog = (essay) => {//上架文献
+    uploadEssay.value = essay;
+    uploadDialogVisible.value = true;
+}
+const upload = () => {//上架文献
+    let work_id = uploadEssay.value.id.split('/')[3];
+    httpInstance.post("/change_status", JSON.stringify({work_id: work_id})).then(res => {
+        console.log("change_status:", res);
+        essayList.value = essayList.value.filter(item=>item != uploadEssay.value);
+        displayEssays.value = essayList.value.slice(0,5);
+        essayNum.value = essayList.value.length;
+        scholarStore.removedEssayList = essayList.value;
+        scholarStore.essayList.push(uploadEssay.value);
+    })
+    uploadDialogVisible.value = false;
 }
 </script>
 

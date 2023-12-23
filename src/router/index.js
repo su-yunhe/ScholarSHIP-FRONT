@@ -4,7 +4,8 @@ import Introduction from '@/views/Introduction/index.vue'
 import ScholarView from '../views/scholar/scholarPortal.vue'
 import PersonalScholarView from '../views/scholar/personalScholar/personalPortal.vue'
 import AcademicView from '../views/academic/index.vue'
-import SearchView from '@/views/search/index.vue'
+import SearchView from '../views/search/index.vue'
+import AdvancedSearchView from '../views/advancedSearch/index.vue'
 import AnalysesView from '../views/analyses/index.vue'
 import Institution from '@/views/Institution/index.vue'
 const router = createRouter({
@@ -31,7 +32,7 @@ const router = createRouter({
       component: Institution
     },
     {
-      path: '/scholar',
+      path: '/scholar/:scholar_id',
       name: 'scholar',
       component: ScholarView
     },
@@ -60,6 +61,11 @@ const router = createRouter({
       path: '/search',
       name: 'search',
       component: SearchView
+    },
+    {
+      path: '/advancedSearch',
+      name: 'advancedSearch',
+      component: AdvancedSearchView
     },
     {
       path: '/analyses',

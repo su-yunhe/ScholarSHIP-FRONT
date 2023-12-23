@@ -1,7 +1,12 @@
 <template>
-    <div class="scholarContainer">
+    <div class="scholarContainer"
+        v-loading="loadingTag"
+        element-loading-text="拼命加载中"
+        element-loading-background="white"
+        >
+        <div v-if="!loadingTag">
             <div class="scholarTopHeaderBar">
-                <img src="../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
+                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
                     <div class="scholar-information-name">{{ scholarInfo.name }}</div>
                     <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
@@ -30,92 +35,108 @@
             <div class="scholar-tagContent">
                 <component :is="tagName"></component>
             </div>
-        
+        </div>
     </div>
 </template>
 
-
-<script setup>
-import { ref, onMounted } from 'vue'
+<script>
 import {useScholarStore} from '../../stores/scholar'
 import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
-const scholarStore = useScholarStore()
-const scholar = {
-  name: 'scholar',
-  components: {
-    academic,
-    links,
-    datas,
-  },
-  setup() {
-    const tagName = ref('academic')
-    
-    const IDForm = ref({
-        scholarID: 'A5023888391',
-        userID: 1,
-    })
-    const scholarInfo = ref({
-        scholar_id:1,
-        institution:'BUAA',
-        name:'S.Harmost',
-        essayNum: 7,//处理
-        citation: 6,
-        hIndex: 1,
-    }
-    )
-    onBeforeMounted(() => {
-        httpInstance.post('/get_scholar', IDForm.value).then((res) => {
-            if (res.data.error === 0) {
-                console.log("res:", res);
-                scholarStore.scholarInfo = res.data.data
-                scholarInfo.value = scholarStore.scholarInfo
+export default {
+    name: 'scholar',
+    components: {
+        academic,
+        links,
+        datas,
+    },
+    data() {
+        return {
+            loadingTag: true,
+            tagName:'academic',
+            scholarID: null,
+            scholarInfo:null,
+            monitoredRoute: null,
+        }
+    },
+    methods:{
+        clickAcademic(){
+            if(this.tagName != 'academic'){
+                this.tagName = 'academic';
             }
-        });
-        scholarStore.getGraphData()
-    })
+            console.log(this.tagName);
+        },
+        clickDatas(){
+            if(this.tagName != 'datas'){
+                this.tagName = 'datas';
+            }
+            console.log(this.tagName);
+        },
+        clickLinks(){
+            if(this.tagName != 'links'){
+                this.tagName = 'links';
+            }
+            console.log(this.tagName);
+        },
+        claimPortal(){//认领门户
 
-    const clickAcademic = () => {
-      if (tagName.value !== 'academic') {
-        tagName.value = 'academic'
-      }
-      console.log(tagName.value)
-    }
+        },
+        concernScholar(){//关注学者
+            
+        },
+        async getScholarInfo(){
+            let userID = 1;
+            await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
+                console.log("get scholarInfo res:", res);
+                this.scholarInfo = res;
+                this.loadingTag = false;
+            });
+        },
+        async getEssayList(scholarStore){
+            let userID = 1;
+            console.log("balabala");
+            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
+                console.log("papers1:", res);
+                if (res.error === 0) {
+                    scholarStore.essayList = res.result;
+                    console.log("papers2:", scholarStore.essayList);
+                }
+            });
+            console.log("balabala2");
+        },
+        getGraphData(scholarStore){
+            httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
+                console.log("get_relation_map res:", res.result);
+                scholarStore.graph_data = res.result;
+            })
+        },
+        loading(){
+            this.loadingTag = true;
+            this.scholarID = this.$route.path.split("/")[2];
+            const scholarStore = useScholarStore();
+            scholarStore.essayList = [];
+            console.log("清空essayList：",scholarStore.essayList);
+            this.getScholarInfo(scholarStore);
 
-    const clickDatas = () => {
-      if (tagName.value !== 'datas') {
-        tagName.value = 'datas'
-      }
-      console.log(tagName.value)
-    }
-
-    const clickLinks = () => {
-      if (tagName.value !== 'links') {
-        tagName.value = 'links'
-      }
-      console.log(tagName.value)
-    }
-
-    const claimPortal = () => {
-      // 认领门户
-    }
-
-    const concernScholar = () => {
-      // 关注学者
-    }
-    return {
-      tagName,
-      clickAcademic,
-      clickDatas,
-      clickLinks,
-      claimPortal,
-      concernScholar,
-    }
+            this.getEssayList(scholarStore);
+            this.getGraphData(scholarStore);
+        }
+    },
+    created(){
+        this.loading();
+    },
+    watch: {
+        $route(newRoute) {
+            this.monitoredRoute = newRoute; // 将新的路由信息保存到组件的monitoredRoute属性中
+            // 执行其他操作或调用其他方法
+            console.log("route:",this.monitoredRoute);
+            this.loading();
+        },
   },
 
-}
+    }
 </script>
 
 <style scoped>

@@ -1,8 +1,13 @@
 <template>
-    <div class="academicContainer">
+    <div class="academicContainer"
+        v-loading="loadingTag"
+        element-loading-text="拼命加载中"
+        element-loading-background="white"
+    >
+    <div v-if="!loadingTag">
         <div class="essay-name">{{ essay.title }}</div>
         <div class="essay-author">
-            <span v-for="(authorship, index) in essay.authorships" @click="enterScholarPortal(authorship)">{{ authorship.author.display_name }},</span>
+            <span v-for="authorship in essay.authorships" :key="authorship" @click="enterScholarPortal(authorship)">{{ authorship.author.display_name }},</span>
         </div>
         <!-- <div class="essay-institution">{{ essay.institutions[0].display_name }}</div> -->
         <div class="essay-abstractBox">
@@ -13,7 +18,7 @@
         <div class="essay-dec">
             <div>相关词条：</div>
             <div>
-                <el-tag type="info" v-for="(concept, key) in essay.concepts" class="concept">{{ concept.display_name }}</el-tag>
+                <el-tag type="info" v-for="concept in essay.concepts" :key="concept" class="concept">{{ concept.display_name }}</el-tag>
                 <!-- <span></span> -->
             </div>
             
@@ -28,34 +33,41 @@
         </div>
         <div class="essay-dec">
             <div>发表年份：</div>
-            <div>{{ essay.doi }}</div>
+            <div>{{ essay.publication_date }}</div>
         </div>
         <div class="essay-operation">
-            <el-tag class="op-share" @click="citeDialogVisible = true"><el-icon><Link /></el-icon>引用</el-tag>
-            <a :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
-            <el-tag class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
+            <el-tag class="op-share" @click="getCitation"><el-icon><Link /></el-icon>引用</el-tag>
+            <a v-if="essay.primary_location.pdf_url!=null" :href="essay.primary_location?essay.primary_location.pdf_url:null" target="_blank"><el-tag class="op-read" type="success"><el-icon><Reading /></el-icon>pdf预览</el-tag></a>
+            <el-tag v-if="essay.primary_location.pdf_url!=null" class="op-share" type="success" @click="downloadPDF(essay.primary_location?essay.primary_location.pdf_url:null)"><el-icon><Download /></el-icon>pdf下载</el-tag>
             <a :href="essay.primary_location?essay.primary_location.landing_page_url:null" target="_blank" ><el-tag class="op-read" type="danger"><el-icon><View /></el-icon>阅读</el-tag></a>
             <el-tag class="op-collection" @click="essayCollection" type="warning"><el-icon><Star /></el-icon>收藏</el-tag>
         </div>
         <div class="essay-essays">
-            <div>引用文章</div>
-            <a v-for="(work,index) in essay.referenced_works" :href="work" target="_blank">{{ work }}</a>
+            <div v-if="referenced_works_num!=0">引用文章</div>
+            <a v-for="work in essay.referenced_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
         </div>
         <div class="essay-essays">
-            <div>相关文章</div>
-            <a v-for="(work,index) in essay.related_works" :href="work" target="_blank">{{ work }}</a>
+            <div v-if="related_works_num!=0">相关文章</div>
+            <a v-for="work in essay.related_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
         </div>
+    </div>
+        
     </div>
     <!-- 引用对话框 -->
     <el-dialog
         title="引用"
         v-model="citeDialogVisible"
-        width="30%"
+        width="50%"
         >
+        <div>引用格式：</div>
+            <div>
+                <el-button @click="changeFormat(format_)" v-for="format_ in ['IEEE','GB/T7714','BibText','Chicago']" :key="format_">{{ format_ }}</el-button>
+                <!-- <span></span> -->
+            </div>
         <div class="citeContent">{{ citeString }}</div>
-        <div slot="footer" class="dialog-footer">
+        <div class="dialog-footer">
             <el-button @click="citeDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="copyCiteString(citeString);citeDialogVisible = false">复 制</el-button>
+            <el-button type="primary" @click="copyCiteString(citeString)">复 制</el-button>
         </div>
     </el-dialog>
     <!-- 收藏对话框 -->
@@ -67,9 +79,9 @@
         :show-close="false"
         >
         <el-radio-group v-model="collectionId" @change="collectionChange">
-            <el-radio v-for="(collection,index) in collections" :label="collection.id">{{ collection.name }}</el-radio>
+            <el-radio v-for="collection in collections" :key="collection" :label="collection.id">{{ collection.name }}</el-radio>
         </el-radio-group>
-        <div slot="footer" class="dialog-footer">
+        <div class="dialog-footer">
             <el-button class="op-addCollection" @click="addCollectionVisible = true">新建标签</el-button>
             <el-button @click="cancelCollection">取 消</el-button>
             <el-button type="primary" @click="confirmCollection">确 定</el-button>
@@ -81,7 +93,7 @@
         width="30%"
         >
         <el-input v-model="collectionName" placeholder="请新标签名称..."></el-input>
-        <div slot="footer" class="dialog-footer">
+        <div class="dialog-footer">
             <el-button @click="addCollectionVisible = false">取 消</el-button>
             <el-button type="primary" @click="confirmAddCollection">确 认</el-button>
         </div>
@@ -89,7 +101,6 @@
 </template>
 
 <script>
-import { useAcademicStore } from '@/stores/academic';
 import axios from 'axios';
 import httpInstance from '@/utils/http'
 export default {
@@ -99,35 +110,21 @@ export default {
     },
     data() {
         return {
+            loadingTag: true,
             citeDialogVisible: false,
             collectionDialogVisible: false,
             addCollectionVisible:false,
-            citeString: 'yinyongshishisshishiq[1]',
+            citeString: '',
+            citeStringIEEE: '',
+            citeStringGB: '',
+            citeStringBib: '',
+            citeStringChicago: '',
             collectionId:0,
             collectionName: null,
+            referenced_works_num: 0,
+            related_works_num:0,
             essay: {},
-            // essay:{
-            //     id:1,
-            //     title:'NLP (natural language processing) for NLP (naturallanguage programming)',
-            //     year:2023,
-            //     n_citation:10,
-            //     url:'xx',
-            //     doi:'10.1007/11671299 34',
-            //     abstract:'Natural Language Processing holds great promise for making computer interfaces that are easier to use for people, sincepeople will (hopefully) be able to talk to the computer in their owm language, rather than learn a specialized language otcomputer commands For proeramming. however. thenecessity of a formal proerammine laneuaee for communicating witha computer has always been taken for granted. We would',
-            //     keywords:['xdxxxx','sssddsds'],
-            //     authors:[
-            //         {
-            //             name:'Rada Mihalcea'
-            //         },
-            //         {
-            //             name:'Rada Mihalcea'
-            //         },
-            //         {
-            //             name:'Rada Mihalcea'
-            //         },
-            //     ],
-            //     institution:'CICLing',
-            // },
+            format: 'IEEE',
             collections:[
                 {
                     id:1,
@@ -158,6 +155,47 @@ export default {
         }
     },
     methods:{
+        getCitation(){
+            let work_id = this.$route.path.split("/")[2];
+            this.citeDialogVisible = true;
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=IEEE`).then((res) => {
+                console.log("get IEEE citation:",res);
+                this.citeString = res.result;
+                this.citeStringIEEE = res.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
+                console.log("get GB citation:",res);
+                this.citeStringGB = res.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
+                console.log("get Bib citation:",res);
+                this.citeStringBib = res.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+            httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
+                console.log("get Chicago citation:",res);
+                this.citeStringChicago = res.result;
+            }).catch((error)=>{
+                console.log("get essay detail error:",error);
+            })
+        },
+        changeFormat(format){
+            this.format = format;
+            console.log('change format to:',this.format);
+            if(this.format === 'IEEE')
+                this.citeString = this.citeStringIEEE;
+            else if(this.format === 'GB/T7714')
+                this.citeString = this.citeStringGB
+            else if(this.format === 'BibText')
+                this.citeString = this.citeStringBib
+            else if(this.format === 'Chicago')
+                this.citeString = this.citeStringChicago
+        },
         copyCiteString(content) {
             let aux = document.createElement("input");
             aux.setAttribute("value", content);
@@ -170,7 +208,7 @@ export default {
             } else {
                 this.$message.error("引用格式为空");
             }
-            citeDialogVisible = false;
+            this.citeDialogVisible = false;
         },
         async downloadPDF(pdfUrl) {//需要注释掉main.js中的mock引用才能打开下载的pdf文件
             const response = await axios.get(pdfUrl,{
@@ -185,8 +223,9 @@ export default {
             link.click();
         },
         enterScholarPortal(author){
-            console.log('enter scholar portal:',author);
-            this.$router.push('/scholar');
+            let scholar_id = author.author.id.split('/')[3];
+            console.log('enter scholar portal:',scholar_id);
+            this.$router.push(`/scholar/${scholar_id}`);
         },
         essayCollection(){
             this.collectionDialogVisible = true;
@@ -214,22 +253,46 @@ export default {
             this.collectionName = null;
             this.addCollectionVisible = false;
         },
-        getEssayDetail(){
-            let work_id = this.$route.path.split("/")[2];
-            let author_id = "A5023888392";
-            httpInstance.get(`/get_detail?work_id=${work_id}&author_id=${author_id}`).then((res) => {
-                console.log("get essay detail:",res);
+        getEssayDetail(work_id, user_id){
+            httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${user_id}`).then((res) => {
+                console.log("get essay detail:",res,res.result.doi.split('/'));
+                this.essay = res.result;
+                this.loadingTag = false;
+                this.referenced_works_num = 0;
+                this.related_works_num = 0;
+                let doi = this.essay.doi;
+                this.essay.doi = doi.split('/')[3]+'/'+doi.split('/')[4];
             }).catch((error)=>{
                 console.log("get essay detail error:",error);
             })
+        },
+        getReferencedAndRelated(work_id, user_id){
+            httpInstance.get(`/get_referenced_related?work_id=${work_id}&user_id=${user_id}`).then((res) => {
+                console.log("get referenced and related:",res);
+                this.essay.referenced_works = res.result.referenced_works;
+                this.essay.related_works = res.result.related_works;
+                this.referenced_works_num = this.essay.referenced_works.length;
+                this.related_works_num = this.essay.related_works.length;
+            }).catch((error)=>{
+                console.log("get referenced and related error:",error);
+            })
+        },
+        enterEssay(essay){//进入引用参考文献展示页
+            console.log('enter essay:',essay,essay.id);
+            let essay_id = essay.id.split('/')[3]
+            console.log("essay_id:",essay_id)
+            router.push(`/academic/${essay_id}`);
         }
     },
     mounted(){
-        const academicStore = useAcademicStore();
-        this.essay = academicStore.essayDetail;
-        this.getEssayDetail();
+        this.loadingTag = true;
+        let work_id = this.$route.path.split("/")[2];
+        let user_id = 1;
+        this.getEssayDetail(work_id, user_id);
+        
+        this.getReferencedAndRelated(work_id, user_id);
         console.log("essay:",this.essay);
-    }
+    },
 }
 </script>
 
