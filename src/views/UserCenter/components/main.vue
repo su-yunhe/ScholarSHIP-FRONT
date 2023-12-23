@@ -55,11 +55,9 @@
     transform: translateX(-50px);
 }
 
-.card_left {
-    /* overflow: hidden;
-    border: 1px solid black;
-    border-radius: 20px; */
-}
+/* .card_left :hover{
+    scale: 1.02;
+} */
 
 /* .fade_right-enter-active,
 .fade_right-leave-active {
