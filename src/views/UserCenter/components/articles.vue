@@ -421,21 +421,21 @@ const gotoAuthor = (name) => {
 .list2-move,
     /* 对移动中的元素应用的过渡 */
     .list2-enter-active {
-        transition: all 0.3s ease;
+        transition: all 0.7s ease;
     }
 
     .lis2t-leave-active {
-        transition: all 1s ease;
+        transition: all 0.3s ease;
     }
 
     .list2-enter-from {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateY(30px);
     }
 
     .list2-leave-to {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateY(-30px);
     }
 
     /* 确保将离开的元素从布局流中删除
