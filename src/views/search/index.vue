@@ -95,20 +95,20 @@
               <div class="info1">
                 <el-row>
                   <el-col :span="12">
-                    <div>
-                      <span style="margin-left:30px; font-size: 12px;">作者：</span>
-                      <span class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a }}</span>
-                    </div>
-                  </el-col>
-                  <el-col :span="12">
-                    <span style="margin-left:30px; font-size: 12px;">关键词：</span>
-                    <span v-for="k in item.keywords" style="
-                  background-color: rgb(45,118,80);
-                  margin: 15px 5px 0 0 ;
-                  padding: 0 5px 0 5px;
-                  border-radius: 5px;
-                  color: rgb(255, 255, 255);
-                  font-size: 12px;">{{ k }}</span>
+                    <div class="author_holder">
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
+                                    }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <div class="author_holder">
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
+                                    }}</span>
+                                </div>
                   </el-col>
                 </el-row>
               </div>
@@ -935,6 +935,13 @@ onMounted(async () => {
       transition: 0.2s;
     }
 
+    .author_holder {
+        /* border: 1px solid black; */
+        max-height: 21px;
+        overflow: hidden;
+    }
+
+
     .res {
       height: 145px;
       border: 1px;
@@ -957,15 +964,46 @@ onMounted(async () => {
       .info {}
 
       .author {
-        // background-color: greenyellow;
-        border: solid 1px;
-        color: rgb(45, 118, 80);
-        margin: 15px 5px 0 0;
-        padding: 0 5px 0 5px;
-        border-radius: 5px;
-        /* background-color: gray; */
-        font-size: 12px;
-      }
+            /* background-color: greenyellow; */
+            border: solid 1px;
+            color: rgb(45, 118, 80);
+            margin: 15px 5px 0 0;
+            padding: 0 5px 0 5px;
+            border-radius: 5px;
+            /* background-color: gray; */
+            font-size: 12px;
+            max-width: 5vw;
+            max-height: 22px;
+            overflow: hidden;
+            display: -webkit-inline-box;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            margin-top: 0;
+        }
+
+        .author :hover {
+            background-color: rgb(45, 118, 80);
+            color: white;
+        }
+
+        .concept_holder {
+            border: solid 1px;
+            background-color: rgb(45, 118, 80);
+            margin: 15px 5px 0 0;
+            padding: 0 5px 0 5px;
+            border-radius: 5px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            max-width: 5vw;
+            max-height: 22px;
+            overflow: hidden;
+            display: -webkit-inline-box;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            margin-top: 0;
+        }
 
       .author :hover {
         background-color: rgb(45, 118, 80);

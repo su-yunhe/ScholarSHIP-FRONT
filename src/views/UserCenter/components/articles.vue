@@ -1,6 +1,6 @@
 <template>
     <div style="overflow: hidden;">
-        <TransitionGroup name="list" tag="ul">
+        <TransitionGroup name="list2" tag="ul">
             <!-- <el-card class="article-card" v-for="article in displayedArticles" :key="article" @click="readArticle(article)" v-show="show_list">
                 
                 <div>
@@ -44,15 +44,15 @@
                                 <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                                    <span style="" class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
                                     }}</span>
                                 </div>
                             </el-col>
                             <el-col :span="12">
                                 <div class="author_holder">
                                     <span
-                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                                    <span style="" class="concept_holder" v-for="k in item.keywords">{{ k
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
                                     }}</span>
                                 </div>
                             </el-col>
@@ -91,16 +91,6 @@ text-align: left;
                                 <DataAnalysis />
                             </el-icon>
                         </el-button>
-                        <el-button size="small" type="success" plain style="
-box-shadow: none;
-font-weight: 300;
-float: left;
-text-align: left;
-" @click="changeCollectIconToTrue(item.id)">
-                            收藏<el-icon>
-                                <FolderAdd />
-                            </el-icon>
-                        </el-button>
                         <el-button size="small" type="warning" plain style="
 box-shadow: none;
 font-weight: 300;
@@ -119,6 +109,16 @@ text-align: left;
 " @click="pdf(item.pdf)">
                             下载<el-icon>
                                 <Download />
+                            </el-icon>
+                        </el-button>
+                        <el-button size="small" type="danger" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click.stop="deleteFromCollection(item)">
+                            移除收藏<el-icon>
+                                <FolderDelete />
                             </el-icon>
                         </el-button>
                         <span style="
@@ -154,7 +154,7 @@ margin-right: 50px;
         <el-affix :offset="180">
             <el-empty description="还没有收藏的文献" v-if="!articles.length" />
         </el-affix>
-        <el-pagination v-if="articles.length" layout="prev, pager, next" :total=articles.length :page-size=entryPerPage
+        <el-pagination v-model="cur_page" v-if="articles.length" layout="prev, pager, next" :total=articles.length :page-size=entryPerPage
             @current-change="changePage" />
     </div>
 </template>
@@ -173,120 +173,108 @@ const articles = reactive([
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        author: ["1苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequencesequencesequ ence", "sequence", "sequence", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378128",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Ka42342342389734598234932794823712121221212323toh", "Daron M. Standley", "1", "2222222222222222222"],
+        author: ["2苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378129",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
+        author: ["3苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378130",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
+        author: ["4苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378131",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
+        author: ["5苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378132",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
+        author: ["6苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378133",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
+        author: ["7苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
     {
-        id: "W2160378127",
+        id: "W2160378134",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
         abstract:
             "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
         organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
+        author: ["8苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
         cite: 28654,
         date: "2013-01-16",
-        keywords: ["sequence"],
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
     },
-    {
-        id: "W2160378127",
-        title:
-            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
-        abstract:
-            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
-        organization: "Oxford University Press",
-        author: ["Kazutaka Katoh", "Daron M. Standley"],
-        cite: 28654,
-        date: "2013-01-16",
-        keywords: ["sequence"],
-        source: "Molecular Biology and Evolution",
-    }
 ])
 
 const entryPerPage = ref(6) // 每页展示的文章条目
 const displayedArticles = reactive([])
+const cur_page = ref(1);
 const changePage = (val: number) => {
     displayedArticles.splice(0, displayedArticles.length)
     for (let index = 0; index < entryPerPage.value; index++) {
@@ -303,8 +291,23 @@ const readArticle = (article) => {
     router.push("/academic/" + articleId)
 }
 
-const deleteFromCollection = (article: string) => {
+const deleteFromCollection = (article) => {
     console.log("删除收藏论文：" + article.title)
+    const index = displayedArticles.findIndex(item => item.id === article.id);
+    if (index !== -1) {
+        displayedArticles.splice(index, 1);
+    }
+    const index1 = articles.findIndex(item => item.id === article.id);
+    if (index !== -1) {
+        articles.splice(index, 1);
+    }
+    let val = cur_page.value;
+    displayedArticles.splice(0, displayedArticles.length)
+    for (let index = 0; index < entryPerPage.value; index++) {
+        if (entryPerPage.value * (val - 1) + index < articles.length) {
+            displayedArticles.push(articles[entryPerPage.value * (val - 1) + index])
+        }
+    }
 }
 
 var show_list = ref(false)
@@ -328,7 +331,7 @@ const gotoAuthor = (name) => {
 
 </script>
 
-<style setup scoped>
+<style setup scoped lang="scss">
 .article-card {
     margin-bottom: 20px;
     height: 160px;
@@ -415,28 +418,29 @@ const gotoAuthor = (name) => {
     transition: all 0.3s ease-in-out;
 }
 
-.list-move,
-/* 对移动中的元素应用的过渡 */
-.list-enter-active {
-    transition: all 0.7s ease;
-}
+.list2-move,
+    /* 对移动中的元素应用的过渡 */
+    .list2-enter-active {
+        transition: all 0.3s ease;
+    }
 
-.list-leave-active {
-    transition: all 0.3s ease;
-}
+    .lis2t-leave-active {
+        transition: all 1s ease;
+    }
 
-.list-enter-from {
-    opacity: 0;
-    transform: translateY(30px);
-}
+    .list2-enter-from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
 
-.list-leave-to {
-    opacity: 0;
-}
+    .list2-leave-to {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
 
-/* 确保将离开的元素从布局流中删除
+    /* 确保将离开的元素从布局流中删除
   以便能够正确地计算移动的动画。 */
-.list-leave-active {
-    position: absolute;
-}
+    .list2-leave-active {
+        position: absolute;
+    }
 </style>
