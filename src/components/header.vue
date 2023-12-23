@@ -33,7 +33,7 @@ const toAdvancedSearch = () => {
 
 <template>
   <div class="header">
-    <div class="logo" @click="toHomePage()">
+    <div class="logo" style="cursor: pointer;" @click="toHomePage()">
       <span style="color: rgba(97, 134, 243); margin-left: 2px;">S</span>
       <span style="color: rgba(200, 65, 48);margin-left: 2px;">c</span>
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">h</span>
