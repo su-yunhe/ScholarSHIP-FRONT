@@ -3,6 +3,8 @@ import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const router = useRouter()
+// 不显示搜索框的路径
+const excludedPaths = ['/intro', '/login', '/search', '/AdvancedSearch'];
 console.log(userStore.userInfo)
 
 const toLogin = () => {
@@ -29,6 +31,10 @@ const toUserCenter = () => {
 const toAdvancedSearch = () => {
   router.replace({ path: '/AdvancedSearch' })
 }
+
+const toSearch = () => {
+  router.replace({ path: '/search' })
+}
 </script>
 
 <template>
@@ -46,17 +52,22 @@ const toAdvancedSearch = () => {
       <span style="color: rgba(200, 65, 48);margin-left: 2px;">I</span>
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
     </div>
-    <div class="menu1" @click="toAdvancedSearch()">
-      <button class="btn" @click="toLogin()">
+    <div class="menu1">
+      <button v-if="router.currentRoute.value.fullPath!= '/AdvancedSearch'" class="btn"  @click="toAdvancedSearch()">
         <span class="box">
           高级搜索
+        </span>
+      </button>
+      <button v-else class="btn"  @click="toSearch()">
+        <span class="box">
+          普通搜索
         </span>
       </button>
     </div>
 
 
     <div class="search">
-      <div class="form-control">
+      <div v-if="!excludedPaths.includes(router.currentRoute.value.fullPath)" class="form-control">
         <input class="input input-alt" placeholder="搜索......" required="" type="text">
         <span class="input-border input-border-alt"></span>
       </div>
