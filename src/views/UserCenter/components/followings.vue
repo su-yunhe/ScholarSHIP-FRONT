@@ -1,7 +1,9 @@
 // 个人图书馆关注列表的组件
 <template>
     <div>
-        <el-card class="following-card" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(233,187,18,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(233,187,18,0.6)'; this.style.boxShadow='none';">
+        <el-card class="following-card" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, white, rgb(233, 187, 18))'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 75%,  rgba(233, 187, 18, 0.8))'; this.style.boxShadow='none';">
+            <!-- <el-card class="following-card" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, rgb(233, 187, 18), black )'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 75%,  rgba(233, 187, 18, 0.8))'; this.style.boxShadow='none';"> -->
+
             <span style="font-weight: bold;">关注的学者</span>
             <el-divider />
             <el-scrollbar max-height="200px">
@@ -81,7 +83,8 @@ const scholars = reactive([])
     margin: 5%;
     min-height: 100px;
     border-radius: 20px;
-    background-color: rgb(233, 187, 18, 0.6);
+    // background-color: rgb(233, 187, 18, 0.6);
+    background: linear-gradient(to bottom right, white, 80%,  rgba(233, 187, 18, 0.75));
     transition: all 0.3s;
 
     .following_content {

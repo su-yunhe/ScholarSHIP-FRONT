@@ -2,7 +2,7 @@
 <template>
     <div>
         <div class="tags">
-            <el-card class="screening-card" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(200, 65, 48,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(200, 65, 48,0.6)'; this.style.boxShadow='none';">
+            <el-card class="screening-card" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, white, rgb(200, 65, 48))'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 80%,  rgba(200, 65, 48, 0.75))'; this.style.boxShadow='none';">
                 <span style="font-weight: bold;">筛选</span>
                 <el-divider/>
                 <el-tag
@@ -168,12 +168,14 @@ onBeforeMount(() => {
     margin: 5%;
     min-height: 100px;
     border-radius: 20px;
-    background-color: rgb(200, 65, 48, 0.75);
+    /* background-color: rgb(200, 65, 48, 0.75); */
+    background: linear-gradient(to bottom right, white, 80%,  rgba(200, 65, 48, 0.75));
     transition: all 0.3s;
 }
 
 .screening-card :hover {
-  background-color: rgb(200, 65, 48, 0.75);
+  /* background-color: rgb(200, 65, 48, 0.75); */
+  /* background: linear-gradient(to bottom right, white, rgb(200, 65, 48)); */
   transition: all 0.3s;
 }
 

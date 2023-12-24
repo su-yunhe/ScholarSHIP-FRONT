@@ -44,15 +44,16 @@
                                 <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
-                                    }}</span>
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author"
+                                        @click=gotoAuthor(a) :title="a">{{ a
+                                        }}</span>
                                 </div>
                             </el-col>
                             <el-col :span="12">
                                 <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
-                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
+                                    <span class="concept_holder" v-for="k in item.keywords" :title="k">{{ k
                                     }}</span>
                                 </div>
                             </el-col>
@@ -111,16 +112,24 @@ text-align: left;
                                 <Download />
                             </el-icon>
                         </el-button>
-                        <el-button size="small" type="danger" plain style="
+                        <el-popconfirm width="220" confirm-button-text="确定" confirm-button-type="danger" cancel-button-text="取消" :icon="InfoFilled"
+                            icon-color="#626AEF" title="确定要移除收藏吗?" @confirm="deleteFromCollection(item)">
+                            <template #reference>
+                                <el-button size="small" type="danger" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
 text-align: left;
-" @click.stop="deleteFromCollection(item)">
-                            移除收藏<el-icon>
-                                <FolderDelete />
-                            </el-icon>
-                        </el-button>
+"
+onmouseover="this.style.backgroundColor='rgb(245, 108, 108)'; this.style.color = 'white';"
+onmouseleave="this.style.backgroundColor='rgb(254, 240, 240)'; this.style.color = 'rgb(245, 108, 125)';">
+                                    移除收藏<el-icon>
+                                        <FolderDelete />
+                                    </el-icon>
+                                </el-button>
+                            </template>
+                        </el-popconfirm>
+
                         <span style="
 float: right;
 text-align: right;
@@ -154,8 +163,8 @@ margin-right: 50px;
         <el-affix :offset="180">
             <el-empty description="还没有收藏的文献" v-if="!articles.length" />
         </el-affix>
-        <el-pagination v-model="cur_page" v-if="articles.length" layout="prev, pager, next" :total=articles.length :page-size=entryPerPage
-            @current-change="changePage" />
+        <el-pagination id="page" v-if="articles.length" layout="prev, pager, next" :total=articles.length
+            :page-size=entryPerPage @current-change="changePage" />
     </div>
 </template>
 
@@ -282,6 +291,8 @@ const changePage = (val: number) => {
             displayedArticles.push(articles[entryPerPage.value * (val - 1) + index])
         }
     }
+    cur_page.value = val;
+    console.log("cur_page:" + cur_page.value);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -293,15 +304,15 @@ const readArticle = (article) => {
 
 const deleteFromCollection = (article) => {
     console.log("删除收藏论文：" + article.title)
+    let val = cur_page.value;
     const index = displayedArticles.findIndex(item => item.id === article.id);
     if (index !== -1) {
         displayedArticles.splice(index, 1);
     }
     const index1 = articles.findIndex(item => item.id === article.id);
-    if (index !== -1) {
-        articles.splice(index, 1);
+    if (index1 !== -1) {
+        articles.splice(index1, 1);
     }
-    let val = cur_page.value;
     displayedArticles.splice(0, displayedArticles.length)
     for (let index = 0; index < entryPerPage.value; index++) {
         if (entryPerPage.value * (val - 1) + index < articles.length) {
@@ -309,6 +320,16 @@ const deleteFromCollection = (article) => {
         }
     }
 }
+
+// const deleteDialogVisible = ref(false)
+// const closingArticle = ref();
+// const delete_dialog = (article) => {
+
+// }
+// const handleClose = (article) => {
+//     closingArticle.value = article;
+//     deleteDialogVisible.value = true
+// }
 
 var show_list = ref(false)
 
@@ -419,28 +440,28 @@ const gotoAuthor = (name) => {
 }
 
 .list2-move,
-    /* 对移动中的元素应用的过渡 */
-    .list2-enter-active {
-        transition: all 0.7s ease;
-    }
+/* 对移动中的元素应用的过渡 */
+.list2-enter-active {
+    transition: all 0.7s ease;
+}
 
-    .lis2t-leave-active {
-        transition: all 0.3s ease;
-    }
+.lis2t-leave-active {
+    transition: all 0.3s ease;
+}
 
-    .list2-enter-from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
+.list2-enter-from {
+    opacity: 0;
+    transform: translateY(30px);
+}
 
-    .list2-leave-to {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
+.list2-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+}
 
-    /* 确保将离开的元素从布局流中删除
+/* 确保将离开的元素从布局流中删除
   以便能够正确地计算移动的动画。 */
-    .list2-leave-active {
-        position: absolute;
-    }
+.list2-leave-active {
+    position: absolute;
+}
 </style>

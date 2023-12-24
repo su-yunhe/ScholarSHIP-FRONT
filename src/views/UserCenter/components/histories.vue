@@ -1,7 +1,7 @@
 // 个人图书馆浏览记录的组件
 <template>
     <div>
-        <el-card class="history-card" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(107, 168, 87,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(107, 168, 87,0.6)'; this.style.boxShadow='none';">
+        <el-card class="history-card" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, white, rgb(107, 168, 87))'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 80%,  rgba(107, 168, 87,0.75))'; this.style.boxShadow='none';">
             <div class="tltle"><span style="font-weight: bold;">浏览记录<el-icon style="cursor: pointer;  margin-left: 0.5vw; position: relative; top: 1.5px;" color="red"
                         @click="deleteAllEntries" >
                         <DeleteFilled />
@@ -113,8 +113,9 @@ onBeforeMount(() => {
     min-height: 100px;
     // border: 1px solid;
     border-radius: 20px;
-    background-color: rgb(107, 168, 87, 0.75);
-    transition: all 0.3s ease;
+    // background-color: rgb(107, 168, 87, 0.75);
+    background: linear-gradient(to bottom right, white, 80%,  rgba(107, 168, 87,0.75));
+    transition: all 0.3s;
 
     .text_item {
         padding-top: 5px;
