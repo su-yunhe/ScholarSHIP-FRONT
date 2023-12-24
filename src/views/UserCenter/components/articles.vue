@@ -14,9 +14,9 @@
                             <span v-if="index !== article.author.length - 1">, </span>
                         </span>
                     </div>
-                    <div v-if="article && article.abstract">
+                    <div v-if="article && article.content">
                         <span style="font-weight:bold;">摘要：</span>
-                        {{ article.abstract }}
+                        {{ article.content }}
                     </div>
                     <div>
                         <span style="font-weight:bold;">发表时间：</span>
@@ -33,153 +33,46 @@
             </el-card>
         </TransitionGroup>
         <el-affix :offset="180">
-            <el-empty description="还没有收藏的文献" v-if="!articles.length" />
+            <el-empty description="这个收藏夹还没有收藏的文献~" v-if="!articles.length" />
         </el-affix>
         <el-pagination v-if="articles.length" layout="prev, pager, next" :total=articles.length :page-size=entryPerPage
-            @current-change="changePage" />
+            @current-change="changePage"/>
     </div>
 </template>
 
 <script lang="ts" setup>
 import router from "@/router";
+import { useLibraryStore } from "@/stores/library";
+import { useUserStore } from "@/stores/userStore";
 import httpInstance from "@/utils/http";
-import { onBeforeMount, onMounted} from "vue";
+import { onBeforeMount, onMounted, watch} from "vue";
 import { reactive, ref } from "vue";
+const libraryStore = useLibraryStore()
+const userStore = useUserStore()
+const userId = userStore.userInfo.userid
 
-const articles = reactive([
-    {
-        title: "论文1",
-        abstract: "论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文2",
-        abstract: "论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文3",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文4",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文5",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文6",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文7",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文8",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文9",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文10",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文11",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文12",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+const articles = reactive([])
+const loadArticles = () => {
+    httpInstance.post("star_get_all",{
+        userid: userId,
+        labelId: libraryStore.labelId
+    }).then((res) => {
+        console.log(res.results)
+        articles.splice(0, articles.length, ...res.results)
+        changePage(1) // 调用一次刷新展示的文章
+    })
+}
+
+
+watch( // 监听store中labelId的值
+    () => libraryStore.labelId,
+    (newLabelId, oldLabelId) => {
+        if (newLabelId !== oldLabelId) {
+            loadArticles() // 当 labelId 发生变化时加载文章
+        }
     }
-])
+)
+
 
 const entryPerPage = ref(6) // 每页展示的文章条目
 const displayedArticles = reactive([])
@@ -207,6 +100,7 @@ var show_list = ref(false)
 
 onBeforeMount(() => {
     changePage(1) // 调用一次，展示第一页的内容
+    loadArticles()
 })
 
 onMounted(() => {

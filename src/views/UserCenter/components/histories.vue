@@ -9,10 +9,10 @@
                 <div v-for="entry in recordEntries" :key="entry" class="text item" @mouseenter="mouseEnter(entry)" @mouseleave="mouseLeave">
                     <div style="float: left;">
                         <div>
-                            {{ entry.title }}
-                        </div>
-                        <div>
-                            {{ entry.author }}
+                            {{ entry.name }}
+                            <el-tag v-if="entry.type == 2">学者</el-tag>
+                            <el-tag v-if="entry.type == 1" type="success">文献</el-tag>
+                            <el-tag v-if="entry.type == 0" type="warning">机构</el-tag>
                         </div>
                         <div>
                             {{ entry.time }}
@@ -33,56 +33,58 @@
 import { useUserStore } from "@/stores/userStore";
 import httpInstance from "@/utils/http";
 import axios from "axios";
+import { ElMessage } from "element-plus";
 import { onBeforeMount, reactive, ref } from "vue";
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 
-const recordEntries = reactive([
-    {
-        id: "1",
-        title: "论文1",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    },{
-        id: "2",
-        title: "论文2",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    },{
-        id: "3",
-        title: "论文3",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    },{
-        id: "4",
-        title: "论文4",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    }
-])
+const recordEntries = reactive([])
 
 const entryMouseOn = ref('')
 const mouseEnter = (entry: string) => {
-    console.log("选择记录"+entry.title)
+    console.log("选择记录"+entry.id)
     entryMouseOn.value = entry.id
 }
 const mouseLeave = () => {
     entryMouseOn.value = ''
 }
 const deleteEntry = (entry: string) => {
-    console.log("删除记录"+entry.title)
+    console.log("删除记录"+entry.id)
+    httpInstance.post("History_delete_single",{
+        userid: userId,
+        id: entry.indexOf,
+        isDelete: 0
+    }).then((res) => {
+        console.log(res)
+        loadRecords()
+        ElMessage({
+            message: '操作成功！',
+            type: 'success',
+        })
+    })
 }
 
 const deleteAllEntries = () => {
     console.log("删除所有历史记录")
+    httpInstance.post("History_delete_all",{
+        userid: userId,
+        isDelete: 0
+    }).then((res) => {
+        console.log(res)
+        loadRecords()
+        ElMessage({
+            message: '操作成功！',
+            type: 'success',
+        })
+    })
 }
 
 const loadRecords = () => {
     httpInstance.post("History_get_all",{
-        userid: 1
+        userid: userId
     }).then((res) => {
         console.log(res)
-        // recordEntries.splice(0, recordEntries.length, ...res.data.dataList)
+        recordEntries.splice(0, recordEntries.length, ...res.results)
     })
 }
 
