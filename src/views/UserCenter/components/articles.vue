@@ -1,7 +1,8 @@
 <template>
     <div style="overflow: hidden;">
-        <TransitionGroup name="list" tag="ul">
-            <el-card class="article-card" v-for="article in displayedArticles" :key="article" @click="readArticle(article)" v-show="show_list">
+        <TransitionGroup name="list2" tag="ul">
+            <!-- <el-card class="article-card" v-for="article in displayedArticles" :key="article" @click="readArticle(article)" v-show="show_list">
+                
                 <div>
                     <div v-if="article && article.title">
                         <span style="font-weight:bold;">标题：</span>
@@ -20,9 +21,9 @@
                     </div>
                     <div>
                         <span style="font-weight:bold;">发表时间：</span>
-                        {{ article.time }}
+                        {{ article.date }}
                         <span style="font-weight:bold;">被引次数：</span>
-                        {{ article.refer }}
+                        {{ article.cite }}
                         <span>
                             <el-icon style="cursor: pointer;" @click.stop="deleteFromCollection(article)">
                                 <Delete />
@@ -30,12 +31,130 @@
                         </span>
                     </div>
                 </div>
-            </el-card>
+            </el-card> -->
+            <div v-for="item in displayedArticles" style="margin-top: 15px" class="article-card" v-show="show_list">
+                <div class="res">
+                    <div :title="item.title" class="title" @click="readArticle(item)"
+                        style="cursor: pointer;  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">
+                        {{ item.title }}</div>
+                    <!-- <div>{{ item.title }}</div> -->
+                    <div class="info1">
+                        <el-row>
+                            <el-col :span="12">
+                                <div class="author_holder">
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
+                                    }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <div class="author_holder">
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
+                                    }}</span>
+                                </div>
+                            </el-col>
+                            <!-- <el-col :span="12">
+                                <div class="author_holder">
+                                    <span style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                                    <span v-for="k in item.keywords" style="" class="author">{{ k }}</span>
+                                </div>
+                            </el-col> -->
+                        </el-row>
+                    </div>
+                    <div :title="item.abstract"
+                        style="max-height: 35px; max-width: 95%; margin-top: 5px; margin-left:30px; font-size: 12px; color: #747474; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                        {{ item.abstract }}
+                    </div>
+
+
+                    <div style="margin-left: 27px; margin-top:8px;">
+                        <el-button size="small" type="primary" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="cite(item)">
+                            引用<el-icon>
+                                <Link />
+                            </el-icon>
+                        </el-button>
+                        <el-button size="small" type="success" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="toDocument(item.title, item.id)">
+                            详情<el-icon>
+                                <DataAnalysis />
+                            </el-icon>
+                        </el-button>
+                        <el-button size="small" type="warning" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="gourl(item)">
+                            来源<el-icon>
+                                <Position />
+                            </el-icon>
+                        </el-button>
+                        <el-button size="small" type="warning" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="pdf(item.pdf)">
+                            下载<el-icon>
+                                <Download />
+                            </el-icon>
+                        </el-button>
+                        <el-button size="small" type="danger" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click.stop="deleteFromCollection(item)">
+                            移除收藏<el-icon>
+                                <FolderDelete />
+                            </el-icon>
+                        </el-button>
+                        <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 150px;
+">
+                            被引次数：
+                            <span style="color: #2d94d4">
+                                {{ item.cite }}
+                            </span>
+                        </span>
+                        <span style="
+float: right;
+text-align: right;
+margin-top: 3px;
+color: grey;
+font-size: 15px;
+margin-right: 50px;
+">
+                            发表时间：
+                            <span style="color: #2d94d4">
+                                {{ item.date }}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </TransitionGroup>
         <el-affix :offset="180">
             <el-empty description="还没有收藏的文献" v-if="!articles.length" />
         </el-affix>
-        <el-pagination v-if="articles.length" layout="prev, pager, next" :total=articles.length :page-size=entryPerPage
+        <el-pagination v-model="cur_page" v-if="articles.length" layout="prev, pager, next" :total=articles.length :page-size=entryPerPage
             @current-change="changePage" />
     </div>
 </template>
@@ -43,146 +162,119 @@
 <script lang="ts" setup>
 import router from "@/router";
 import httpInstance from "@/utils/http";
-import { onBeforeMount, onMounted} from "vue";
+import { onBeforeMount, onMounted } from "vue";
 import { reactive, ref } from "vue";
 
 const articles = reactive([
     {
-        title: "论文1",
-        abstract: "论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1论文1",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378127",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["1苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文2",
-        abstract: "论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2论文2",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378128",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["2苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文3",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378129",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["3苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文4",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378130",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["4苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文5",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378131",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["5苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文6",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378132",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["6苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文7",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378133",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["7苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
     {
-        title: "论文8",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
+        id: "W2160378134",
+        title:
+            "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        abstract:
+            "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
+        organization: "Oxford University Press",
+        author: ["8苏云鹤运河运河运河运河", "Daron M. Standley", "syh1", "syh1", "syh1", "Kazutaka Katoh", "Daron M. Standley", "syh1", "syh1", "syh1"],
+        cite: 28654,
+        date: "2013-01-16",
+        keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
+        source: "Molecular Biology and Evolution",
     },
-    {
-        title: "论文9",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文10",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文11",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    },
-    {
-        title: "论文12",
-        abstract: "这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是论文三的内容这是",
-        author: [
-            'xqf',
-            'abc',
-            'xyz'
-        ],
-        refer: '123',
-        time: '1999-09-09'
-    }
 ])
 
 const entryPerPage = ref(6) // 每页展示的文章条目
 const displayedArticles = reactive([])
+const cur_page = ref(1);
 const changePage = (val: number) => {
     displayedArticles.splice(0, displayedArticles.length)
     for (let index = 0; index < entryPerPage.value; index++) {
@@ -193,14 +285,29 @@ const changePage = (val: number) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-const readArticle = (article: string) => {
+const readArticle = (article) => {
     console.log(article.title)
-    let articleId = 1
-    router.push("/academic/:" + articleId)
+    let articleId = article.id
+    router.push("/academic/" + articleId)
 }
 
-const deleteFromCollection = (article: string) => {
+const deleteFromCollection = (article) => {
     console.log("删除收藏论文：" + article.title)
+    const index = displayedArticles.findIndex(item => item.id === article.id);
+    if (index !== -1) {
+        displayedArticles.splice(index, 1);
+    }
+    const index1 = articles.findIndex(item => item.id === article.id);
+    if (index !== -1) {
+        articles.splice(index, 1);
+    }
+    let val = cur_page.value;
+    displayedArticles.splice(0, displayedArticles.length)
+    for (let index = 0; index < entryPerPage.value; index++) {
+        if (entryPerPage.value * (val - 1) + index < articles.length) {
+            displayedArticles.push(articles[entryPerPage.value * (val - 1) + index])
+        }
+    }
 }
 
 var show_list = ref(false)
@@ -212,12 +319,97 @@ onBeforeMount(() => {
 onMounted(() => {
     show_list.value = true;
 })
+
+const toDocument = (id) => {
+    var str = "/academic/" + id;
+    router.push({ path: str });
+};
+const gotoAuthor = (name) => {
+    var str = "/scholar/" + name;
+    router.push({ path: str });
+};
+
 </script>
 
-<style setup scoped>
+<style setup scoped lang="scss">
 .article-card {
     margin-bottom: 20px;
     height: 160px;
+
+    .author_holder {
+        /* border: 1px solid black; */
+        max-height: 21px;
+        overflow: hidden;
+    }
+
+    .res:hover {
+        box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+        transition: 0.2s;
+    }
+
+    .res {
+        height: 145px;
+        border: 1px;
+        /* background-color: pink; */
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        background-color: #fafafa;
+        border-radius: 5px;
+        transition: 0.2s;
+
+        .title {
+            padding-left: 30px;
+            padding-top: 5px;
+            height: 40px;
+            line-height: 40px;
+            /* background-color: #00810f; */
+            font-weight: 15px;
+            font-size: 19px;
+        }
+
+        .info {}
+
+        .author {
+            /* background-color: greenyellow; */
+            border: solid 1px;
+            color: rgb(45, 118, 80);
+            margin: 15px 5px 0 0;
+            padding: 0 5px 0 5px;
+            border-radius: 5px;
+            /* background-color: gray; */
+            font-size: 12px;
+            max-width: 5vw;
+            max-height: 22px;
+            overflow: hidden;
+            display: -webkit-inline-box;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            margin-top: 0;
+        }
+
+        .author :hover {
+            background-color: rgb(45, 118, 80);
+            color: white;
+        }
+
+        .concept_holder {
+            border: solid 1px;
+            background-color: rgb(45, 118, 80);
+            margin: 15px 5px 0 0;
+            padding: 0 5px 0 5px;
+            border-radius: 5px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            max-width: 5vw;
+            max-height: 22px;
+            overflow: hidden;
+            display: -webkit-inline-box;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            margin-top: 0;
+        }
+    }
 }
 
 .el-card:hover {
@@ -226,28 +418,29 @@ onMounted(() => {
     transition: all 0.3s ease-in-out;
 }
 
-.list-move, /* 对移动中的元素应用的过渡 */
-.list-enter-active{
-  transition: all 0.7s ease;
-}
+.list2-move,
+    /* 对移动中的元素应用的过渡 */
+    .list2-enter-active {
+        transition: all 0.7s ease;
+    }
 
-.list-leave-active {
-    transition: all 0.3s ease;
-}
+    .lis2t-leave-active {
+        transition: all 0.3s ease;
+    }
 
-.list-enter-from{
-  opacity: 0;
-  transform: translateY(30px);
-}
+    .list2-enter-from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
 
-.list-leave-to {
-    opacity: 0;
-}
+    .list2-leave-to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
 
-/* 确保将离开的元素从布局流中删除
+    /* 确保将离开的元素从布局流中删除
   以便能够正确地计算移动的动画。 */
-.list-leave-active {
-  position: absolute;
-}
-
+    .list2-leave-active {
+        position: absolute;
+    }
 </style>
