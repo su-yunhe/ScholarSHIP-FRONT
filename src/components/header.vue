@@ -1,11 +1,12 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 const userStore = useUserStore()
 const router = useRouter()
 // 不显示搜索框的路径
-const excludedPaths = ['/intro', '/login', '/search', '/AdvancedSearch'];
-console.log(userStore.userInfo)
+const excludedPaths = ['/intro', '/login', '/search', '/AdvancedSearch']
+const myInput = ref("")
 
 const toLogin = () => {
   router.replace({ path: '/login' })
@@ -34,6 +35,10 @@ const toAdvancedSearch = () => {
 
 const toSearch = () => {
   router.replace({ path: '/search' })
+}
+const doSearch = () => {
+  console.log(myInput.value)
+  
 }
 </script>
 
@@ -64,11 +69,9 @@ const toSearch = () => {
         </span>
       </button>
     </div>
-
-
     <div class="search">
       <div v-if="!excludedPaths.includes(router.currentRoute.value.fullPath)" class="form-control">
-        <input class="input input-alt" placeholder="搜索......" required="" type="text">
+        <input @keydown.enter="doSearch()" class="input input-alt" placeholder="搜索......" required="" type="text" v-model="myInput">
         <span class="input-border input-border-alt"></span>
       </div>
 
