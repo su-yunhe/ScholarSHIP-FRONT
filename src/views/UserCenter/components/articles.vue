@@ -252,7 +252,7 @@ const changePage = (val: number) => {
 
 const readArticle = (article) => {
     console.log(article.title)
-    let articleId = article.id
+    let articleId = article.article_id
     router.push("/academic/" + articleId)
 }
 
@@ -287,7 +287,7 @@ onMounted(() => {
 })
 
 const toDocument = (id) => {
-    var str = "/academic/" + article_id;
+    var str = "/academic/" + id;
     router.push({ path: str });
 };
 const gotoAuthor = (name) => {
