@@ -1,7 +1,7 @@
 // 个人信息组件
 <template>
   <div>
-    <el-card class="information" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(97, 134, 243,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(97, 134, 243,0.6)'; this.style.boxShadow='none';">
+    <el-card class="information" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, white, rgb(97, 134, 243))'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 80%,  rgba(97, 134, 243, 0.75))'; this.style.boxShadow='none';">
       <div class="avatar">
         <el-upload class="avatar-uploader" :show-file-list="false" :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
@@ -37,7 +37,6 @@ import { ElMessage } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 import { useUserStore } from "@/stores/userStore"
 import httpInstance from "@/utils/http"
-import { tr } from "element-plus/es/locale"
 
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
@@ -114,10 +113,11 @@ onBeforeMount(() => {
   border-radius: 20px;
   background-color: rgba(97, 134, 243, 0.75);
   transition: all 0.3s;
+  background: linear-gradient(to bottom right, white, 80%,  rgba(97, 134, 243, 0.75));
 }
 
 .information :hover {
-  background-color: rgb(97, 134, 243, 0.75);
+  /* background-color: rgb(97, 134, 243, 0.75); */
   transition: all 0.3s;
 }
 
