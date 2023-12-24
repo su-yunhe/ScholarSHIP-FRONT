@@ -197,111 +197,19 @@
                 <el-row v-show="ok==='文献'">
                   <el-col :span="12">
                     <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >作者：</span
-                      >
-                      <span
-                        style="cursor: pointer"
-                        class="author"
-                        v-for="a in item.author"
-                        @click="gotoAuthor(a)"
-                        >{{ a }}</span
-                      >
-                    </div>
-                  </el-col>
-                  <el-col :span="12">
-                    <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >关键词：</span
-                      >
-                      <span class="concept_holder" v-for="k in item.keywords">{{
-                        k
-                      }}</span>
-                    </div>
-                  </el-col>
-                </el-row>
-                <el-row v-show="ok==='学者'">
-                  <el-col :span="12">
-                    <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >机构：</span
-                      >
-                      <span
-                        style="cursor: pointer"
-                        class="author"
-                        >{{ item.institution }}</span
-                      >
-                    </div>
-                  </el-col>
-                  <el-col :span="12">
-                    <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >领域：</span
-                      >
-                      <span class="concept_holder">{{
-                        item.concept
-                      }}</span>
-                    </div>
-                  </el-col>
-                </el-row>
-                <el-row v-show="ok==='机构'">
-                  <el-col :span="12">
-                    <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >地址：</span
-                      >
-                      <span
-                        style="cursor: pointer"
-                        class="author"
-                        >{{ item.city }},{{ item.country }}</span
-                      >
-                    </div>
-                  </el-col>
-                  <el-col :span="12">
-                    <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >领域：</span
-                      >
-                      <span class="concept_holder" v-for="k in item.concept">{{
-                        k
-                      }}</span>
-                    </div>
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
+                                    }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <div class="author_holder">
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
+                                    }}</span>
+                                </div>
                   </el-col>
                 </el-row>
               </div>

@@ -6,8 +6,10 @@ const userStore = useUserStore()
 
 export const useLibraryStore = defineStore('library', () => {
     const labelId = ref('')
+    const labelName = ref('')
     return{
         labelId,
+        labelName,
     }
 }, {
   persist: true,
