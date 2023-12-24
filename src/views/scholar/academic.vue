@@ -9,7 +9,8 @@
             <div class="essay-indicators">
                 <span class="essay-indicator">被引用数：{{essay.cited_by_count}}</span>
                 <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
-                <span class="essay-indicator-op" @click="download(essay)"><el-icon><Download /></el-icon>下载</span>
+                <a :href="essay.pdf_url" target="_blank"><span class="essay-indicator-op"><el-icon><Reading /></el-icon>pdf预览</span></a>
+                <!-- <span class="essay-indicator-op" @click="download(essay.pdf_url)"><el-icon><Download /></el-icon>下载</span> -->
                 <span class="essay-indicator-op" @click="getCitation(essay)"><el-icon><Link /></el-icon>引用</span>
                 <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
             </div>
@@ -36,7 +37,7 @@
             v-model:current-page="currentPage"
             :page-size="5"
             layout="prev, pager, next, jumper"
-            :total="essayNum"
+            v-model:total="essayNum"
             class="el-pagination">
         </el-pagination>
     </div>
@@ -48,13 +49,14 @@ import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../stores/scholar'
 const scholarStore = useScholarStore();
 import httpInstance from '@/utils/http'
+import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 const router = useRouter()
 const IDForm = ref({
     scholarID: 'A5023888391',
     userID: 1,
 })
-const essayNum = ref();
+const essayNum = ref(0);
 const displayEssays = ref([]); // 记得进入页面时初始化
 const essayList = ref([]);
 const currentPage = ref(1);
@@ -70,12 +72,27 @@ onMounted(() => {
     essayNum.value = 0;
     if(scholarStore.essayList.length == 0){
         setTimeout(()=>{
-            console.log("academic paper:",scholarStore.essayList);
             loading();
+            console.log("academic paper:",scholarStore.essayList,essayList.value);
         }, 3000);
+        setTimeout(()=>{
+            console.log("judge1:",essayList.value.length==0 && scholarStore.essayList.length!=0);
+            if(essayList.value.length == 0 && scholarStore.essayList.length!=0){
+                loading();
+                console.log("academic paper2:",scholarStore.essayList,essayList.value);
+            }
+        }, 5000);
+        setTimeout(()=>{
+            console.log("judge2:",essayList.value.length==0 && scholarStore.essayList.length!=0);
+            if(essayList.value.length == 0 && scholarStore.essayList.length!=0){
+                loading();
+                console.log("academic paper3:",scholarStore.essayList,essayList.value);
+            }
+        }, 7000);
     }
     else{
         loading();
+        console.log("academic paper:",scholarStore.essayList,essayNum.value);
     }
     
 });
@@ -100,8 +117,17 @@ const enterScholarPortal = (author) => {//进入相应学者门户
     console.log('enter scholar portal:',scholar_id);
     router.push(`/scholar/${scholar_id}`);
 }
-const download = (essay) => {//下载文献
-    console.log('download:',essay);
+const download = async(pdf_url) => {//下载文献
+    const response = await axios.get(pdf_url,{
+        responseType: 'blob', // 必须指定为blob类型才能下载
+    });
+    console.log("download",response);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'ScholarSHIP文献下载.pdf');
+    document.body.appendChild(link);
+    link.click();
 }
 const collection = (essay) => {//收藏文献
     console.log('collection:',essay);

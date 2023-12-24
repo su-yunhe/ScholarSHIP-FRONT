@@ -2,8 +2,8 @@
 <template>
     <div>
         <div class="tags">
-            <el-card class="screening-card">
-                筛选
+            <el-card class="screening-card" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(200, 65, 48,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(200, 65, 48,0.6)'; this.style.boxShadow='none';">
+                <span style="font-weight: bold;">筛选</span>
                 <el-divider/>
                 <el-tag
                     type="info"
@@ -15,6 +15,7 @@
                     :disable-transitions="false"
                     @close="handleClose(tag)"
                     @click="selectTag(tag)"
+                    style="background-color: white;"
                 >
                     {{ tag.name }}
                 </el-tag>
@@ -26,8 +27,9 @@
                     size="small"
                     @keyup.enter="handleInputConfirm"
                     @blur="handleInputConfirm"
+                    style="background-color: white;"
                 />
-                <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                <el-button v-else class="button-new-tag" size="small" @click="showInput" style="background-color: white;">
                     + 新建收藏夹
                 </el-button>
             </el-card>
@@ -180,7 +182,20 @@ onBeforeMount(() => {
 .screening-card{
     margin: 5%;
     min-height: 100px;
+    border-radius: 20px;
+    background-color: rgb(200, 65, 48, 0.75);
+    transition: all 0.3s;
 }
+
+.screening-card :hover {
+  background-color: rgb(200, 65, 48, 0.75);
+  transition: all 0.3s;
+}
+
+.screening-card div :hover{
+  background-color: rgba(0,0,0,0);
+}
+
 .mx-1{
     margin-right: 10px;
     margin-bottom: 10px;

@@ -9,9 +9,25 @@
             <div class="essay-indicators">
                 <span class="essay-indicator">被引用数：{{essay.cited_by_count}}</span>
                 <span class="essay-indicator">发表时间：{{essay.publication_date}}</span>
-                <span class="essay-indicator-op" @click="upload(essay)"><el-icon><RefreshRight /></el-icon>重新上架</span>
+                <span class="essay-indicator-op" @click="uploadDialog(essay)"><el-icon><RefreshRight /></el-icon>重新上架</span>
             </div>
         </div>
+        <!--上架对话框-->
+        <el-dialog
+            v-model="uploadDialogVisible"
+            title="提示"
+            width="30%"
+        >
+        <span>是否重新上架该文献</span>
+            <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="uploadDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="upload">
+                确认
+                </el-button>
+            </span>
+            </template>
+        </el-dialog>
         <el-pagination
             v-if="essayNum!=0"
             @current-change="currentPageChange"
@@ -39,6 +55,8 @@ const essayNum = ref();
 const displayEssays = ref([]); // 记得进入页面时初始化
 const essayList = ref([]);
 const currentPage = ref(1);
+let uploadDialogVisible = ref(false);
+const uploadEssay= ref({});
 
 onMounted(() => {
     console.log("removed academic paper:",scholarStore.removedEssayList);
@@ -63,19 +81,22 @@ const enterScholarPortal = (author) => {//进入相应学者门户
     let scholar_id = author.id.split('/')[3]
     router.push(`/scholar/${scholar_id}`);
 }
-const upload = (essay) => {//上架文献
-    console.log('upload:',essay,essay.id.split('/'));
-    let work_id = essay.id.split('/')[3];
+const uploadDialog = (essay) => {//上架文献
+    uploadEssay.value = essay;
+    uploadDialogVisible.value = true;
+}
+const upload = () => {//上架文献
+    let work_id = uploadEssay.value.id.split('/')[3];
     httpInstance.post("/change_status", JSON.stringify({work_id: work_id})).then(res => {
         console.log("change_status:", res);
-        essayList.value = essayList.value.filter(item=>item != essay);
+        essayList.value = essayList.value.filter(item=>item != uploadEssay.value);
         displayEssays.value = essayList.value.slice(0,5);
         essayNum.value = essayList.value.length;
         scholarStore.removedEssayList = essayList.value;
-        scholarStore.essayList.push(essay);
+        scholarStore.essayList.push(uploadEssay.value);
     })
+    uploadDialogVisible.value = false;
 }
-
 </script>
 
 <style>

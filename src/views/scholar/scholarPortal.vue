@@ -91,7 +91,7 @@ export default {
             await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
                 console.log("get scholarInfo res:", res);
                 this.scholarInfo = res;
-                
+                this.loadingTag = false;
             });
         },
         async getEssayList(scholarStore){
@@ -102,7 +102,6 @@ export default {
                 if (res.error === 0) {
                     scholarStore.essayList = res.result;
                     console.log("papers2:", scholarStore.essayList);
-                    this.loadingTag = false;
                 }
             });
             console.log("balabala2");
