@@ -37,7 +37,6 @@ import { ElMessage } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 import { useUserStore } from "@/stores/userStore"
 import httpInstance from "@/utils/http"
-import { tr } from "element-plus/es/locale"
 
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid

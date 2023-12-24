@@ -40,6 +40,7 @@
 import { useUserStore } from "@/stores/userStore";
 import httpInstance from "@/utils/http";
 import axios from "axios";
+import { ElMessage } from "element-plus";
 import { onBeforeMount, reactive, ref } from "vue";
 import {
     Close
@@ -49,7 +50,7 @@ const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 
 const recordEntries = reactive([
-    {
+{
         id: "1",
         title: "论文1特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长",
         author: "xqf和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者",
@@ -74,31 +75,49 @@ const recordEntries = reactive([
 
 const entryMouseOn = ref('')
 const mouseEnter = (entry: string) => {
-    console.log("选择记录" + entry.title)
+    console.log("选择记录"+entry.id)
     entryMouseOn.value = entry.id
 }
 const mouseLeave = () => {
     entryMouseOn.value = ''
 }
-const deleteEntry = (entry) => {
-    console.log("删除记录" + entry.title);
-    const index = recordEntries.findIndex(item => item.id === entry.id);
-    if (index !== -1) {
-        recordEntries.splice(index, 1);
-    }
+const deleteEntry = (entry: string) => {
+    console.log("删除记录"+entry.id)
+    httpInstance.post("History_delete_single",{
+        userid: userId,
+        id: entry.indexOf,
+        isDelete: 0
+    }).then((res) => {
+        console.log(res)
+        loadRecords()
+        ElMessage({
+            message: '操作成功！',
+            type: 'success',
+        })
+    })
 }
 
 const deleteAllEntries = () => {
-    console.log("删除所有历史记录");
-    recordEntries.splice(0, recordEntries.length);
+    console.log("删除所有历史记录")
+    httpInstance.post("History_delete_all",{
+        userid: userId,
+        isDelete: 0
+    }).then((res) => {
+        console.log(res)
+        loadRecords()
+        ElMessage({
+            message: '操作成功！',
+            type: 'success',
+        })
+    })
 }
 
 const loadRecords = () => {
-    httpInstance.post("History_get_all", {
-        userid: 1
+    httpInstance.post("History_get_all",{
+        userid: userId
     }).then((res) => {
         console.log(res)
-        // recordEntries.splice(0, recordEntries.length, ...res.data.dataList)
+        recordEntries.splice(0, recordEntries.length, ...res.results)
     })
 }
 

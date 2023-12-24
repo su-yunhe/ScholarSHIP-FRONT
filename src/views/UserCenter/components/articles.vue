@@ -15,9 +15,9 @@
                             <span v-if="index !== article.author.length - 1">, </span>
                         </span>
                     </div>
-                    <div v-if="article && article.abstract">
+                    <div v-if="article && article.content">
                         <span style="font-weight:bold;">摘要：</span>
-                        {{ article.abstract }}
+                        {{ article.content }}
                     </div>
                     <div>
                         <span style="font-weight:bold;">发表时间：</span>
@@ -161,7 +161,7 @@ margin-right: 50px;
             </div>
         </TransitionGroup>
         <el-affix :offset="180">
-            <el-empty description="还没有收藏的文献" v-if="!articles.length" />
+            <el-empty description="这个收藏夹还没有收藏的文献~" v-if="!articles.length" />
         </el-affix>
         <el-pagination id="page" v-if="articles.length" layout="prev, pager, next" :total=articles.length
             :page-size=entryPerPage @current-change="changePage" />
@@ -170,12 +170,17 @@ margin-right: 50px;
 
 <script lang="ts" setup>
 import router from "@/router";
+import { useLibraryStore } from "@/stores/library";
+import { useUserStore } from "@/stores/userStore";
 import httpInstance from "@/utils/http";
-import { onBeforeMount, onMounted } from "vue";
+import { onBeforeMount, onMounted, watch} from "vue";
 import { reactive, ref } from "vue";
+const libraryStore = useLibraryStore()
+const userStore = useUserStore()
+const userId = userStore.userInfo.userid
 
 const articles = reactive([
-    {
+{
         id: "W2160378127",
         title:
             "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
@@ -278,8 +283,29 @@ const articles = reactive([
         date: "2013-01-16",
         keywords: ["sequencesequen cesequ ence", "sesss", "seque456 456456nce", "sequence", "sequence", "sequence", "sequence", "sequence"],
         source: "Molecular Biology and Evolution",
-    },
+    }
 ])
+const loadArticles = () => {
+    httpInstance.post("star_get_all",{
+        userid: userId,
+        labelId: libraryStore.labelId
+    }).then((res) => {
+        console.log(res.results)
+        articles.splice(0, articles.length, ...res.results)
+        changePage(1) // 调用一次刷新展示的文章
+    })
+}
+
+
+watch( // 监听store中labelId的值
+    () => libraryStore.labelId,
+    (newLabelId, oldLabelId) => {
+        if (newLabelId !== oldLabelId) {
+            loadArticles() // 当 labelId 发生变化时加载文章
+        }
+    }
+)
+
 
 const entryPerPage = ref(6) // 每页展示的文章条目
 const displayedArticles = reactive([])
@@ -335,6 +361,7 @@ var show_list = ref(false)
 
 onBeforeMount(() => {
     changePage(1) // 调用一次，展示第一页的内容
+    loadArticles()
 })
 
 onMounted(() => {

@@ -67,13 +67,15 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeMount, reactive, ref } from 'vue'
+import { nextTick, onBeforeMount, onMounted, reactive, ref } from 'vue'
 import { ElInput, ElMessage } from 'element-plus'
 import httpInstance from '@/utils/http'
 import { ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/userStore'
+import { useLibraryStore } from '@/stores/library'
 import axios from 'axios'
 const userStore = useUserStore()
+const libraryStore = useLibraryStore()
 const userId = userStore.userInfo.userid
 
 const inputValue = ref('')
@@ -83,10 +85,22 @@ const InputRef = ref<InstanceType<typeof ElInput>>()
 
 const loadTags = () => {
     httpInstance.post("/label_star_get_all",{
-        userid: 1
+        userid: userStore.userInfo.userid
     }).then((res) => {
         console.log(res)
         dynamicTags.splice(0, dynamicTags.length, ...res.results)
+        if(dynamicTags.length === 0){
+            // 创建默认收藏夹
+            httpInstance.post("label_star_add",{
+                userid: userId,
+                name: "默认收藏夹"
+            }).then((res) => {
+                dynamicTags.push(res.label[0])    
+            }).then(() => {
+                selectTag(Reflect.get(dynamicTags, 0))
+            })
+        }
+        selectTag(Reflect.get(dynamicTags, 0)) // 默认选择默认收藏夹
     })
 }
 
@@ -108,7 +122,7 @@ const deleteTag = () => {
     dynamicTags.splice(dynamicTags.indexOf(closingTag), 1)
     deleteDialogVisible.value = false
     httpInstance.post("/label_delete",{
-        userid: 1,
+        userid: userId,
         id: tag.id,
         isDelete: 1
     }).then((res) => {
@@ -127,12 +141,12 @@ const handleInputConfirm = () => {
   if (inputValue.value) {
     if(inputValue.value.length > 10){
         ElMessage({
-                message: "收藏夹命名不能超过10个字符",
-                type: 'warning',
-            })
+            message: "收藏夹命名不能超过10个字符",
+            type: 'warning',
+        })
     }else{
-        httpInstance.post("/label_star_add",{
-        userid: 1,
+        httpInstance.post("label_star_add",{
+        userid: userId,
         name: inputValue.value
     }).then((res) => {
         console.log(res)
@@ -153,13 +167,14 @@ const handleInputConfirm = () => {
 
 const activeName = ref()
 const selectTag = (tag: string) => {
-    console.log("选择了标签：" + tag.name)
-    activeName.value = tag;
+    console.log("选择了标签：" + tag.id)
+    activeName.value = tag
+    libraryStore.labelId = tag.id
 }
 
 
 onBeforeMount(() => {
-      loadTags()
+    loadTags()
 })
 </script>
 

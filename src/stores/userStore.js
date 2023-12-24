@@ -17,6 +17,7 @@ export const useUserStore = defineStore('user', () => {
     email:'',
     realname:''
   })
+
  
 
   // 2. 定义获取接口数据的action函数
