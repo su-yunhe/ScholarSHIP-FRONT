@@ -81,7 +81,7 @@ var ok = "文献";
 
 const startNow = () => {
   if (userStore.userInfo.username != '') {
-    router.push({ name: 'team' })
+    router.push({ name: 'search' })
   } else {
     router.push({ name: 'login' })
   }
