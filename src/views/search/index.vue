@@ -135,7 +135,7 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div class="title"> {{ item.title }}</div>
+              <div class="title" :title="item.title"> {{ item.title }}</div>
               <!-- <div>{{ item.title }}</div> -->
               <div class="info1">
                 <el-row>
@@ -143,7 +143,7 @@
                     <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a) :title="a">{{ a
                                     }}</span>
                                 </div>
                             </el-col>
@@ -151,7 +151,7 @@
                                 <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
-                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
+                                    <span class="concept_holder"  v-for="k in item.keywords" :title="k">{{ k
                                     }}</span>
                                 </div>
                   </el-col>

@@ -152,7 +152,8 @@ const search = () => {
 </script>
 <style scoped>
 .main {
-  margin: 10px 20px 10px 20px;
+  margin: 10px 20px 0px 20px;
+  height: 90vh;
 
   .title {
     height: 40px;
