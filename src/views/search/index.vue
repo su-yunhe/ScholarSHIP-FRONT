@@ -212,6 +212,78 @@
                                 </div>
                   </el-col>
                 </el-row>
+                <el-row v-show="ok==='学者'">
+                  <el-col :span="12">
+                    <div class="author_holder">
+                      <span
+                        style="
+                          margin-left: 30px;
+                          font-size: 12px;
+                          position: relative;
+                          top: -5px;
+                        "
+                        >机构：</span
+                      >
+                      <span
+                        style="cursor: pointer"
+                        class="author"
+                        >{{ item.institution }}</span
+                      >
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="author_holder">
+                      <span
+                        style="
+                          margin-left: 30px;
+                          font-size: 12px;
+                          position: relative;
+                          top: -5px;
+                        "
+                        >领域：</span
+                      >
+                      <span class="concept_holder">{{
+                        item.concept
+                      }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
+                <el-row v-show="ok==='机构'">
+                  <el-col :span="12">
+                    <div class="author_holder">
+                      <span
+                        style="
+                          margin-left: 30px;
+                          font-size: 12px;
+                          position: relative;
+                          top: -5px;
+                        "
+                        >地址：</span
+                      >
+                      <span
+                        style="cursor: pointer"
+                        class="author"
+                        >{{ item.city }},{{ item.country }}</span
+                      >
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="author_holder">
+                      <span
+                        style="
+                          margin-left: 30px;
+                          font-size: 12px;
+                          position: relative;
+                          top: -5px;
+                        "
+                        >领域：</span
+                      >
+                      <span class="concept_holder" v-for="k in item.concept">{{
+                        k
+                      }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
               </div>
               <div
                 style="
@@ -359,39 +431,7 @@
                   </span>
                 </span>
               </div>
-              <div style="margin-left: 27px; margin-top: 8px" v-show="ok==='学者'">
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 150px;
-                  "
-                >
-                  被引次数：
-                  <span style="color: #2d94d4">
-                    {{ item.cite }}
-                  </span>
-                </span>
-                <span
-                  style="
-                    float: right;
-                    text-align: right;
-                    margin-top: 3px;
-                    color: grey;
-                    font-size: 15px;
-                    margin-right: 50px;
-                  "
-                >
-                  作品数：
-                  <span style="color: #2d94d4">
-                    {{ item.works_count }}
-                  </span>
-                </span>
-              </div>
-              <div style="margin-left: 27px; margin-top: 8px" v-show="ok==='机构'">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok==='文献')">
                 <span
                   style="
                     float: right;
