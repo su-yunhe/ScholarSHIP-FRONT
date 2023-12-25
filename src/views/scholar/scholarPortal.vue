@@ -43,6 +43,10 @@
                 </div>
 
                 <!-- <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
+                <button class="scholar-operation op-claim" @click="claimPortal">认领门户</button>
+                <button v-if="!isConcerned" class="scholar-operation op-concern" @click="concernScholar">关注学者</button>
+                <button v-else class="scholar-operation op-concern" @click="concernScholar">已关注</button>
+                <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
                 <button class="scholarNav scholarNav2" @click="clickDatas">数据</button>
                 <button class="scholarNav scholarNav3" @click="clickLinks">圈子</button> -->
             </div>
@@ -59,6 +63,7 @@ import httpInstance from '@/utils/http'
 import academic from './academic.vue';
 import links from './links.vue';
 import datas from './datas.vue';
+import { useUserStore } from '@/stores/userStore';
 export default {
     name: 'scholar',
     components: {
@@ -75,6 +80,8 @@ export default {
             monitoredRoute: null,
             followed: false, // 是否已被当前用户关注
             recognized: false, // 该学者门户是否已被认领
+            userStore: useUserStore(),
+            isConcerned: false,
         }
     },
     methods: {
@@ -99,8 +106,13 @@ export default {
         claimPortal() {//认领门户
 
         },
-        concernScholar() {//关注学者
-
+        concernScholar(){//关注学者
+            httpInstance.post("concern_add",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID
+            }).then((res) => {
+                console.log(res)
+            })
         },
         async getScholarInfo() {
             let userID = 1;
@@ -138,6 +150,24 @@ export default {
 
             this.getEssayList(scholarStore);
             this.getGraphData(scholarStore);
+        },
+        checkConcern(){
+            // 是否已经关注学者
+            
+        },
+        recordBrowse(){
+            let Time = new Date()
+            console.log(this.userStore.userInfo.userid)
+            console.log(this.scholarID)
+            console.log(Time.toLocaleString())
+            httpInstance.post("history_add",{
+                userid: this.userStore.userInfo.userid,
+                type: 2,
+                realId: this.scholarID,
+                time: Time.toLocaleString
+            }).then((res) => {
+                console.log("记录浏览：" + res)
+            })
         }
     },
     created() {
@@ -151,6 +181,10 @@ export default {
             this.loading();
         },
     },
+    beforeMount(){
+        this.checkConcern()
+        this.recordBrowse()
+    }
 
 }
 </script>
