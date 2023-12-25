@@ -332,7 +332,7 @@
                     <DataAnalysis />
                   </el-icon>
                 </el-button>
-                <el-button
+                <!-- <el-button
                   size="small"
                   type="success"
                   plain
@@ -347,7 +347,7 @@
                   收藏<el-icon>
                     <FolderAdd />
                   </el-icon>
-                </el-button>
+                </el-button> -->
                 <el-button
                   size="small"
                   type="warning"
