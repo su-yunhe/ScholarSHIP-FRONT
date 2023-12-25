@@ -64,13 +64,28 @@
                         style="max-height: 35px; max-width: 95%; margin-top: 5px; margin-left:30px; font-size: 12px; color: #747474; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                         {{ item.content }}
                     </div>
-                    <div style="margin-left: 27px; margin-top:8px; z-index: 999;">
+                    <div style="margin-left: 27px; margin-top:8px;">
+                        <el-dialog
+                            title="引用"
+                            v-model="citeDialogVisible"
+                            width="50%"
+                            >
+                            <div>引用格式：</div>
+                                <div>
+                                    <el-button @click="changeFormat(format)" v-for="format in ['IEEE','GB/T7714','BibText','Chicago']" :key="format">{{ format }}</el-button>
+                                </div>
+                            <div class="citeContent">{{ citeString }}</div>
+                            <div class="dialog-footer">
+                                <el-button @click="citeDialogVisible = false">取 消</el-button>
+                                <el-button type="primary" @click="copyCiteString(citeString)">复 制</el-button>
+                            </div>
+                        </el-dialog>
                         <el-button size="small" type="primary" plain style="
 box-shadow: none;
 font-weight: 300;
 float: left;
 text-align: left;
-" @click="cite(item)">
+" @click="getCitation(item)">
                             引用<el-icon>
                                 <Link />
                             </el-icon>
@@ -80,7 +95,7 @@ box-shadow: none;
 font-weight: 300;
 float: left;
 text-align: left;
-" @click="toDocument(item.id)">
+" @click="readArticle(item)">
                             详情<el-icon>
                                 <DataAnalysis />
                             </el-icon>
@@ -205,7 +220,8 @@ import router from "@/router";
 import { useLibraryStore } from "@/stores/library";
 import { useUserStore } from "@/stores/userStore";
 import httpInstance from "@/utils/http";
-import { onBeforeMount, onMounted, watch } from "vue";
+import { ElMessage } from "element-plus";
+import { onBeforeMount, onMounted, watch} from "vue";
 import { reactive, ref } from "vue";
 const libraryStore = useLibraryStore()
 const userStore = useUserStore()
@@ -223,8 +239,6 @@ const loadArticles = () => {
         changePage(1) // 调用一次刷新展示的文章
     })
 }
-
-
 watch( // 监听store中labelId的值
     () => libraryStore.labelId,
     (newLabelId, oldLabelId) => {
@@ -234,6 +248,74 @@ watch( // 监听store中labelId的值
     }
 )
 
+const citeDialogVisible = ref(false)
+const citeString = ref('');
+const citeStringIEEE = ref('');
+const citeStringGB = ref('');
+const citeStringBib = ref('');
+const citeStringChicago = ref('');
+const format = ref('IEEE');
+const getCitation = (item) => {//引用文献
+    let work_id = item.article_id
+    citeDialogVisible.value = true;
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=IEEE`).then((res) => {
+        console.log("get IEEE citation:",res);
+        citeString.value = res.result;
+        citeStringIEEE.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=GB/T7714`).then((res) => {
+        console.log("get GB citation:",res);
+        citeStringGB.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=BibText`).then((res) => {
+        console.log("get Bib citation:",res);
+        citeStringBib.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+    httpInstance.get(`/get_citation?work_id=${work_id}&citation_type=Chicago`).then((res) => {
+        console.log("get Chicago citation:",res);
+        citeStringChicago.value = res.result;
+    }).catch((error)=>{
+        console.log("get essay detail error:",error);
+    })
+}
+const changeFormat = (format_) => {
+    format.value = format_;
+    console.log('change format to:',format.value);
+    if(format.value === 'IEEE')
+        citeString.value = citeStringIEEE.value;
+    else if(format.value === 'GB/T7714')
+        citeString.value = citeStringGB.value;
+    else if(format.value === 'BibText')
+        citeString.value = citeStringBib.value;
+    else if(format.value === 'Chicago')
+        citeString.value = citeStringChicago.value;
+}
+const copyCiteString = (content) => {
+    let aux = document.createElement("input");
+    aux.setAttribute("value", content);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+    if (content !== null) {
+        ElMessage({
+            type: 'success',
+            message: '引用已复制至剪贴板',
+          })
+    } else {
+        ElMessage({
+            type: 'error',
+            message: '引用格式为空',
+          })
+    }
+    citeDialogVisible.value = false;
+}
 
 const entryPerPage = ref(8) // 每页展示的文章条目
 const displayedArticles = reactive([])
@@ -258,6 +340,14 @@ const readArticle = (article) => {
 
 const deleteFromCollection = (article) => {
     console.log("删除收藏论文：" + article.title)
+    httpInstance.post("star_delete",{
+        userid: userId,
+        labelId: libraryStore.labelId,
+        articleId: article.article_id,
+        isDelete: 0
+    }).then((res) => {
+        console.log(res)
+    })
     let val = cur_page.value;
     const index = displayedArticles.findIndex(item => item.id === article.id);
     if (index !== -1) {
