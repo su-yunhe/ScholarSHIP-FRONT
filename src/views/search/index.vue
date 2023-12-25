@@ -358,7 +358,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="gourl(item)"
+                  @click="gourl(item.id)"
                 >
                   来源<el-icon>
                     <Position />
@@ -563,6 +563,17 @@ const clean = () => {
   conceptList.value = [];
   institutionList.value = [];
 }
+const gourl = (id) =>{
+  httpInstance
+    .post(`/SearchManager/WorkLocation`, { id:id })
+    .then((res) => {
+      // console.log(res);
+      window.open(res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 const search = async () => {
   clean();
   currentPage.value = 1;
@@ -691,7 +702,7 @@ const pdf = (id) => {
   httpInstance
     .post(`/SearchManager/DownloadWork`, { id: id })
     .then((res) => {
-  window.open("https://journals.iucr.org/a/issues/2008/01/00/sc5010/sc5010.pdf", '_blank');
+  window.open(res.data, '_blank');
       // fetch(res.data)
       //   .then((response) => response.blob())
       //   .then((blob) => {
