@@ -74,24 +74,20 @@
     </div>
   </div>
   <div id="selectDialog">
-    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70%">
+    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70vw">
       <div id="options">
-        <el-checkbox-group v-model="selectList">
-          <el-checkbox
-            v-for="(val, index) in paginatedData"
-            :key="index"
-            :label="val.id"
-            size="large"
-            style="margin: 10px; padding: 5px"
-          >
-            <div style="font-size: 16; color: black; font-weight: bold">
-              {{ index + 1 }}.{{ val.title }}
+        <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start; flex-wrap: wrap">
+          <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px;">
+            <div style="font-size: 16px;color: black;font-weight: bold" >
+              {{index+1}}.{{val.title.slice(0, 93)}}
+              <span v-if="val.title.length>93" style="font-size: 16px;color: black;font-weight: bold">...</span>
             </div>
-            <div style="font-size: 14; color: grey; margin-top: 5px">
+            <div style="font-size: 14px;color: grey;margin-top: 5px;">
               作者：
-              <span style="color: green">{{ val.author }}</span>
+              <span style="color: green;max-width: 30vw">{{ val.author.slice(0, 4) }}</span>
+              <span v-if="val.author.length > 4" style="color:green;">.etc</span>
               日期：
-              <span style="color: dodgerblue">{{ val.date }}</span>
+              <span style="color: dodgerblue;">{{ val.date }}</span>
             </div>
           </el-checkbox>
         </el-checkbox-group>
@@ -190,52 +186,26 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div class="title" v-show="ok === '文献'" @click="toDocument(item.id)">
-                {{ item.title }}
-              </div>
-              <div class="title" v-show="ok === '学者'" @click="toAuthor(item.id)">
-                {{ item.name }}
-              </div>
-              <div class="title" v-show="ok === '机构'" @click="toInstitution(item.id)">
-                {{ item.name }}
-              </div>
+              <div class="title" v-show="ok==='文献'" :title="item.title" style="cursor: pointer;" @click="toDocument(item.id)">{{ item.title }}</div>
+              <div class="title" v-show="ok==='学者'" :title="item.name" style="cursor: pointer;" @click="toAuthor(item.id)">{{ item.name }}</div>
+              <div class="title" v-show="ok==='机构'" :title="item.name" style="cursor: pointer;" @click="toInstitution(item.id)">{{ item.name }}</div>
               <div class="info1">
                 <el-row v-show="ok === '文献'">
                   <el-col :span="12">
                     <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >作者：</span
-                      >
-                      <span
-                        style="cursor: pointer"
-                        class="author"
-                        v-for="a in item.author"
-                        @click="toAuthor(a)"
-                        >{{ a }}</span
-                      >
-                    </div>
-                  </el-col>
-                  <el-col :span="12">
-                    <div class="author_holder">
-                      <span
-                        style="
-                          margin-left: 30px;
-                          font-size: 12px;
-                          position: relative;
-                          top: -5px;
-                        "
-                        >关键词：</span
-                      >
-                      <span class="concept_holder" v-for="k in item.keywords">{{
-                        k
-                      }}</span>
-                    </div>
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a) :title="a">{{ a
+                                    }}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <div class="author_holder">
+                                    <span
+                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                                    <span class="concept_holder"  v-for="k in item.keywords" :title="k">{{ k
+                                    }}</span>
+                                </div>
                   </el-col>
                 </el-row>
                 <el-row v-show="ok === '学者'">
@@ -250,9 +220,11 @@
                         "
                         >机构：</span
                       >
-                      <span style="cursor: pointer" class="author">{{
-                        item.institution
-                      }}</span>
+                      <span
+                        style="cursor: pointer"
+                        class="author" :title="item.institution"
+                        >{{ item.institution }}</span
+                      >
                     </div>
                   </el-col>
                   <el-col :span="12">
@@ -266,7 +238,9 @@
                         "
                         >领域：</span
                       >
-                      <span class="concept_holder">{{ item.concept }}</span>
+                      <span class="concept_holder" :title="item.concept">{{
+                        item.concept
+                      }}</span>
                     </div>
                   </el-col>
                 </el-row>
@@ -282,8 +256,10 @@
                         "
                         >地址：</span
                       >
-                      <span style="cursor: pointer" class="author"
-                        >{{ item.city }},{{ item.country }}</span
+                      <span
+                        style="cursor: pointer"
+                        class="author" :title="item.city + ',' + item.country"
+                        >{{ item.city }}, {{ item.country }}</span
                       >
                     </div>
                   </el-col>
@@ -298,7 +274,7 @@
                         "
                         >领域：</span
                       >
-                      <span class="concept_holder" v-for="k in item.concept">{{
+                      <span class="concept_holder" v-for="k in item.concept" :title="k">{{
                         k
                       }}</span>
                     </div>
@@ -1434,6 +1410,11 @@ async function analyzeStatic(id) {
         // background-color: #00810f;
         font-weight: 15px;
         font-size: 19px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
       }
 
       .info {
