@@ -1,29 +1,10 @@
 <template>
   <div class="main">
-    <el-row :gutter="10">
+    <div @click="test()">测试</div>
+    <!-- <el-row :gutter="10">
       <el-col :span="15">
         <el-card>
           <div class="title">高级检索</div>
-          <el-divider></el-divider>
-          <div class="title1">搜索条件</div>
-          <div v-for="(searchItem, i) in searchRequests" :key="i" style="margin-top: 10px; margin-buttom: 10px">
-            <span v-if="i === 0" style="margin-right: 100px"> </span>
-            <el-select v-model="searchItem.relation" mutiple placeholder="与" style="width: 100px" v-if="i">
-              <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
-            </el-select>
-            <el-select v-model="searchItem.select" mutiple placeholder="选项" style="width: 100px">
-              <el-option v-for="a in areaChoices" :label="a" :value="a" :key="a"></el-option>
-            </el-select>
-            <el-select v-model="searchItem.method" mutiple placeholder="选项" style="width: 100px">
-              <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
-            </el-select>
-            <el-input v-model="searchItem.str" style="width: 300px"></el-input>
-            <el-button v-show="i" @click="removeStr(i)" style="margin-left: 20px"><el-icon>
-                <Minus />
-              </el-icon></el-button><el-button v-show="isLast(i)" @click="addStr()" style="margin-left: 20px"><el-icon>
-                <Plus />
-              </el-icon></el-button>
-          </div>
 
           <el-divider></el-divider>
           <div class="title1">时间范围</div>
@@ -34,6 +15,89 @@
             <el-select v-model="maxyear" mutiple placeholder="最晚年份">
               <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
             </el-select>
+          </div>
+
+
+          <el-divider></el-divider>
+          <div class="title1">标题</div>
+          <div v-for="(searchItem, i) in titleRequests" :key="i" style="margin-top: 10px; margin-buttom: 10px">
+            <span v-if="i === 0" style="margin-right: 200px"> </span>
+            <span v-else style="margin: 0 43px; ">且</span>
+            <el-select v-model="searchItem.contain" mutiple style="width: 100px" v-if="i">
+              <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
+            </el-select>
+            <el-select v-model="searchItem.precision" mutiple style="width: 100px">
+              <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
+            </el-select>
+            <el-input v-model="searchItem.str" style="width: 300px"></el-input>
+            <el-button v-show="i" @click="removeStr(1, i)" style="margin-left: 20px"><el-icon>
+                <Minus />
+              </el-icon></el-button><el-button v-show="isLast(1, i)" @click="addStr(1)"
+              style="margin-left: 20px"><el-icon>
+                <Plus />
+              </el-icon></el-button>
+          </div>
+
+
+
+          <el-divider></el-divider>
+          <div class="title1">学者</div>
+          <div v-for="(searchItem, i) in authorRequests" :key="i" style="margin-top: 10px; margin-buttom: 10px">
+            <span v-if="i === 0" style="margin-right: 200px"> </span>
+            <span v-else style="margin: 0 43px; ">且</span>
+            <el-select v-model="searchItem.relation" mutiple style="width: 100px" v-if="i">
+              <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
+            </el-select>
+            <el-select v-model="searchItem.method" mutiple style="width: 100px">
+              <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
+            </el-select>
+            <el-input v-model="searchItem.str" style="width: 300px"></el-input>
+            <el-button v-show="i" @click="removeStr(2, i)" style="margin-left: 20px"><el-icon>
+                <Minus />
+              </el-icon></el-button><el-button v-show="isLast(2, i)" @click="addStr(2)"
+              style="margin-left: 20px"><el-icon>
+                <Plus />
+              </el-icon></el-button>
+          </div>
+
+          <el-divider></el-divider>
+          <div class="title1">机构</div>
+          <div v-for="(searchItem, i) in institutionRequests" :key="i" style="margin-top: 10px; margin-buttom: 10px">
+            <span v-if="i === 0" style="margin-right: 200px"> </span>
+            <span v-else style="margin: 0 43px; ">且</span>
+            <el-select v-model="searchItem.relation" mutiple style="width: 100px" v-if="i">
+              <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
+            </el-select>
+            <el-select v-model="searchItem.method" mutiple style="width: 100px">
+              <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
+            </el-select>
+            <el-input v-model="searchItem.str" style="width: 300px"></el-input>
+            <el-button v-show="i" @click="removeStr(3, i)" style="margin-left: 20px"><el-icon>
+                <Minus />
+              </el-icon></el-button><el-button v-show="isLast(3, i)" @click="addStr(3)"
+              style="margin-left: 20px"><el-icon>
+                <Plus />
+              </el-icon></el-button>
+          </div>
+
+          <el-divider></el-divider>
+          <div class="title1">概念</div>
+          <div v-for="(searchItem, i) in conceptRequests" :key="i" style="margin-top: 10px; margin-buttom: 10px">
+            <span v-if="i === 0" style="margin-right: 200px"> </span>
+            <span v-else style="margin: 0 43px; ">且</span>
+            <el-select v-model="searchItem.relation" mutiple style="width: 100px" v-if="i">
+              <el-option v-for="r in relationChoices" :label="r" :value="r" :key="r"></el-option>
+            </el-select>
+            <el-select v-model="searchItem.method" mutiple style="width: 100px">
+              <el-option v-for="m in methodChoices" :label="m" :value="m" :key="m"></el-option>
+            </el-select>
+            <el-input v-model="searchItem.str" style="width: 300px"></el-input>
+            <el-button v-show="i" @click="removeStr(4, i)" style="margin-left: 20px"><el-icon>
+                <Minus />
+              </el-icon></el-button><el-button v-show="isLast(4, i)" @click="addStr(4)"
+              style="margin-left: 20px"><el-icon>
+                <Plus />
+              </el-icon></el-button>
           </div>
 
           <el-divider></el-divider>
@@ -65,25 +129,60 @@
           </div>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
 
   </div>
 </template>
 <script setup>
-import { ref, watchEffect, computed, onMounted } from "vue";
-const areaChoices = ["标题", "期刊", "作者", "领域", "机构", "关键词"];
-const relationChoices = ["且", "或", "非"];
-const methodChoices = ["精确", "模糊"];
-const searchRequests = ref([
+import axios from 'axios'
+import { ref, watchEffect, computed, onMounted } from "vue"
+import httpInstance from '@/utils/http'
+const relationChoices = ["包含", "不包含"]
+const methodChoices = ["精确", "模糊"]
+const titleRequests = ref([
   {
-    select: "标题",
-    relation: "且",
+    relation: "包含",
     method: "精确",
     str: "",
   },
   {
-    select: "标题",
-    relation: "且",
+    relation: "包含",
+    method: "精确",
+    str: "",
+  },
+]);
+const authorRequests = ref([
+  {
+    relation: "包含",
+    method: "精确",
+    str: "",
+  },
+  {
+    relation: "包含",
+    method: "精确",
+    str: "",
+  },
+]);
+const institutionRequests = ref([
+  {
+    relation: "包含",
+    method: "精确",
+    str: "",
+  },
+  {
+    relation: "包含",
+    method: "精确",
+    str: "",
+  },
+]);
+const conceptRequests = ref([
+  {
+    relation: "包含",
+    method: "精确",
+    str: "",
+  },
+  {
+    relation: "包含",
     method: "精确",
     str: "",
   },
@@ -122,37 +221,115 @@ const years = ref([
   2022,
   2023,
 ]);
-const addStr = () => {
-  searchRequests.value.push({
-    select: "标题",
-    relation: "且",
-    method: "精确",
-    str: "",
-  });
+
+const testForm = ref({
+  search: {
+    min_year: 2000,
+    max_year: 2015,
+    search_list: [
+      { op: 1, type: 2, name: "song" },
+      { op: 1, type: 3, name: "Peking" },
+      { op: 0, type: 3, name: "beihang" },
+      { op: 1, type: 1, name: "software" },
+      { op: 1, type: 4, name: "network" }]
+  }
+})
+
+const data = {
+  search: {
+    min_year: 2000,
+    max_year: 2015,
+    search_list: [
+      { op: 1, type: 2, name: "song" },
+      { op: 1, type: 3, name: "Peking" },
+      { op: 0, type: 3, name: "beihang" },
+      { op: 1, type: 1, name: "software" },
+      { op: 1, type: 4, name: "network" }]
+  }
+}
+
+
+
+const test = async () => {
+  await httpInstance.post('/SearchManager/AdvancedSearchWork', {
+
+      min_year: 2000,
+      max_year: 2015,
+      op:[1,1,0,1,1],
+      type:[2,3,3,1,4],
+      name:["song","Peking","beihang","software","network"]
+      // search_list: [
+      //   { op: 1, type: 2, name: "song" },
+      //   { op: 1, type: 3, name: "Peking" },
+      //   { op: 0, type: 3, name: "beihang" },
+      //   { op: 1, type: 1, name: "software" },
+      //   { op: 1, type: 4, name: "network" }]
+    
+  }).then(res => {
+    console.log(res)
+  })
+}
+
+const addStr = (op) => {
+  if (op === 1) {
+    titleRequests.value.push({
+      contain: "包含",
+      precision: "精确",
+      str: "",
+    });
+  } else if (op === 2) {
+    authorRequests.value.push({
+      contain: "包含",
+      precision: "精确",
+      str: "",
+    });
+  } else if (op === 3) {
+    institutionRequests.value.push({
+      contain: "包含",
+      precision: "精确",
+      str: "",
+    });
+  } else if (op === 4) {
+    conceptRequests.value.push({
+      contain: "包含",
+      precision: "精确",
+      str: "",
+    });
+  }
 };
-const removeStr = (i) => {
-  searchRequests.value.splice(i, 1);
+const removeStr = (op, i) => {
+  if (op === 1) {
+    titleRequests.value.splice(i, 1)
+  } else if (op === 2) {
+    authorRequests.value.splice(i, 1)
+  } else if (op === 3) {
+    institutionRequests.value.splice(i, 1)
+  } else if (op === 4) {
+    conceptRequests.value.splice(i, 1)
+  }
 };
-const isLast = (index) => {
-  return index === searchRequests.value.length - 1;
+const isLast = (o, index) => {
+  return index === o.value.length - 1;
 };
 const search = () => {
   let keyword = [];
-  for (var i = 0; i < searchRequests.value.length; i++) {
-    // console.log(searchRequests.value[i])
-    if (searchRequests.value[i].str == "") {
-      window.alert("搜索字符串不能为空");
-      return;
-    }
-    keyword.push(searchRequests.value[i]);
-  }
-  let formdata = { minyear: minyear, maxyear: maxyear, keyword: keyword };
-  console.log(formdata);
+  // for (var i = 0; i < titleRequests.value.length; i++) {
+  //   // console.log(searchRequests.value[i])
+  //   // if (titleRequests.value[i].str == "") {
+  //   //   window.alert("搜索字符串不能为空");
+  //   //   return;
+  //   // }
+  //   // keyword.push(titleRequests.value[i]);
+  // }
+  // let formdata = { minyear: minyear, maxyear: maxyear, keyword: keyword };
+  console.log(minyear)
+  console.log(maxyear)
 };
 </script>
 <style scoped>
 .main {
-  margin: 10px 20px 10px 20px;
+  margin: 10px 20px 0px 20px;
+  height: 90vh;
 
   .title {
     height: 40px;
@@ -171,7 +348,9 @@ const search = () => {
     color: rgb(95, 95, 95);
   }
 
-  .timeSearch {}
+  .timeSearch {
+    margin-left: 200px;
+  }
 
   .title2 {
     height: 30px;

@@ -1,7 +1,9 @@
 // 个人图书馆关注列表的组件
 <template>
     <div>
-        <el-card class="following-card" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, white, rgb(233, 187, 18))'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 75%,  rgba(233, 187, 18, 0.8))'; this.style.boxShadow='none';">
+        <el-card class="following-card"
+            onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, #fafafa, rgb(233, 187, 18))';"
+            onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, #fafafa 85%,  rgba(233, 187, 18, 0.75))';">
             <!-- <el-card class="following-card" onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, rgb(233, 187, 18), black )'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, white, 75%,  rgba(233, 187, 18, 0.8))'; this.style.boxShadow='none';"> -->
 
             <span style="font-weight: bold;">关注的学者</span>
@@ -22,10 +24,9 @@
                             </div>
                         </div>
                         <div style="margin-left: 5vw;">
-                            <el-button v-if="scholarMouseOn === scholar.scholar_id"
-                                @click="cancelFollow(scholar)" id="cancel_following_btn" color="red" plain
-                                type="danger" size="small" :icon="Close" circle
-                                style="float: right; position: relative; left: -0.5vw;"/>
+                            <el-button v-if="scholarMouseOn === scholar.scholar_id" @click="cancelFollow(scholar)"
+                                id="cancel_following_btn" color="red" plain type="danger" size="small" :icon="Close" circle
+                                style="float: right; position: relative; left: -0.5vw;" />
                             <!-- <el-button v-if="scholarMouseOn === scholar.scholar_id"
                                 @click="cancelFollow(scholar)" id="cancel_following_btn">取消关注</el-button> -->
                         </div>
@@ -52,7 +53,7 @@ const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 
 const loadFollowings = () => {
-    httpInstance.post("get_all_concern",{
+    httpInstance.post("get_all_concern", {
         userid: userId
     }).then((res) => {
         console.log(res)
@@ -62,15 +63,15 @@ const loadFollowings = () => {
 
 const scholarMouseOn = ref('')
 const mouseOver = (scholar: string) => {
-    console.log("当前悬浮在"+scholar.scholar_id)
+    console.log("当前悬浮在" + scholar.scholar_id)
     scholarMouseOn.value = scholar.scholar_id
 }
 const mouseLeave = () => {
     scholarMouseOn.value = ''
 }
 const cancelFollow = (scholar: string) => {
-    console.log("取消关注"+scholar.scholar_name)
-    httpInstance.post("concern_delete",{
+    console.log("取消关注" + scholar.scholar_name)
+    httpInstance.post("concern_delete", {
         userid: userId,
         scholarId: scholar.scholar_id
     }).then((res) => {
@@ -95,7 +96,7 @@ const scholars = reactive([])
     min-height: 100px;
     border-radius: 20px;
     // background-color: rgb(233, 187, 18, 0.6);
-    background: linear-gradient(to bottom right, white, 80%,  rgba(233, 187, 18, 0.75));
+    background: linear-gradient(to bottom right, #fafafa 85%, rgba(233, 187, 18, 0.75));
     transition: all 0.3s;
 
     .following_content {
@@ -111,7 +112,7 @@ const scholars = reactive([])
         display: block;
     }
 
-    #cancel_following_btn{
+    #cancel_following_btn {
         /* background-color: white; */
     }
 
