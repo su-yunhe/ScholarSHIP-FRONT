@@ -190,16 +190,16 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div class="title" v-show="ok==='文献'" >{{ item.title }}</div>
-              <div class="title" v-show="ok==='学者'">{{ item.name }}</div>
-              <div class="title" v-show="ok==='机构'">{{ item.name }}</div>
+              <div class="title" v-show="ok==='文献'" :title="item.title" style="cursor: pointer;">{{ item.title }}</div>
+              <div class="title" v-show="ok==='学者'" :title="item.name" style="cursor: pointer;">{{ item.name }}</div>
+              <div class="title" v-show="ok==='机构'" :title="item.name" style="cursor: pointer;">{{ item.name }}</div>
               <div class="info1">
                 <el-row v-show="ok==='文献'">
                   <el-col :span="12">
                     <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
+                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a) :title="a">{{ a
                                     }}</span>
                                 </div>
                             </el-col>
@@ -207,7 +207,7 @@
                                 <div class="author_holder">
                                     <span
                                         style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
-                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
+                                    <span class="concept_holder"  v-for="k in item.keywords" :title="k">{{ k
                                     }}</span>
                                 </div>
                   </el-col>
@@ -226,7 +226,7 @@
                       >
                       <span
                         style="cursor: pointer"
-                        class="author"
+                        class="author" :title="item.institution"
                         >{{ item.institution }}</span
                       >
                     </div>
@@ -242,7 +242,7 @@
                         "
                         >领域：</span
                       >
-                      <span class="concept_holder">{{
+                      <span class="concept_holder" :title="item.concept">{{
                         item.concept
                       }}</span>
                     </div>
@@ -262,8 +262,8 @@
                       >
                       <span
                         style="cursor: pointer"
-                        class="author"
-                        >{{ item.city }},{{ item.country }}</span
+                        class="author" :title="item.city + ',' + item.country"
+                        >{{ item.city }}, {{ item.country }}</span
                       >
                     </div>
                   </el-col>
@@ -278,7 +278,7 @@
                         "
                         >领域：</span
                       >
-                      <span class="concept_holder" v-for="k in item.concept">{{
+                      <span class="concept_holder" v-for="k in item.concept" :title="k">{{
                         k
                       }}</span>
                     </div>
@@ -1366,8 +1366,13 @@ async function analyzeStatic(id) {
         // background-color: #00810f;
         font-weight: 15px;
         font-size: 19px;
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        display: -webkit-box; 
+        -webkit-line-clamp: 1; 
+        -webkit-box-orient: vertical;
       }
-
+      
       .info {
       }
 
