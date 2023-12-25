@@ -33,10 +33,23 @@
             }
           ],
           defaultJunctionPoint: 'border'
-           }
+           },
+           graph_data:null
       };
     },
     created() {
+      // const scholarStore = useScholarStore();
+      // this.$watch(
+      //   function(){
+      //     return scholarStore.graph_data;
+      //   },
+      //   function(newVal, oldVal){
+      //     console.log("links监听：",newVal, oldVal);
+          
+      //     this.demoname = this.$route.params.demoname;
+      //     this.setGraphData();
+      //   }
+      // )
     },
     mounted() {
       setTimeout(()=>{

@@ -60,8 +60,10 @@
 import * as echarts from 'echarts'
 import httpInstance from "@/utils/http";
 import {Document, School, Share, UserFilled} from "@element-plus/icons-vue";
-import {ref, onMounted} from "vue";
+import {ref, onMounted, onBeforeMount} from "vue";
+import {useRoute} from 'vue-router'
 import InstdInfo from "@/views/Institution/components/instdInfo.vue";
+import { useUserStore } from '@/stores/userStore';
 
 const school_name = ref()
 const school_url = ref()
@@ -71,9 +73,11 @@ const quote_count = ref()
 const scholar_list = ref([])
 const showoff = ref(false)
 
-const thisInsId = "I27837315"//TODO
+var thisInsId//TODO
 
 onMounted(async ()=>{
+  const route =useRoute()
+  thisInsId = route.params.essay_id
   let scholarRelationEcharts = echarts.init(document.getElementById('scholar-relation-echarts'))
   scholarRelationEcharts.showLoading()
   await request_basic_info()
@@ -163,6 +167,21 @@ function jumpToOfficialWebsite(){
   window.location.href = school_url.value
 }
 
+const userStore = useUserStore()
+const recordBrowse = () => {
+  let Time = new Date()
+  httpInstance.post("history_add",{
+    userid: userStore.userInfo.userid,
+    type: 0,
+    realId: thisInsId,
+    time: Time.toLocaleString
+  }).then((res) => {
+    console.log(res)
+  })
+}
+onBeforeMount(() => {
+  recordBrowse() // 记录浏览
+})
 
 </script>
 
@@ -198,7 +217,7 @@ function jumpToOfficialWebsite(){
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 50px;
+  font-size: 30px;
   color: black;
   font-weight: bold;
   margin-right: 100px;

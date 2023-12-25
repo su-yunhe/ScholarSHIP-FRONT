@@ -98,11 +98,14 @@ const search = () => {
     return;
   }
   if (ok == "文献") {
+    router.push({ path: "/search" ,query: { type:1, id:name } });
     console.log("文献+" + name);
   } else if (ok == "学者") {
     console.log("学者+" + name);
+    router.push({ path: "/search" ,query: { type:2, id:name } });
   } else {
     console.log("机构+" + name);
+    router.push({ path: "/search" ,query: { type:3, id:name } });
   }
   document.getElementById("text").value = "";
 }

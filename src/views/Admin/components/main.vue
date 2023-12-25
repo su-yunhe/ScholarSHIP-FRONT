@@ -1,9 +1,9 @@
 <template>
     <el-table :data="applicationTable" stripe style="width: 100%">
         <el-table-column align="center" prop="id" label="请求编号" width="80" />
-        <el-table-column align="center" prop="userId" label="用户id" width="80" />
+        <el-table-column align="center" prop="userName" label="用户姓名" width="80" />
         <el-table-column align="center" prop="email" label="邮箱" width="180"/>
-        <el-table-column align="center" prop="scholarId" label="学者id" width="80"/>
+        <el-table-column align="center" prop="scholarName" label="学者姓名" width="80"/>
         <el-table-column align="center" prop="content" label="申请内容" width="180"/>
         <el-table-column align="center" prop="time" label="申请时间" />
         <el-table-column align="center" prop="operation" label="操作">
@@ -16,6 +16,7 @@
 </template>
 
 <script lang="ts" setup>
+import httpInstance from "@/utils/http";
 import { ElMessage } from "element-plus";
 import { reactive } from "vue";
 
@@ -53,10 +54,18 @@ const applicationTable = reactive([
         time: '2023-12-20'
     },
 ])
+const loadTable = () => {
+    httpInstance.post("get_all_apply").then((res) => {
+        console.log(res)
+    })
+}
 
 const pass = (id: string) => {
     console.log("通过id为" + id + "的请求")
-
+    let requestId = id
+    httpInstance.post("apply_modify_condition",{
+        id: requestId
+    })
     ElMessage({
         message: "操作成功！",
         type: 'success',

@@ -10,7 +10,7 @@
                     <div class="scholar-information-organization"><el-icon style="position: relative; top: 2px;"><OfficeBuilding /></el-icon> {{ scholarInfo.institution }}</div>
                     <div style="margin-top: 0px;">
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
@@ -36,12 +36,21 @@
                 </div>
                 <div>
                     <!-- 可以通过改变 recognized 和 followed 两个变量 改变显示按钮的状态-->
-                    <el-button type="primary" class="scholar-operation op-claim" @click="claimPortal" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
+                    <el-button type="primary" class="scholar-operation op-claim" @click="dialogVisible = true" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
                     <el-button type="primary" class="scholar-operation op-claim" @click="claimPortal" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证门户</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="!followed"> <el-icon><StarFilled /></el-icon>关注学者</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="followed"> <el-icon color="gold"><StarFilled /></el-icon>已关注学者</el-button>
                 </div>
-
+                <el-dialog
+                    title="认证理由"
+                    v-model="dialogVisible"
+                    width="50%">
+                    <el-input v-model="reason" placeholder="请输入内容"></el-input>
+                    <div class="dialog-footer">
+                        <el-button @click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="claimPortal">确 定</el-button>
+                    </div>
+                </el-dialog>
                 <!-- <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
                 <button class="scholar-operation op-claim" @click="claimPortal">认领门户</button>
                 <button v-if="!isConcerned" class="scholar-operation op-concern" @click="concernScholar">关注学者</button>
@@ -76,12 +85,15 @@ export default {
             loadingTag: true,
             tagName: 'academic',
             scholarID: null,
-            scholarInfo: null,
+            scholarInfo:null,
+            essayNum: 0,
             monitoredRoute: null,
             followed: false, // 是否已被当前用户关注
             recognized: false, // 该学者门户是否已被认领
             userStore: useUserStore(),
             isConcerned: false,
+            dialogVisible: false,
+            reason:'',
         }
     },
     methods: {
@@ -103,8 +115,17 @@ export default {
             }
             console.log(this.tagName);
         },
-        claimPortal() {//认领门户
-
+        claimPortal(){//认领门户
+            let Time = new Date()
+            httpInstance.post("apply_add",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID,
+                email: this.userStore.userInfo.email,
+                content: this.reason,
+                time: Time.toLocaleString
+            }).then((res) => {
+                console.log(res)
+            })
         },
         concernScholar(){//关注学者
             httpInstance.post("concern_add",{
@@ -122,17 +143,29 @@ export default {
                 this.loadingTag = false;
             });
         },
-        async getEssayList(scholarStore) {
-            let userID = 1;
-            console.log("balabala");
-            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
-                console.log("papers1:", res);
-                if (res.error === 0) {
-                    scholarStore.essayList = res.result;
-                    console.log("papers2:", scholarStore.essayList);
-                }
+        async getEssayNum(scholarStore){
+            await httpInstance.get('/get_works_count', {author_id:this.scholarID}).then(res => res.data).then(res => {
+                console.log("get_works_count:", res);
+                scholarStore.essayNum = res.result.works_count;
+                this.essayNum = res.result.works_count;
             });
-            console.log("balabala2");
+        },
+        async getEssayList(scholarStore){
+
+            let userID = 1;
+            let round = 1;
+            let length = 1;
+            for(;length != 0;round++){
+                await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true&count=${round}`).then((res) => {
+                length = res.result.length;
+                if (length != 0) {
+                    let essays = scholarStore.essayList;
+                    essays = essays.concat(res.result);
+                    scholarStore.essayList = essays;
+                }
+                
+            });
+            }
         },
         getGraphData(scholarStore) {
             httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
@@ -144,8 +177,9 @@ export default {
             this.loadingTag = true;
             this.scholarID = this.$route.path.split("/")[2];
             const scholarStore = useScholarStore();
-            scholarStore.essayList = [];
-            console.log("清空essayList：", scholarStore.essayList);
+            // scholarStore.essayList = [];
+            this.getEssayNum(scholarStore);
+
             this.getScholarInfo(scholarStore);
 
             this.getEssayList(scholarStore);
@@ -153,7 +187,7 @@ export default {
         },
         checkConcern(){
             // 是否已经关注学者
-            
+
         },
         recordBrowse(){
             let Time = new Date()

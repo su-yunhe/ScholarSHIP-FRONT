@@ -17,11 +17,11 @@
                         </div>
                         <div style="margin-left: 20px; float: left;">
                             <div class="following_content" :title="scholar.scholar_name">
-                                姓名：{{ scholar.scholar_name }}
+                                {{ scholar.name }}
                             </div>
-                            <div class="following_content" :title="scholar.scholar_introduction">
+                            <!-- <div class="following_content" :title="scholar.scholar_introduction">
                                 简介：{{ scholar.scholar_introduction }}
-                            </div>
+                            </div> -->
                         </div>
                         <div style="margin-left: 5vw;">
                             <el-button v-if="scholarMouseOn === scholar.scholar_id" @click="cancelFollow(scholar)"
@@ -70,7 +70,7 @@ const mouseLeave = () => {
     scholarMouseOn.value = ''
 }
 const cancelFollow = (scholar: string) => {
-    console.log("取消关注" + scholar.scholar_name)
+    console.log("取消关注" + scholar.scholar_id)
     httpInstance.post("concern_delete", {
         userid: userId,
         scholarId: scholar.scholar_id
