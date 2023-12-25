@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div @click="test()">测试</div>
-    <el-row :gutter="10">
+    <el-row v-loading="loading" :gutter="10" >
       <el-col :span="15">
         <el-card>
           <div class="title">高级检索</div>
@@ -145,18 +145,8 @@ const titleRequests = ref([
     method: "精确",
     str: "",
   },
-  {
-    relation: "包含",
-    method: "精确",
-    str: "",
-  },
 ]);
 const authorRequests = ref([
-  {
-    relation: "包含",
-    method: "精确",
-    str: "",
-  },
   {
     relation: "包含",
     method: "精确",
@@ -169,11 +159,6 @@ const institutionRequests = ref([
     method: "精确",
     str: "",
   },
-  {
-    relation: "包含",
-    method: "精确",
-    str: "",
-  },
 ]);
 const conceptRequests = ref([
   {
@@ -181,17 +166,7 @@ const conceptRequests = ref([
     method: "精确",
     str: "",
   },
-  {
-    relation: "包含",
-    method: "精确",
-    str: "",
-  },
 ]);
-const searchChoice = ref("");
-const value = ref("");
-const input = ref("");
-const lazyValue = ref("");
-const items = ref([]);
 const minyear = ref(1999);
 const maxyear = ref(2023);
 const years = ref([
@@ -222,53 +197,7 @@ const years = ref([
   2023,
 ]);
 
-
-const testForm = ref({
-  search: {
-    min_year: 2000,
-    max_year: 2015,
-    search_list: [
-      { op: 1, type: 2, name: "song" },
-      { op: 1, type: 3, name: "Peking" },
-      { op: 0, type: 3, name: "beihang" },
-      { op: 1, type: 1, name: "software" },
-      { op: 1, type: 4, name: "network" }]
-  }
-})
-
-const data = {
-  search: {
-    min_year: 2000,
-    max_year: 2015,
-    search_list: [
-      { op: 1, type: 2, name: "song" },
-      { op: 1, type: 3, name: "Peking" },
-      { op: 0, type: 3, name: "beihang" },
-      { op: 1, type: 1, name: "software" },
-      { op: 1, type: 4, name: "network" }]
-  }
-}
-
-
-
-const test = async () => {
-  await httpInstance.post('/SearchManager/AdvancedSearchWork', {
-    min_year: 2000,
-    max_year: 2015,
-    op: [1, 1, 0, 1, 1],
-    type: [2, 3, 3, 1, 4],
-    name: ["song", "Peking", "beihang", "software", "network"]
-    // search_list: [
-    //   { op: 1, type: 2, name: "song" },
-    //   { op: 1, type: 3, name: "Peking" },
-    //   { op: 0, type: 3, name: "beihang" },
-    //   { op: 1, type: 1, name: "software" },
-    //   { op: 1, type: 4, name: "network" }]
-
-  }).then(res => {
-    console.log(res)
-  })
-}
+const loading = ref(false)
 
 const addStr = (op) => {
   if (op === 1) {
@@ -296,7 +225,8 @@ const addStr = (op) => {
       str: "",
     });
   }
-};
+}
+
 const removeStr = (op, i) => {
   if (op === 1) {
     titleRequests.value.splice(i, 1)
@@ -307,7 +237,7 @@ const removeStr = (op, i) => {
   } else if (op === 4) {
     conceptRequests.value.splice(i, 1)
   }
-};
+}
 
 const isLast = (op, index) => {
   if (op === 1) {
@@ -319,9 +249,10 @@ const isLast = (op, index) => {
   } else if (op === 4) {
     return index === conceptRequests.value.length - 1;
   }
-};
+}
 
 const search = async() => {
+  loading.value = true
   let op1 = []
   let type1 = []
   let name1 = []
@@ -329,6 +260,7 @@ const search = async() => {
   for (var i = 0; i < titleRequests.value.length; i++) {
     // console.log(titleRequests.value[i])
     if (titleRequests.value[i].str == "") {
+      if (titleRequests.value.length === 1) break;
       window.alert("搜索的字符串不能为空")
       return
     }
@@ -345,6 +277,7 @@ const search = async() => {
   for (var i = 0; i < authorRequests.value.length; i++) {
     // console.log(authorRequests.value[i])
     if (authorRequests.value[i].str == "") {
+      if (authorRequests.value.length === 1) break;
       window.alert("搜索的字符串不能为空");
       return;
     }
@@ -361,6 +294,7 @@ const search = async() => {
   for (var i = 0; i < institutionRequests.value.length; i++) {
     console.log(institutionRequests.value[i])
     if (institutionRequests.value[i].str == "") {
+      if (institutionRequests.value.length === 1) break;
       window.alert("搜索的字符串不能为空");
       return;
     }
@@ -377,6 +311,7 @@ const search = async() => {
   for (var i = 0; i < conceptRequests.value.length; i++) {
     console.log(conceptRequests.value[i])
     if (conceptRequests.value[i].str == "") {
+      if (conceptRequests.value.length === 1) break;
       window.alert("搜索的字符串不能为空");
       return;
     }
@@ -400,6 +335,7 @@ const search = async() => {
     type: type1,
     name: name1
   }).then(res => {
+    loading.value = false
     console.log(res)
   })
 

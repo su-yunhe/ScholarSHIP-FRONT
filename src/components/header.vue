@@ -32,14 +32,10 @@ const toUserCenter = () => {
 const toAdvancedSearch = () => {
   router.replace({ path: '/AdvancedSearch' })
 }
-
-const toSearch = () => {
-  router.replace({ path: '/search' })
-}
 const doSearch = () => {
-  console.log(myInput.value)
-  
+  router.push({ path: "/search" ,query: { id:myInput.value } })
 }
+
 </script>
 
 <template>
@@ -63,7 +59,7 @@ const doSearch = () => {
           高级搜索
         </span>
       </button>
-      <button v-else class="btn"  @click="toSearch()">
+      <button v-else class="btn"  @click="doSearch()">
         <span class="box">
           普通搜索
         </span>
