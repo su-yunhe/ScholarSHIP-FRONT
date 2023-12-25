@@ -1,7 +1,7 @@
 <template>
   <div class="searchBox">
     <div class="menu1">
-      <button class="btn" @click="gotoAdvancedSearch()">
+      <button class="btn" @click="toAdvancedSearch()">
         <span class="box">
           <el-icon style="position: relative; top: 2px">
             <Search />
@@ -21,13 +21,13 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="a" @click="ok = '文献'"
+                  <el-dropdown-item command="a" @click="ok = '文献';clean()"
                     >文献</el-dropdown-item
                   >
-                  <el-dropdown-item command="b" @click="ok = '学者'"
+                  <el-dropdown-item command="b" @click="ok = '学者';clean()"
                     >学者</el-dropdown-item
                   >
-                  <el-dropdown-item command="c" @click="ok = '机构'"
+                  <el-dropdown-item command="c" @click="ok = '机构';clean()"
                     >机构</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -190,29 +190,55 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div class="title" v-show="ok==='文献'" >{{ item.title }}</div>
-              <div class="title" v-show="ok==='学者'">{{ item.name }}</div>
-              <div class="title" v-show="ok==='机构'">{{ item.name }}</div>
+              <div class="title" v-show="ok === '文献'" @click="toDocument(item.id)">
+                {{ item.title }}
+              </div>
+              <div class="title" v-show="ok === '学者'" @click="toAuthor(item.id)">
+                {{ item.name }}
+              </div>
+              <div class="title" v-show="ok === '机构'" @click="toInstitution(item.id)">
+                {{ item.name }}
+              </div>
               <div class="info1">
-                <el-row v-show="ok==='文献'">
+                <el-row v-show="ok === '文献'">
                   <el-col :span="12">
                     <div class="author_holder">
-                                    <span
-                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)>{{ a
-                                    }}</span>
-                                </div>
-                            </el-col>
-                            <el-col :span="12">
-                                <div class="author_holder">
-                                    <span
-                                        style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
-                                    <span class="concept_holder"  v-for="k in item.keywords">{{ k
-                                    }}</span>
-                                </div>
+                      <span
+                        style="
+                          margin-left: 30px;
+                          font-size: 12px;
+                          position: relative;
+                          top: -5px;
+                        "
+                        >作者：</span
+                      >
+                      <span
+                        style="cursor: pointer"
+                        class="author"
+                        v-for="a in item.author"
+                        @click="toAuthor(a)"
+                        >{{ a }}</span
+                      >
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="author_holder">
+                      <span
+                        style="
+                          margin-left: 30px;
+                          font-size: 12px;
+                          position: relative;
+                          top: -5px;
+                        "
+                        >关键词：</span
+                      >
+                      <span class="concept_holder" v-for="k in item.keywords">{{
+                        k
+                      }}</span>
+                    </div>
                   </el-col>
                 </el-row>
-                <el-row v-show="ok==='学者'">
+                <el-row v-show="ok === '学者'">
                   <el-col :span="12">
                     <div class="author_holder">
                       <span
@@ -224,11 +250,9 @@
                         "
                         >机构：</span
                       >
-                      <span
-                        style="cursor: pointer"
-                        class="author"
-                        >{{ item.institution }}</span
-                      >
+                      <span style="cursor: pointer" class="author">{{
+                        item.institution
+                      }}</span>
                     </div>
                   </el-col>
                   <el-col :span="12">
@@ -242,13 +266,11 @@
                         "
                         >领域：</span
                       >
-                      <span class="concept_holder">{{
-                        item.concept
-                      }}</span>
+                      <span class="concept_holder">{{ item.concept }}</span>
                     </div>
                   </el-col>
                 </el-row>
-                <el-row v-show="ok==='机构'">
+                <el-row v-show="ok === '机构'">
                   <el-col :span="12">
                     <div class="author_holder">
                       <span
@@ -260,9 +282,7 @@
                         "
                         >地址：</span
                       >
-                      <span
-                        style="cursor: pointer"
-                        class="author"
+                      <span style="cursor: pointer" class="author"
                         >{{ item.city }},{{ item.country }}</span
                       >
                     </div>
@@ -303,7 +323,7 @@
                 {{ item.abstract }}
               </div>
 
-              <div style="margin-left: 27px; margin-top: 8px" v-show="ok==='文献'">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="ok === '文献'">
                 <el-button
                   size="small"
                   type="primary"
@@ -330,7 +350,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="toDocument(item.title, item.id)"
+                  @click="toDocument(item.id)"
                 >
                   详情<el-icon>
                     <DataAnalysis />
@@ -378,7 +398,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="pdf(item.pdf)"
+                  @click="pdf(item.id)"
                 >
                   下载<el-icon>
                     <Download />
@@ -431,7 +451,7 @@
                   </span>
                 </span>
               </div>
-              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok==='文献')">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok === '文献')">
                 <span
                   style="
                     float: right;
@@ -542,15 +562,21 @@ const selectList = ref([]);
 const showDataChart = ref(false);
 const showSingleChart = ref(false);
 const ok = ref("文献");
+const clean = () => {
+  items.value = [];
+  authorList.value = [];
+  conceptList.value = [];
+  institutionList.value = [];
+}
 const search = async () => {
+  clean();
   currentPage.value = 1;
   if (ok.value == "文献") {
     getWenList(input.value, 1);
   } else if (ok.value == "学者") {
     getXueList(input.value, 1);
-  }
-  else{
-    getJiList(input.value,1)
+  } else {
+    getJiList(input.value, 1);
   }
 };
 const getTopInstitution = async (input) => {
@@ -640,23 +666,65 @@ const getJiList = async (input, num) => {
 const getIns = (name) => {
   console.log(name);
 };
-const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage;
+const handleCurrentChange = (n) => {
+  if (ok.value == "文献") {
+    getWenList(input.value, n);
+  } else if (ok.value == "学者") {
+    getXueList(input.value, n);
+  } else {
+    getJiList(input.value, n);
+  }
+  currentPage.value=n;
 };
 const toDocument = (id) => {
   var str = "/academic/" + id;
   router.push({ path: str });
 };
-const gotoAdvancedSearch = () => {
+const toAdvancedSearch = () => {
   router.push({ name: "advancedSearch" });
 };
-const gotoAuthor = (name) => {
+const toAuthor = (name) => {
   var str = "/scholar/" + name;
   router.push({ path: str });
 };
-onMounted(async () => {
-  getList();
-});
+const toInstitution = (id) => {
+  var str = "/institution/" + id;
+  router.push({ path: str });
+};
+const pdf = (id) => {
+  httpInstance
+    .post(`/SearchManager/DownloadWork`, { id: id })
+    .then((res) => {
+      //     console.log(1);
+      //     console.log(res);
+      // let url = window.URL.createObjectURL(new Blob([res.data]));
+      //     let link = document.createElement('a');
+      //     link.style.display = 'none';
+      //     link.href = url;
+      //     link.setAttribute('download', "download.pdf");
+      //     document.body.appendChild(link);
+      //     link.click();
+      fetch(res.data)
+        .then((response) => response.blob())
+        .then((blob) => {
+          let url = window.URL.createObjectURL(blob);
+          let link = document.createElement("a");
+          link.style.display = "none";
+          link.href = url;
+          link.setAttribute("download", "download.pdf");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 const cited_by_count = ref([]);
 const reference_count = ref([]);
 const related_count = ref([]);
