@@ -1,7 +1,7 @@
 <template>
   <div class="searchBox">
     <div class="menu1">
-      <button class="btn" @click="toAdvancedSearch()">
+      <button class="btn" @click="toAdvancedSearch">
         <span class="box">
           <el-icon style="position: relative; top: 2px">
             <Search />
@@ -310,7 +310,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="cite(item)"
+                  @click="cite(item.id)"
                 >
                   引用<el-icon>
                     <Link />
@@ -538,6 +538,25 @@ const selectList = ref([]);
 const showDataChart = ref(false);
 const showSingleChart = ref(false);
 const ok = ref("文献");
+const cite = (id) => {
+  httpInstance
+    .get(`/get_citation`, { work_id: id,citation_type:"GB/T7714" })
+    .then((res) => {
+      const textToCopy = res.data.result;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          console.log("已成功复制到剪贴板");
+          // 可以显示成功提示或执行其他操作
+        })
+        .catch((error) => {
+          console.error("复制到剪贴板失败", error);
+          // 可以显示错误提示或执行其他操作
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 const clean = () => {
   items.value = [];
   authorList.value = [];
@@ -671,31 +690,23 @@ const pdf = (id) => {
   httpInstance
     .post(`/SearchManager/DownloadWork`, { id: id })
     .then((res) => {
-      //     console.log(1);
-      //     console.log(res);
-      // let url = window.URL.createObjectURL(new Blob([res.data]));
-      //     let link = document.createElement('a');
-      //     link.style.display = 'none';
+  window.open("https://journals.iucr.org/a/issues/2008/01/00/sc5010/sc5010.pdf", '_blank');
+      // fetch(res.data)
+      //   .then((response) => response.blob())
+      //   .then((blob) => {
+      //     let url = window.URL.createObjectURL(blob);
+      //     let link = document.createElement("a");
+      //     link.style.display = "none";
       //     link.href = url;
-      //     link.setAttribute('download', "download.pdf");
+      //     link.setAttribute("download", "download.pdf");
       //     document.body.appendChild(link);
       //     link.click();
-      fetch(res.data)
-        .then((response) => response.blob())
-        .then((blob) => {
-          let url = window.URL.createObjectURL(blob);
-          let link = document.createElement("a");
-          link.style.display = "none";
-          link.href = url;
-          link.setAttribute("download", "download.pdf");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      //     document.body.removeChild(link);
+      //     window.URL.revokeObjectURL(url);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error:", error);
+      //   });
     })
     .catch((error) => {
       console.log(error);
