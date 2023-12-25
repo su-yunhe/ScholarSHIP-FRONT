@@ -27,7 +27,7 @@ const router = createRouter({
       component: Login
     },
     {
-      path: '/institution',
+      path: '/institution/:essay_id',
       name: 'institution',
       component: Institution
     },

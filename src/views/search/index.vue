@@ -1,7 +1,7 @@
 <template>
   <div class="searchBox">
     <div class="menu1">
-      <button class="btn" @click="gotoAdvancedSearch()">
+      <button class="btn" @click="toAdvancedSearch">
         <span class="box">
           <el-icon style="position: relative; top: 2px">
             <Search />
@@ -21,13 +21,13 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="a" @click="ok = '文献'"
+                  <el-dropdown-item command="a" @click="ok = '文献';clean()"
                     >文献</el-dropdown-item
                   >
-                  <el-dropdown-item command="b" @click="ok = '学者'"
+                  <el-dropdown-item command="b" @click="ok = '学者';clean()"
                     >学者</el-dropdown-item
                   >
-                  <el-dropdown-item command="c" @click="ok = '机构'"
+                  <el-dropdown-item command="c" @click="ok = '机构';clean()"
                     >机构</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -74,24 +74,20 @@
     </div>
   </div>
   <div id="selectDialog">
-    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70%">
+    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70vw">
       <div id="options">
-        <el-checkbox-group v-model="selectList">
-          <el-checkbox
-            v-for="(val, index) in paginatedData"
-            :key="index"
-            :label="val.id"
-            size="large"
-            style="margin: 10px; padding: 5px"
-          >
-            <div style="font-size: 16; color: black; font-weight: bold">
-              {{ index + 1 }}.{{ val.title }}
+        <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start; flex-wrap: wrap">
+          <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px;">
+            <div style="font-size: 16px;color: black;font-weight: bold" >
+              {{index+1}}.{{val.title.slice(0, 90)}}
+              <span v-if="val.title.length>90" style="font-size: 16px;color: black;font-weight: bold">...</span>
             </div>
-            <div style="font-size: 14; color: grey; margin-top: 5px">
+            <div style="font-size: 14px;color: grey;margin-top: 5px;">
               作者：
-              <span style="color: green">{{ val.author }}</span>
+              <span style="color: green;max-width: 30vw">{{ val.author.slice(0, 4) }}</span>
+              <span v-if="val.author.length > 4" style="color:green;">.etc</span>
               日期：
-              <span style="color: dodgerblue">{{ val.date }}</span>
+              <span style="color: dodgerblue;">{{ val.date }}</span>
             </div>
           </el-checkbox>
         </el-checkbox-group>
@@ -190,11 +186,11 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div class="title" v-show="ok==='文献'" :title="item.title" style="cursor: pointer;">{{ item.title }}</div>
-              <div class="title" v-show="ok==='学者'" :title="item.name" style="cursor: pointer;">{{ item.name }}</div>
-              <div class="title" v-show="ok==='机构'" :title="item.name" style="cursor: pointer;">{{ item.name }}</div>
+              <div class="title" v-show="ok==='文献'" :title="item.title" style="cursor: pointer;" @click="toDocument(item.id)">{{ item.title }}</div>
+              <div class="title" v-show="ok==='学者'" :title="item.name" style="cursor: pointer;" @click="toAuthor(item.id)">{{ item.name }}</div>
+              <div class="title" v-show="ok==='机构'" :title="item.name" style="cursor: pointer;" @click="toInstitution(item.id)">{{ item.name }}</div>
               <div class="info1">
-                <el-row v-show="ok==='文献'">
+                <el-row v-show="ok === '文献'">
                   <el-col :span="12">
                     <div class="author_holder">
                                     <span
@@ -212,7 +208,7 @@
                                 </div>
                   </el-col>
                 </el-row>
-                <el-row v-show="ok==='学者'">
+                <el-row v-show="ok === '学者'">
                   <el-col :span="12">
                     <div class="author_holder">
                       <span
@@ -248,7 +244,7 @@
                     </div>
                   </el-col>
                 </el-row>
-                <el-row v-show="ok==='机构'">
+                <el-row v-show="ok === '机构'">
                   <el-col :span="12">
                     <div class="author_holder">
                       <span
@@ -303,7 +299,7 @@
                 {{ item.abstract }}
               </div>
 
-              <div style="margin-left: 27px; margin-top: 8px" v-show="ok==='文献'">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="ok === '文献'">
                 <el-button
                   size="small"
                   type="primary"
@@ -314,7 +310,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="cite(item)"
+                  @click="cite(item.id)"
                 >
                   引用<el-icon>
                     <Link />
@@ -330,13 +326,13 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="toDocument(item.title, item.id)"
+                  @click="toDocument(item.id)"
                 >
                   详情<el-icon>
                     <DataAnalysis />
                   </el-icon>
                 </el-button>
-                <el-button
+                <!-- <el-button
                   size="small"
                   type="success"
                   plain
@@ -351,7 +347,7 @@
                   收藏<el-icon>
                     <FolderAdd />
                   </el-icon>
-                </el-button>
+                </el-button> -->
                 <el-button
                   size="small"
                   type="warning"
@@ -362,7 +358,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="gourl(item)"
+                  @click="gourl(item.id)"
                 >
                   来源<el-icon>
                     <Position />
@@ -378,7 +374,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="pdf(item.pdf)"
+                  @click="pdf(item.id)"
                 >
                   下载<el-icon>
                     <Download />
@@ -431,7 +427,7 @@
                   </span>
                 </span>
               </div>
-              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok==='文献')">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok === '文献')">
                 <span
                   style="
                     float: right;
@@ -485,7 +481,7 @@
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter} from "vue-router";
 import { DataAnalysis, Histogram, TrendCharts } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 import httpInstance from "@/utils/http";
@@ -532,6 +528,9 @@ const searchTypes = ["文献", "作者", "机构"];
 const currentPage = ref(1);
 const pageSize = ref(20);
 const pageFullLength = ref();
+onMounted(() => {
+      getWenList(router.currentRoute.value.fullPath.split('=')[1],1)
+    });
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
@@ -542,15 +541,51 @@ const selectList = ref([]);
 const showDataChart = ref(false);
 const showSingleChart = ref(false);
 const ok = ref("文献");
+const cite = (id) => {
+  httpInstance
+    .get(`/get_citation`, { work_id: id,citation_type:"GB/T7714" })
+    .then((res) => {
+      const textToCopy = res.data.result;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          console.log("已成功复制到剪贴板");
+          // 可以显示成功提示或执行其他操作
+        })
+        .catch((error) => {
+          console.error("复制到剪贴板失败", error);
+          // 可以显示错误提示或执行其他操作
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+const clean = () => {
+  items.value = [];
+  authorList.value = [];
+  conceptList.value = [];
+  institutionList.value = [];
+}
+const gourl = (id) =>{
+  httpInstance
+    .post(`/SearchManager/WorkLocation`, { id:id })
+    .then((res) => {
+      // console.log(res);
+      window.open(res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 const search = async () => {
+  clean();
   currentPage.value = 1;
   if (ok.value == "文献") {
     getWenList(input.value, 1);
   } else if (ok.value == "学者") {
     getXueList(input.value, 1);
-  }
-  else{
-    getJiList(input.value,1)
+  } else {
+    getJiList(input.value, 1);
   }
 };
 const getTopInstitution = async (input) => {
@@ -590,6 +625,7 @@ const getWenList = async (input, num) => {
   httpInstance
     .post(`/SearchManager/SearchWork`, { content: input, page: num })
     .then((res) => {
+      console.log(res)
       // console.log(1);
       pageFullLength.value = res.count > 10000 ? 10000 : res.count;
       // console.log(pageFullLength.value)
@@ -640,23 +676,51 @@ const getJiList = async (input, num) => {
 const getIns = (name) => {
   console.log(name);
 };
-const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage;
+const handleCurrentChange = (n) => {
+  if (ok.value == "文献") {
+    getWenList(input.value, n);
+  } else if (ok.value == "学者") {
+    getXueList(input.value, n);
+  } else {
+    getJiList(input.value, n);
+  }
+  currentPage.value=n;
 };
 const toDocument = (id) => {
   var str = "/academic/" + id;
   router.push({ path: str });
 };
-const gotoAdvancedSearch = () => {
+const toAdvancedSearch = () => {
   router.push({ name: "advancedSearch" });
 };
-const gotoAuthor = (name) => {
+const toAuthor = (name) => {
   var str = "/scholar/" + name;
   router.push({ path: str });
 };
-onMounted(async () => {
-  getList();
-});
+const toInstitution = (id) => {
+  var str = "/institution/" + id;
+  router.push({ path: str });
+};
+const pdf = async (id) => {
+  httpInstance
+    .post(`/SearchManager/DownloadWork`, { id: id })
+    .then((res) => {
+  // window.open(res.data, '_blank');
+      const response = axios.get(res.data, {
+        responseType: 'blob', // 必须指定为blob类型才能下载
+    });
+    console.log("download", response);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'ScholarSHIP文献下载.pdf');
+    document.body.appendChild(link);
+    link.click();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 const cited_by_count = ref([]);
 const reference_count = ref([]);
 const related_count = ref([]);
@@ -681,12 +745,16 @@ async function request_multi_article() {
     console.log(error);
   }
 }
+var data_chart_large=null
 async function confirmSelect() {
   if (selectList.value.length === 0) return;
   showDataChart.value = true;
+  showDataChartDialog.value = false;
+  if(data_chart_large!=null) data_chart_large.showLoading()
   await request_multi_article();
   const chartDom = document.getElementById("data-chart-dialog");
-  const data_chart_large = echarts.init(chartDom);
+  data_chart_large = echarts.init(chartDom);
+  data_chart_large.hideLoading()
   const option = {
     title: {
       text: "对比分析结果",
@@ -816,13 +884,18 @@ async function request_single_article(id) {
     authorships.value = response.data.authorships;
   } catch (error) {}
 }
+var chart1=null, chart2=null
 async function analyzeStatic(id) {
   showSingleChart.value = true;
+  if(chart1!=null) chart1.showLoading()
+  if(chart2!=null) chart2.showLoading()
   await request_single_article(id);
   const charDom1 = document.getElementById("single-chart-dialog1");
-  const chart1 = echarts.init(charDom1);
+  chart1 = echarts.init(charDom1);
   const charDom2 = document.getElementById("single-chart-dialog2");
-  const chart2 = echarts.init(charDom2);
+  chart2 = echarts.init(charDom2);
+  chart1.hideLoading()
+  chart2.hideLoading()
   //饼状图
   let data = [];
   for (let i = 0; i < concepts.value.length; i++) {
@@ -1366,13 +1439,13 @@ async function analyzeStatic(id) {
         // background-color: #00810f;
         font-weight: 15px;
         font-size: 19px;
-        overflow: hidden; 
-        text-overflow: ellipsis; 
-        display: -webkit-box; 
-        -webkit-line-clamp: 1; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
       }
-      
+
       .info {
       }
 

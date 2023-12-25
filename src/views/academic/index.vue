@@ -105,6 +105,7 @@
 <script>
 import axios from 'axios';
 import httpInstance from '@/utils/http'
+import { useUserStore } from '@/stores/userStore';
 export default {
     name: 'academic',
     components: {
@@ -127,33 +128,34 @@ export default {
             related_works_num: 0,
             essay: {},
             format: 'IEEE',
-            collections: [
-                {
-                    id: 1,
-                    name: '默认收藏'
-                },
-                {
-                    id: 2,
-                    name: '收藏x'
-                },
-                {
-                    id: 3,
-                    name: '默认收藏'
-                },
-                {
-                    id: 4,
-                    name: '收藏x'
-                },
-                {
-                    id: 5,
-                    name: '默认收藏'
-                },
-                {
-                    id: 6,
-                    name: '收藏x'
-                },
+            collections:[
+                // {
+                //     id:1,
+                //     name:'默认收藏'
+                // },
+                // {
+                //     id:2,
+                //     name:'收藏x'
+                // },
+                // {
+                //     id:3,
+                //     name:'默认收藏'
+                // },
+                // {
+                //     id:4,
+                //     name:'收藏x'
+                // },
+                // {
+                //     id:5,
+                //     name:'默认收藏'
+                // },
+                // {
+                //     id:6,
+                //     name:'收藏x'
+                // },
             ],
-            collections_copy: []
+            collections_copy:[],
+            userStore: useUserStore()
         }
     },
     methods: {
@@ -229,9 +231,29 @@ export default {
             console.log('enter scholar portal:', scholar_id);
             this.$router.push(`/scholar/${scholar_id}`);
         },
-        essayCollection() {
+        loadLabels(){
+            console.log(this.userStore.userInfo.userid)
+            httpInstance.post("/label_star_get_all", {
+                userid: this.userStore.userInfo.userid
+            }).then((res) => {
+                // console.log(res)
+                console.log(this.userStore.userInfo.userid)
+                this.collections_copy = [...res.results]
+                if (this.collections_copy.length === 0) {
+                    // 创建默认收藏夹
+                    httpInstance.post("label_star_add", {
+                        userid: this.userStore.userInfo.userid,
+                        name: "默认收藏夹"
+                    }).then((res) => {
+                        this.collections_copy.push(res.label[0])
+                    })
+                }
+            })
+        },
+        essayCollection(){
+            this.loadLabels()
             this.collectionDialogVisible = true;
-            this.collections_copy = [...this.collections];
+            // this.collections_copy = [...this.collections];
         },
         cancelCollection() {
             this.collectionDialogVisible = false;
@@ -242,7 +264,23 @@ export default {
         confirmCollection() {
             this.collectionDialogVisible = false;
             this.collections_copy = [];
-            this.collectionId = 0;
+            // this.collectionId = 0;
+            console.log(this.userStore.userInfo.userid)
+            console.log(this.collectionId)
+            console.log(this.$route.path.split("/")[2])
+            httpInstance.post("star_add",{
+                userid: this.userStore.userInfo.userid,
+                labelId: this.collectionId,
+                articleId: this.$route.path.split("/")[2]
+            }).then((res) => {
+                console.log(res)
+                if(res.error == 0){
+                    ElMessage({
+                        message: "收藏成功！",
+                        type: 'success',
+                    })
+                }
+            })
         },
         collectionChange(value) {
             console.log('collection change', value);
@@ -284,9 +322,22 @@ export default {
             let essay_id = essay.id.split('/')[3]
             console.log("essay_id:", essay_id)
             router.push(`/academic/${essay_id}`);
+        },
+        recordBrowse(){
+            let work_id = this.$route.path.split("/")[2];
+            let Time = new Date()
+            httpInstance.post("history_add",{
+                userid: this.userStore.userInfo.userid,
+                type: 1,
+                realId: work_id,
+                time: Time.toLocaleString
+            }).then((res) => {
+                console.log(res)
+            })
         }
     },
-    mounted() {
+
+    beforeMount(){
         this.loadingTag = true;
         let work_id = this.$route.path.split("/")[2];
         let user_id = 1;
