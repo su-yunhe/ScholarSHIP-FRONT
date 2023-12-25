@@ -74,18 +74,20 @@
     </div>
   </div>
   <div id="selectDialog">
-    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70%">
+    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70vw">
       <div id="options">
-        <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start">
-          <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px">
+        <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start; flex-wrap: wrap">
+          <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px;">
             <div style="font-size: 16px;color: black;font-weight: bold" >
-              {{index+1}}.{{val.title}}
+              {{index+1}}.{{val.title.slice(0, 93)}}
+              <span v-if="val.title.length>93" style="font-size: 16px;color: black;font-weight: bold">...</span>
             </div>
-            <div style="font-size: 14px;color: grey;margin-top: 5px">
+            <div style="font-size: 14px;color: grey;margin-top: 5px;">
               作者：
-              <span style="color: green">{{ val.author }}</span>
+              <span style="color: green;max-width: 30vw">{{ val.author.slice(0, 4) }}</span>
+              <span v-if="val.author.length > 4" style="color:green;">.etc</span>
               日期：
-              <span style="color: dodgerblue">{{ val.date }}</span>
+              <span style="color: dodgerblue;">{{ val.date }}</span>
             </div>
           </el-checkbox>
         </el-checkbox-group>
