@@ -481,7 +481,7 @@
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter} from "vue-router";
 import { DataAnalysis, Histogram, TrendCharts } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 import httpInstance from "@/utils/http";
@@ -528,6 +528,9 @@ const searchTypes = ["文献", "作者", "机构"];
 const currentPage = ref(1);
 const pageSize = ref(20);
 const pageFullLength = ref();
+onMounted(() => {
+      getWenList(router.currentRoute.value.fullPath.split('=')[1],1)
+    });
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
@@ -698,27 +701,21 @@ const toInstitution = (id) => {
   var str = "/institution/" + id;
   router.push({ path: str });
 };
-const pdf = (id) => {
+const pdf = async (id) => {
   httpInstance
     .post(`/SearchManager/DownloadWork`, { id: id })
     .then((res) => {
-  window.open(res.data, '_blank');
-      // fetch(res.data)
-      //   .then((response) => response.blob())
-      //   .then((blob) => {
-      //     let url = window.URL.createObjectURL(blob);
-      //     let link = document.createElement("a");
-      //     link.style.display = "none";
-      //     link.href = url;
-      //     link.setAttribute("download", "download.pdf");
-      //     document.body.appendChild(link);
-      //     link.click();
-      //     document.body.removeChild(link);
-      //     window.URL.revokeObjectURL(url);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error:", error);
-      //   });
+  // window.open(res.data, '_blank');
+      const response = axios.get(res.data, {
+        responseType: 'blob', // 必须指定为blob类型才能下载
+    });
+    console.log("download", response);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'ScholarSHIP文献下载.pdf');
+    document.body.appendChild(link);
+    link.click();
     })
     .catch((error) => {
       console.log(error);
