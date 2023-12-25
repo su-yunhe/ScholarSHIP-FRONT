@@ -1,7 +1,9 @@
 // 个人信息组件
 <template>
   <div>
-    <el-card class="information" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(97, 134, 243,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(97, 134, 243,0.6)'; this.style.boxShadow='none';">
+    <el-card class="information"
+      onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, #fafafa , rgb(97, 134, 243))';"
+      onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, #fafafa 85%,  rgba(97, 134, 243, 0.75))';">
       <div class="avatar">
         <el-upload class="avatar-uploader" :show-file-list="false" :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
@@ -96,16 +98,16 @@ onBeforeMount(() => {
 <style>
 .fade-enter-active,
 .fade-leave-active {
-    transition: all 0.7s ease;
+  transition: all 0.7s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to
 
 /* .fade-leave-active, 2.1.8 版本以下 */
-    {
-    opacity: 0;
-    transform: translateY(50px);
+  {
+  opacity: 0;
+  transform: translateY(50px);
 }
 
 .information {
@@ -113,10 +115,11 @@ onBeforeMount(() => {
   border-radius: 20px;
   background-color: rgba(97, 134, 243, 0.75);
   transition: all 0.3s;
+  background: linear-gradient(to bottom right, #fafafa 85%, rgba(97, 134, 243, 0.75));
 }
 
 .information :hover {
-  background-color: rgb(97, 134, 243, 0.75);
+  /* background-color: rgb(97, 134, 243, 0.75); */
   transition: all 0.3s;
 }
 

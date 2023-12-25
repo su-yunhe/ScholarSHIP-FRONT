@@ -32,7 +32,80 @@ Mock.mock('/test_followings','post',{
         }
     ]
 })
-
+Mock.mock('get_institution_basic', 'post',{
+    work_cout: {
+        "works_count": 6979
+    },
+    cite_cout: {
+        "cited_by_count": 201859
+    },
+    author_count: 1584,
+    authors: [
+        {
+            "id": 1,
+            "name": "B. Todd Heniford"
+        },
+        {
+            "id": 2,
+            "name": "David A. Iannitti"
+        },
+        {
+            "id": 3,
+            "name": "Kevin M. Ryan"
+        },
+        {
+            "id": 4,
+            "name": "Ronald F. Sing"
+        },
+        {
+            "id": 5,
+            "name": "László Littmann"
+        },
+        {
+            "id": 6,
+            "name": "Mark W. Russo"
+        },
+        {
+            "id": 7,
+            "name": "Sarah L. Price"
+        },
+        {
+            "id": 8,
+            "name": "John B. Martinie"
+        },
+        {
+            "id": 9,
+            "name": "Dionisios Vrochides"
+        },
+        {
+            "id": 10,
+            "name": "Brent D. Matthews"
+        },
+        {
+            "id": 11,
+            "name": "Michael J. Bosse"
+        },
+        {
+            "id": 12,
+            "name": "Addison K. May"
+        },
+        {
+            "id": 13,
+            "name": "Richard H. Haug"
+        },
+        {
+            "id": 14,
+            "name": "Peter B. Lockhart"
+        },
+        {
+            "id": 15,
+            "name": "Kent W. Kercher"
+        }
+    ],
+    homepage_url: {
+        "homepage_url": "http://www.carolinashealthcare.org/cmc"
+    }
+})
 Mock.mock('/test_history','post',{
     dataList:[
         {

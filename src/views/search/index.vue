@@ -41,6 +41,51 @@
       </div>
 
     </div>
+    <div id="data-chart" class="menu1">
+      <button class="btn" @click="showDataChartDialog = true">
+        <span class="box">
+          <el-icon style="position:relative; top: 2px;">
+            <Histogram />
+          </el-icon>
+          对比分析
+        </span>
+      </button>
+    </div>
+  </div>
+  <div id="selectDialog">
+    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70%">
+      <div id="options">
+        <el-checkbox-group v-model="selectList">
+          <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px">
+            <div style="font-size: 16;color: black;font-weight: bold" >
+              {{index+1}}.{{val.title}}
+            </div>
+            <div style="font-size: 14;color: grey;margin-top: 5px">
+              作者：
+              <span style="color:green;">{{val.author}}</span>
+              日期：
+              <span style="color: dodgerblue">{{val.date}}</span>
+            </div>
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <template #footer>
+        <el-button type="primary" size="large" @click="confirmSelect()" plain>确定</el-button>
+      </template>
+    </el-dialog>
+  </div>
+  <div id="chartDialog">
+    <el-dialog v-model="showDataChart" style="width: 90vw;height: 90vh">
+      <div id="data-chart-dialog" style="height: 80vh;width: 80vw"></div>
+    </el-dialog>
+  </div>
+  <div id="singleChartDialog">
+    <el-dialog v-model="showSingleChart" style="width: 90vw;height: 90vh">
+      <div id="single_all">
+        <div id="single-chart-dialog1" style="height: 80vh;width: 40vw"></div>
+        <div id="single-chart-dialog2" style="height: 80vh;width: 40vw"></div>
+      </div>
+    </el-dialog>
   </div>
   <div class="result">
     <el-row :gutter="10">
@@ -169,6 +214,16 @@ text-align: left;
                     <Download />
                   </el-icon>
                 </el-button>
+                <el-button size="small" type="primary" plain style="
+box-shadow: none;
+font-weight: 300;
+float: left;
+text-align: left;
+" @click="analyzeStatic(item.id)">
+                  数据<el-icon>
+                  <Histogram />
+                </el-icon>
+                </el-button>
                 <span style="
 float: right;
 text-align: right;
@@ -214,6 +269,9 @@ margin-right: 50px;
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import {DataAnalysis, Histogram, TrendCharts} from "@element-plus/icons-vue";
+import * as echarts from 'echarts'
+import httpInstance from "@/utils/http";
 const router = useRouter();
 const value = ref("");
 const input = ref("");
@@ -262,6 +320,10 @@ const paginatedData = computed(() => {
   const end = start + pageSize.value;
   return items.value.slice(start, end);
 });
+const showDataChartDialog = ref(false)
+const selectList = ref([])
+const showDataChart = ref(false)
+const showSingleChart = ref(false)
 const getList = async () => {
   pageFullLength.value = 7;
   items.value = [
@@ -281,7 +343,7 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability1",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
@@ -294,7 +356,7 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability2",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
@@ -307,7 +369,7 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability3",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
@@ -320,7 +382,7 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability4",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
@@ -333,7 +395,7 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability",
+        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability5",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
@@ -494,8 +556,253 @@ const gotoAuthor = (name) => {
 onMounted(async () => {
   getList();
 });
+const cited_by_count = ref([])
+const reference_count = ref([])
+const related_count = ref([])
+const counts_by_year = ref()
+const concepts = ref()
+const authorships = ref()
+async function request_multi_article(){
+  try{
+    const rd = selectList.value.join(',')
+    const requestData = {
+      workId: rd
+    }
+    console.log(requestData)
+    const response = await httpInstance.post('/muti_work_analysis',requestData)
+    console.log(response)//TODO
+    for(let i=0;i<response.data.length;i++){
+      cited_by_count.value.push(response.data[i].cited_by_count)
+      reference_count.value.push(response.data[i].reference_count)
+      related_count.value.push(response.data[i].related_count)
+    }
+  }catch (error){
+    console.log(error)
+  }
+}
+async function confirmSelect(){
+  if(selectList.value.length===0) return
+  showDataChart.value = true
+  await request_multi_article()
+  const chartDom = document.getElementById('data-chart-dialog')
+  const data_chart_large = echarts.init(chartDom)
+  const option = {
+    title:{
+      text: '对比分析结果',
+      textStyle:{
+        fontSize: 18
+      }
+    },
+    grid:{
+      containLabel:true
+    },
+    tooltip:{
+      trigger:'axis',
+      axisPointer:{
+        type: 'shadow'
+      }
+    },
+    xAxis:{
+      type:'category',
+      data: selectList.value,
+      axisLabel:{
+        show: true,
+        interval:1
+      },
+      axisPointer:{
+        show:true,
+        label:{
+          show: true,
+          formatter: '{value}'
+        }
+      }
+    },
+    yAxis:[
+      {
+        name: '相关论文总数',
+        type: 'value',
+        position:'left',
+        axisLine:{
+          show: true,
+          lineStyle:{
+            color:'blue'
+          }
+        },
+        scale:true,
+        alignTick: true,
+        axisLabel:{
+          formatter: '{value}/篇'
+        }
+      },
+      {
+        name: '被引用总数',
+        type: 'value',
+        position:'right',
+        axisLine:{
+          show: true,
+          lineStyle: {
+            color: 'green'
+          }
+        },
+        scale:true,
+        alignTick: true,
+        axisLabel: {
+          show: true,
+          formatter: '{value}/次'
+        }
+      },
+      {
+        name: '引用其他论文总数',
+        type: 'value',
+        position:'right',
+        offset:100,
+        axisLine:{
+          show: true,
+          lineStyle: {
+            color: 'orange'
+          }
+        },
+        scale:true,
+        alignTick: true,
+        axisLabel: {
+          show: true,
+          formatter: '{value}/篇'
+        }
+      }
+    ],
+    series: [
+      {
+        name: '相关论文总数',
+        data: related_count.value,
+        type:'bar',
+        barGap:0,
+        emphasis:{
+          focus:'series'
+        },
+        yAxisIndex:0
+      },
+      {
+        name: '被引用总数',
+        data: cited_by_count.value,
+        type:'bar',
+        emphasis:{
+          focus:'series'
+        },
+        yAxisIndex:1
+      },
+      {
+        name: '引用其他论文总数',
+        data: reference_count.value,
+        type:'bar',
+        emphasis:{
+          focus:'series'
+        },
+        yAxisIndex:2
+      },
+    ]
+  }
+  data_chart_large.setOption(option)
+}
+async function request_single_article(id){
+  try{
+    const requestData={
+      workId:id
+    }
+    const response = await httpInstance.post('/single_work_analysis',requestData)
+    console.log(111)//test
+    counts_by_year.value = response.data.counts_by_year
+    concepts.value = response.data.concepts
+    authorships.value = response.data.authorships
+  }catch (error){
+  }
+}
+async function analyzeStatic(id){
+  showSingleChart.value = true
+  await request_single_article(id)
+  const charDom1 = document.getElementById('single-chart-dialog1')
+  const chart1 = echarts.init(charDom1)
+  const charDom2 = document.getElementById('single-chart-dialog2')
+  const chart2 = echarts.init(charDom2)
+  //饼状图
+  let data = []
+  for(let i=0;i<concepts.value.length;i++){
+    const d = {
+      value: concepts.value[i].score,
+      name: concepts.value[i].display_name
+    }
+    data.push(d)
+  }
+  const option1 = {
+    title: {
+      text: '概念分析',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      {
+        name: 'concepts',
+        type: 'pie',
+        radius: '50%',
+        data: data,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  }
+  chart1.setOption(option1)
+  //条形图
+  let xCord = [], yCord = []
+  for(let i=0;i<counts_by_year.value.length;i++){
+    xCord.push(counts_by_year.value[i].year)
+    yCord.push(counts_by_year.value[i].cited_by_count)
+  }
+  const option2 = {
+    title:{
+      text: '被引用数量',
+      textStyle:{
+        fontSize: 18
+      }
+    },
+    tooltip:{
+      trigger:'axis'
+    },
+    grid:{
+      containLabel:true
+    },
+    xAxis:{
+      type:'category',
+      data: xCord
+    },
+    yAxis:{
+      type: 'value'
+    },
+    emphasis:{
+      focus:'self'
+    },
+    series: [
+      {
+        data:yCord,
+        type:'bar'
+      }
+    ]
+  }
+  chart2.setOption(option2)
+}
 </script>
 <style scoped lang="scss">
+#single_all{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
 .searchBox {
   height: 90px;
   display: flex;

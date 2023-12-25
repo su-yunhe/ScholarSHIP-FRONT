@@ -1,9 +1,12 @@
 // 个人图书馆浏览记录的组件
 <template>
     <div>
-        <el-card class="history-card" onmouseover=" this.style.scale='1.1'; this.style.backgroundColor='rgba(107, 168, 87,0.8)'; this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';" onmouseout="this.style.scale='1.0'; this.style.backgroundColor='rgba(107, 168, 87,0.6)'; this.style.boxShadow='none';">
-            <div class="tltle"><span style="font-weight: bold;">浏览记录<el-icon style="cursor: pointer;  margin-left: 0.5vw; position: relative; top: 1.5px;" color="red"
-                        @click="deleteAllEntries" >
+        <el-card class="history-card"
+            onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, #fafafa, rgb(107, 168, 87))';"
+            onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, #fafafa 85%, rgba(107, 168, 87, 0.75))';">
+            <div class="tltle"><span style="font-weight: bold;">浏览记录<el-icon
+                        style="cursor: pointer;  margin-left: 0.5vw; position: relative; top: 1.5px;" color="red"
+                        @click="deleteAllEntries">
                         <DeleteFilled />
                     </el-icon></span></div>
             <el-divider />
@@ -12,11 +15,12 @@
                     <div v-for="entry in recordEntries" :key="entry" class="text_item" @mouseenter="mouseEnter(entry)"
                         @mouseleave="mouseLeave" id="history_item">
                         <div style="float: left;">
-                            <div class="history_content" :title="entry.title" style="font-weight: bold;">
-                                {{ entry.title }}
-                            </div>
-                            <div class="history_content" :title="entry.author">
-                                {{ entry.author }}
+                            <div class="history_content" :title="entry.name" style="font-weight: bold;">
+                                <el-button v-if="entry.type === 1" type="primary" plain size="small"
+                                    @click="to_blur($event)">论文</el-button>
+                                <el-button v-if="entry.type === 2" type="primary" plain size="small" @click="to_blur($event)">学者</el-button>
+                                <el-button v-if="entry.type === 3" type="primary" plain size="small" @click="to_blur($event)">机构</el-button>
+                                {{ entry.name }}
                             </div>
                             <div class="history_content" style="color: grey;">
                                 {{ entry.time }}
@@ -25,7 +29,7 @@
                         <span style="max-height: 10px;">
                             <el-button v-if="entryMouseOn == entry.id" @click="deleteEntry(entry)" color="red" plain
                                 type="danger" size="small" :icon="Close" circle
-                                style="float: right; position: relative; left: -0.5vw;"/>
+                                style="float: right; position: relative; left: -0.5vw;" />
                             <!-- <el-icon v-if="entryMouseOn == entry.id" style="cursor: pointer;margin-left: 10vw; float:inline-end; position: relative; top: -50px; left: -1vw;" color="red" @click="deleteEntry(entry)" class="delete_item"><Delete /></el-icon> -->
                         </span>
                         <div style="clear: both;"></div>
@@ -49,44 +53,22 @@ import { ListItem } from "element-plus";
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 
-const recordEntries = reactive([
-{
-        id: "1",
-        title: "论文1特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长",
-        author: "xqf和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者和一堆作者",
-        time: '2023-12-21 12:00'
-    }, {
-        id: "2",
-        title: "论文2",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    }, {
-        id: "3",
-        title: "论文3",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    }, {
-        id: "4",
-        title: "论文4",
-        author: "xqf",
-        time: '2023-12-21 12:00'
-    }
-])
+const recordEntries = reactive([])
 
 const entryMouseOn = ref('')
 const mouseEnter = (entry: string) => {
-    console.log("选择记录"+entry.id)
+    console.log("选择记录" + entry.id)
     entryMouseOn.value = entry.id
 }
 const mouseLeave = () => {
     entryMouseOn.value = ''
 }
-const deleteEntry = (entry: string) => {
-    console.log("删除记录"+entry.id)
-    httpInstance.post("History_delete_single",{
+const deleteEntry = (entry) => {
+    console.log("删除记录" + entry.id)
+    httpInstance.post("History_delete_single", {
         userid: userId,
-        id: entry.indexOf,
-        isDelete: 0
+        id: entry.id,
+        isDelete: 1
     }).then((res) => {
         console.log(res)
         loadRecords()
@@ -99,9 +81,9 @@ const deleteEntry = (entry: string) => {
 
 const deleteAllEntries = () => {
     console.log("删除所有历史记录")
-    httpInstance.post("History_delete_all",{
+    httpInstance.post("History_delete_all", {
         userid: userId,
-        isDelete: 0
+        isDelete: 1
     }).then((res) => {
         console.log(res)
         loadRecords()
@@ -113,12 +95,25 @@ const deleteAllEntries = () => {
 }
 
 const loadRecords = () => {
-    httpInstance.post("History_get_all",{
+    httpInstance.post("History_get_all", {
         userid: userId
     }).then((res) => {
         console.log(res)
         recordEntries.splice(0, recordEntries.length, ...res.results)
+        console.log(recordEntries);
     })
+}
+
+const to_blur = (e) => {
+    let target = e.target;
+
+    if (target.nodeName == "SPAN") {
+
+        target = e.target.parentNode;
+
+    }
+
+    target.blur();
 }
 
 onBeforeMount(() => {
@@ -132,14 +127,15 @@ onBeforeMount(() => {
     min-height: 100px;
     // border: 1px solid;
     border-radius: 20px;
-    background-color: rgb(107, 168, 87, 0.75);
-    transition: all 0.3s ease;
+    // background-color: rgb(107, 168, 87, 0.75);
+    background: linear-gradient(to bottom right, #fafafa 85%, rgba(107, 168, 87, 0.75));
+    transition: all 0.3s;
 
     .text_item {
         padding-top: 5px;
         padding-bottom: 5px;
         border-bottom: 1px solid whitesmoke;
-        min-height: 70px;
+        min-height: 50px;
         transition: all 0.3s;
     }
 
@@ -217,5 +213,4 @@ onBeforeMount(() => {
 //     cursor: pointer;
 //     border: 1px solid black;
 //     background-color: rgba(0,0,0,0);
-// }
-</style>
+// }</style>
