@@ -1,7 +1,7 @@
 <template>
   <div class="searchBox">
     <div class="menu1">
-      <button class="btn" @click="gotoAdvancedSearch()">
+      <button class="btn" @click="toAdvancedSearch">
         <span class="box">
           <el-icon style="position: relative; top: 2px">
             <Search />
@@ -21,13 +21,13 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="a" @click="ok = '文献'"
+                  <el-dropdown-item command="a" @click="ok = '文献';clean()"
                     >文献</el-dropdown-item
                   >
-                  <el-dropdown-item command="b" @click="ok = '学者'"
+                  <el-dropdown-item command="b" @click="ok = '学者';clean()"
                     >学者</el-dropdown-item
                   >
-                  <el-dropdown-item command="c" @click="ok = '机构'"
+                  <el-dropdown-item command="c" @click="ok = '机构';clean()"
                     >机构</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -186,11 +186,11 @@
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
-              <div class="title" v-show="ok==='文献'" :title="item.title" style="cursor: pointer;">{{ item.title }}</div>
-              <div class="title" v-show="ok==='学者'" :title="item.name" style="cursor: pointer;">{{ item.name }}</div>
-              <div class="title" v-show="ok==='机构'" :title="item.name" style="cursor: pointer;">{{ item.name }}</div>
+              <div class="title" v-show="ok==='文献'" :title="item.title" style="cursor: pointer;" @click="toDocument(item.id)">{{ item.title }}</div>
+              <div class="title" v-show="ok==='学者'" :title="item.name" style="cursor: pointer;" @click="toAuthor(item.id)">{{ item.name }}</div>
+              <div class="title" v-show="ok==='机构'" :title="item.name" style="cursor: pointer;" @click="toInstitution(item.id)">{{ item.name }}</div>
               <div class="info1">
-                <el-row v-show="ok==='文献'">
+                <el-row v-show="ok === '文献'">
                   <el-col :span="12">
                     <div class="author_holder">
                                     <span
@@ -208,7 +208,7 @@
                                 </div>
                   </el-col>
                 </el-row>
-                <el-row v-show="ok==='学者'">
+                <el-row v-show="ok === '学者'">
                   <el-col :span="12">
                     <div class="author_holder">
                       <span
@@ -244,7 +244,7 @@
                     </div>
                   </el-col>
                 </el-row>
-                <el-row v-show="ok==='机构'">
+                <el-row v-show="ok === '机构'">
                   <el-col :span="12">
                     <div class="author_holder">
                       <span
@@ -299,7 +299,7 @@
                 {{ item.abstract }}
               </div>
 
-              <div style="margin-left: 27px; margin-top: 8px" v-show="ok==='文献'">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="ok === '文献'">
                 <el-button
                   size="small"
                   type="primary"
@@ -310,7 +310,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="cite(item)"
+                  @click="cite(item.id)"
                 >
                   引用<el-icon>
                     <Link />
@@ -326,7 +326,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="toDocument(item.title, item.id)"
+                  @click="toDocument(item.id)"
                 >
                   详情<el-icon>
                     <DataAnalysis />
@@ -374,7 +374,7 @@
                     float: left;
                     text-align: left;
                   "
-                  @click="pdf(item.pdf)"
+                  @click="pdf(item.id)"
                 >
                   下载<el-icon>
                     <Download />
@@ -427,7 +427,7 @@
                   </span>
                 </span>
               </div>
-              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok==='文献')">
+              <div style="margin-left: 27px; margin-top: 8px" v-show="!(ok === '文献')">
                 <span
                   style="
                     float: right;
@@ -538,15 +538,40 @@ const selectList = ref([]);
 const showDataChart = ref(false);
 const showSingleChart = ref(false);
 const ok = ref("文献");
+const cite = (id) => {
+  httpInstance
+    .get(`/get_citation`, { work_id: id,citation_type:"GB/T7714" })
+    .then((res) => {
+      const textToCopy = res.data.result;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          console.log("已成功复制到剪贴板");
+          // 可以显示成功提示或执行其他操作
+        })
+        .catch((error) => {
+          console.error("复制到剪贴板失败", error);
+          // 可以显示错误提示或执行其他操作
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+const clean = () => {
+  items.value = [];
+  authorList.value = [];
+  conceptList.value = [];
+  institutionList.value = [];
+}
 const search = async () => {
+  clean();
   currentPage.value = 1;
   if (ok.value == "文献") {
     getWenList(input.value, 1);
   } else if (ok.value == "学者") {
     getXueList(input.value, 1);
-  }
-  else{
-    getJiList(input.value,1)
+  } else {
+    getJiList(input.value, 1);
   }
 };
 const getTopInstitution = async (input) => {
@@ -637,23 +662,57 @@ const getJiList = async (input, num) => {
 const getIns = (name) => {
   console.log(name);
 };
-const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage;
+const handleCurrentChange = (n) => {
+  if (ok.value == "文献") {
+    getWenList(input.value, n);
+  } else if (ok.value == "学者") {
+    getXueList(input.value, n);
+  } else {
+    getJiList(input.value, n);
+  }
+  currentPage.value=n;
 };
 const toDocument = (id) => {
   var str = "/academic/" + id;
   router.push({ path: str });
 };
-const gotoAdvancedSearch = () => {
+const toAdvancedSearch = () => {
   router.push({ name: "advancedSearch" });
 };
-const gotoAuthor = (name) => {
+const toAuthor = (name) => {
   var str = "/scholar/" + name;
   router.push({ path: str });
 };
-onMounted(async () => {
-  getList();
-});
+const toInstitution = (id) => {
+  var str = "/institution/" + id;
+  router.push({ path: str });
+};
+const pdf = (id) => {
+  httpInstance
+    .post(`/SearchManager/DownloadWork`, { id: id })
+    .then((res) => {
+  window.open("https://journals.iucr.org/a/issues/2008/01/00/sc5010/sc5010.pdf", '_blank');
+      // fetch(res.data)
+      //   .then((response) => response.blob())
+      //   .then((blob) => {
+      //     let url = window.URL.createObjectURL(blob);
+      //     let link = document.createElement("a");
+      //     link.style.display = "none";
+      //     link.href = url;
+      //     link.setAttribute("download", "download.pdf");
+      //     document.body.appendChild(link);
+      //     link.click();
+      //     document.body.removeChild(link);
+      //     window.URL.revokeObjectURL(url);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error:", error);
+      //   });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 const cited_by_count = ref([]);
 const reference_count = ref([]);
 const related_count = ref([]);

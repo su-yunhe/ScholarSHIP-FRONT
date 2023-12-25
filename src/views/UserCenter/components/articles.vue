@@ -340,6 +340,14 @@ const readArticle = (article) => {
 
 const deleteFromCollection = (article) => {
     console.log("删除收藏论文：" + article.title)
+    httpInstance.post("star_delete",{
+        userid: userId,
+        labelId: libraryStore.labelId,
+        articleId: article.article_id,
+        isDelete: 0
+    }).then((res) => {
+        console.log(res)
+    })
     let val = cur_page.value;
     const index = displayedArticles.findIndex(item => item.id === article.id);
     if (index !== -1) {

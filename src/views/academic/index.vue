@@ -272,6 +272,12 @@ export default {
                 articleId: this.$route.path.split("/")[2]
             }).then((res) => {
                 console.log(res)
+                if(res.error == 0){
+                    ElMessage({
+                        message: "收藏成功！",
+                        type: 'success',
+                    })
+                }
             })
         },
         collectionChange(value){
