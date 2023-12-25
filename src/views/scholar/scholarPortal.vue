@@ -12,7 +12,7 @@
                     <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
@@ -58,6 +58,7 @@ export default {
             tagName:'academic',
             scholarID: null,
             scholarInfo:null,
+            essayNum: 0,
             monitoredRoute: null,
         }
     },
@@ -94,17 +95,28 @@ export default {
                 this.loadingTag = false;
             });
         },
+        async getEssayNum(scholarStore){
+            await httpInstance.get('/get_works_count', {author_id:this.scholarID}).then(res => res.data).then(res => {
+                console.log("get_works_count:", res);
+                scholarStore.essayNum = res.result.works_count;
+                this.essayNum = res.result.works_count;
+            });
+        },
         async getEssayList(scholarStore){
             let userID = 1;
-            console.log("balabala");
-            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
-                console.log("papers1:", res);
-                if (res.error === 0) {
-                    scholarStore.essayList = res.result;
-                    console.log("papers2:", scholarStore.essayList);
+            let round = 1;
+            let length = 1;
+            for(;length != 0;round++){
+                await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true&count=${round}`).then((res) => {
+                length = res.result.length;
+                if (length != 0) {
+                    let essays = scholarStore.essayList;
+                    essays = essays.concat(res.result);
+                    scholarStore.essayList = essays;
                 }
+                
             });
-            console.log("balabala2");
+            }
         },
         getGraphData(scholarStore){
             httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
@@ -116,8 +128,8 @@ export default {
             this.loadingTag = true;
             this.scholarID = this.$route.path.split("/")[2];
             const scholarStore = useScholarStore();
-            scholarStore.essayList = [];
-            console.log("清空essayList：",scholarStore.essayList);
+            // scholarStore.essayList = [];
+            this.getEssayNum(scholarStore);
             this.getScholarInfo(scholarStore);
 
             this.getEssayList(scholarStore);

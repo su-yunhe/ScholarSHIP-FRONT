@@ -59,7 +59,6 @@ let uploadDialogVisible = ref(false);
 const uploadEssay= ref({});
 
 onMounted(() => {
-    console.log("removed academic paper:",scholarStore.removedEssayList);
     essayList.value = scholarStore.removedEssayList;
     displayEssays.value = essayList.value.slice(0,5);
     essayNum.value = scholarStore.removedEssayList.length;
