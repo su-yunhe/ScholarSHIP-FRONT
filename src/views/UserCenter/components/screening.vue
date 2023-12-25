@@ -20,7 +20,7 @@
             </el-card>
         </div>
         <el-dialog v-model="deleteDialogVisible" title="删除标签" width="30%">
-            <span>确定要删除“{{ closingTag.name }}”标签吗？删除后相关文章会移动到默认收藏夹中。</span>
+            <span>确定要删除“{{ closingTag.name }}”标签吗？删除后相关文章将被取消收藏。</span>
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="deleteDialogVisible = false">取消</el-button>
@@ -81,7 +81,7 @@ const loadTags = () => {
     })
 }
 
-//关闭标签：删除后其中的article自动加入默认收藏夹
+//关闭标签：删除后其中的article也被删除
 const deleteDialogVisible = ref(false)
 const noDeleteVisible = ref(false)
 var closingTag = ''
