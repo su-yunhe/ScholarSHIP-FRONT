@@ -84,7 +84,16 @@ export default {
             console.log(this.tagName);
         },
         claimPortal(){//认领门户
-
+            let Time = new Date()
+            httpInstance.post("apply_add",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID,
+                email: this.userStore.userInfo.email,
+                content: "请求成为学者balabala",
+                time: Time.toLocaleString
+            }).then((res) => {
+                console.log(res)
+            })
         },
         concernScholar(){//关注学者
             httpInstance.post("concern_add",{
@@ -133,7 +142,7 @@ export default {
         },
         checkConcern(){
             // 是否已经关注学者
-            
+
         },
         recordBrowse(){
             let Time = new Date()

@@ -60,8 +60,9 @@
 import * as echarts from 'echarts'
 import httpInstance from "@/utils/http";
 import {Document, School, Share, UserFilled} from "@element-plus/icons-vue";
-import {ref, onMounted} from "vue";
+import {ref, onMounted, onBeforeMount} from "vue";
 import InstdInfo from "@/views/Institution/components/instdInfo.vue";
+import { useUserStore } from '@/stores/userStore';
 
 const school_name = ref()
 const school_url = ref()
@@ -163,6 +164,21 @@ function jumpToOfficialWebsite(){
   window.location.href = school_url.value
 }
 
+const userStore = useUserStore()
+const recordBrowse = () => {
+  let Time = new Date()
+  httpInstance.post("history_add",{
+    userid: userStore.userInfo.userid,
+    type: 0,
+    realId: thisInsId,
+    time: Time.toLocaleString
+  }).then((res) => {
+    console.log(res)
+  })
+}
+onBeforeMount(() => {
+  recordBrowse() // 记录浏览
+})
 
 </script>
 
