@@ -332,22 +332,6 @@
                     <DataAnalysis />
                   </el-icon>
                 </el-button>
-                <!-- <el-button
-                  size="small"
-                  type="success"
-                  plain
-                  style="
-                    box-shadow: none;
-                    font-weight: 300;
-                    float: left;
-                    text-align: left;
-                  "
-                  @click="changeCollectIconToTrue(item.id)"
-                >
-                  收藏<el-icon>
-                    <FolderAdd />
-                  </el-icon>
-                </el-button> -->
                 <el-button
                   size="small"
                   type="warning"
@@ -570,7 +554,6 @@ const gourl = (id) =>{
   httpInstance
     .post(`/SearchManager/WorkLocation`, { id:id })
     .then((res) => {
-      // console.log(res);
       window.open(res.data);
     })
     .catch((error) => {
@@ -1041,19 +1024,6 @@ async function analyzeStatic(id) {
       box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
     }
 
-    // .box:hover:before {
-    //   border-color: #262626;
-    //   height: 100%;
-    //   transform: translateX(0);
-    //   transition: .3s transform linear, .3s height linear .3s;
-    // }
-
-    // .box:hover:after {
-    //   border-color: #262626;
-    //   height: 100%;
-    //   transform: translateX(0);
-    //   transition: .3s transform linear, .3s height linear .5s;
-    // }
 
     button {
       color: black;
@@ -1109,39 +1079,10 @@ async function analyzeStatic(id) {
       transition: 0.7s ease-in-out;
     }
 
-    // .input__container :hover{
-    //   width: 60vw;
-    //   transition: 0.7s ease-in-out;
-    // }
-
-    // .input__container :focus{
-    //   width: 60vw;
-    //   transition: 0.7s ease-in-out;
-    // }
-
     #search_button {
       width: 60px;
     }
 
-    // .shadow__input {
-    //   content: "";
-    //   position: absolute;
-    //   width: 100%;
-    //   height: 100%;
-    //   left: 0;
-    //   bottom: 0;
-    //   z-index: -1;
-    //   filter: blur(10px);
-    //   border-radius: 20px;
-    //   background-color: #999cff;
-    //   background-image: radial-gradient(at 85% 51%, hsla(60, 60%, 61%, 1) 0px, transparent 50%),
-    //     radial-gradient(at 74% 68%, rgb(231, 237, 156) 0px, transparent 50%),
-    //     radial-gradient(at 64% 79%, hsla(284, 72%, 73%, 1) 0px, transparent 50%),
-    //     radial-gradient(at 75% 16%, hsla(283, 60%, 72%, 1) 0px, transparent 50%),
-    //     radial-gradient(at 90% 65%, hsla(153, 70%, 64%, 1) 0px, transparent 50%),
-    //     radial-gradient(at 91% 83%, hsla(283, 74%, 69%, 1) 0px, transparent 50%),
-    //     radial-gradient(at 72% 91%, hsla(213, 75%, 75%, 1) 0px, transparent 50%);
-    // }
 
     .input__button__shadow {
       cursor: pointer;
@@ -1167,8 +1108,6 @@ async function analyzeStatic(id) {
       border: none;
       padding: 20px;
       position: relative;
-      // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-      // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
       transition: 0.7s;
     }
@@ -1180,118 +1119,6 @@ async function analyzeStatic(id) {
       transition: 0.7s;
     }
 
-    // .searchbar {
-    //   font-size: 14px;
-    //   font-family: arial, sans-serif;
-    //   color: #202124;
-    //   display: flex;
-    //   z-index: 3;
-    //   height: 50px;
-    //   background: white;
-    //   border: 1px solid #dfe1e5;
-    //   box-shadow: none;
-    //   border-radius: 24px;
-    //   margin: 0 auto;
-    //   width: auto;
-    //   max-width: 1000px;
-    // }
-
-    // .searchbar:hover {
-    //   box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
-    //   border-color: rgba(223, 225, 229, 0);
-    // }
-
-    // .searchbar-wrapper {
-    //   flex: 1;
-    //   display: flex;
-    //   padding: 5px 8px 0 14px;
-    // }
-
-    // .searchbar-left {
-    //   font-size: 14px;
-    //   font-family: arial, sans-serif;
-    //   color: #202124;
-    //   display: flex;
-    //   align-items: center;
-    //   padding-right: 13px;
-    //   margin-top: -5px;
-    // }
-
-    // .search-icon-wrapper {
-    //   margin: auto;
-    // }
-
-    // .search-icon {
-    //   margin-top: 3px;
-    //   color: #9aa0a6;
-    //   height: 20px;
-    //   line-height: 20px;
-    //   width: 20px;
-    // }
-
-    // .searchbar-icon {
-    //   display: inline-block;
-    //   fill: currentColor;
-    //   height: 24px;
-    //   line-height: 24px;
-    //   position: relative;
-    //   width: 24px;
-    // }
-
-    // .searchbar-center {
-    //   display: flex;
-    //   flex: 1;
-    //   flex-wrap: wrap;
-    // }
-
-    // .searchbar-input-spacer {
-    //   color: transparent;
-    //   flex: 100%;
-    //   white-space: pre;
-    //   height: 34px;
-    //   font-size: 16px;
-    // }
-
-    // .searchbar-input {
-    //   background-color: transparent;
-    //   border: none;
-    //   margin: 0;
-    //   padding: 0;
-    //   color: rgba(0, 0, 0, 0.87);
-    //   word-wrap: break-word;
-    //   outline: none;
-    //   display: flex;
-    //   flex: 100%;
-    //   margin-top: -37px;
-    //   height: 34px;
-    //   font-size: 16px;
-    //   max-width: 100%;
-    //   width: 100%;
-    // }
-
-    // .searchbar-right {
-    //   display: flex;
-    //   flex: 0 0 auto;
-    //   margin-top: -5px;
-    //   align-items: stretch;
-    //   flex-direction: row;
-    // }
-
-    // .searchbar-clear-icon {
-    //   margin-right: 12px;
-    // }
-
-    // .voice-search {
-    //   flex: 1 0 auto;
-    //   display: flex;
-    //   cursor: pointer;
-    //   align-items: center;
-    //   border: 0;
-    //   background: transparent;
-    //   outline: none;
-    //   padding: 0 8px;
-    //   width: 2.8em;
-    // }
   }
 
   .menu2 {

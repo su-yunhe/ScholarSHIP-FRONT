@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <div @click="test()">测试</div>
     <el-row v-loading="loading" :gutter="10" >
       <el-col :span="15">
         <el-card>
@@ -16,8 +15,6 @@
               <el-option v-for="y in years" :label="y" :value="y" :key="y"></el-option>
             </el-select>
           </div>
-
-
           <el-divider></el-divider>
           <div class="title1">标题</div>
           <div v-for="(searchItem, i) in titleRequests" :key="i" style="margin-top: 10px; margin-buttom: 10px">
@@ -37,8 +34,6 @@
                 <Plus />
               </el-icon></el-button>
           </div>
-
-
 
           <el-divider></el-divider>
           <div class="title1">学者</div>
@@ -198,6 +193,7 @@ const years = ref([
 ]);
 
 const loading = ref(false)
+const isResult = ref(false)
 
 const addStr = (op) => {
   if (op === 1) {
@@ -323,12 +319,8 @@ const search = async() => {
     type1.push(4)
     name1.push(conceptRequests.value[i].str)
   }
-  console.log(minyear)
-  console.log(maxyear)
-  console.log(op1)
-  console.log(type1)
-  console.log(name1)
-  await httpInstance.post('/SearchManager/AdvancedSearchWork', {
+  await httpInstance.post('/SearchManager/  ', {
+    page: 1,
     min_year: minyear.value,
     max_year: maxyear.value,
     op: op1,
