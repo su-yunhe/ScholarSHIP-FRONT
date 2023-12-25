@@ -55,12 +55,12 @@
   <div id="selectDialog">
     <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70%">
       <div id="options">
-        <el-checkbox-group v-model="selectList">
+        <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start">
           <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px">
-            <div style="font-size: 16;color: black;font-weight: bold" >
+            <div style="font-size: 16px;color: black;font-weight: bold" >
               {{index+1}}.{{val.title}}
             </div>
-            <div style="font-size: 14;color: grey;margin-top: 5px">
+            <div style="font-size: 14px;color: grey;margin-top: 5px">
               作者：
               <span style="color:green;">{{val.author}}</span>
               日期：
@@ -343,7 +343,7 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability1",
+        "MAFFT",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
@@ -356,11 +356,11 @@ const getList = async () => {
     {
       id: "W2160378127",
       title:
-        "MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability2",
+        "MAFFT Multiple",
       abstract:
         "We report a major update of the MAFFT multiple sequence alignment program. This version has several new features, including options for adding unaligned sequences into an existing alignment, adjustment of direction in nucleotide alignment, constrained alignment and parallel processing, which were implemented after the previous major update. This report shows actual examples to explain how these features work, alone and in combination. Some examples incorrectly aligned by MAFFT are also shown to clarify its limitations. We discuss how to avoid misalignments, and our ongoing efforts to overcome such limitations.",
       organization: "Oxford University Press",
-      author: ["Kazutaka Katoh", "Daron M. Standley"],
+      author: ["Kazutaka Katoh"],
       cite: 28654,
       date: "2013-01-16",
       keywords: ["sequence"],
