@@ -884,13 +884,18 @@ async function request_single_article(id) {
     authorships.value = response.data.authorships;
   } catch (error) {}
 }
+var chart1=null, chart2=null
 async function analyzeStatic(id) {
   showSingleChart.value = true;
+  if(chart1!=null) chart1.showLoading()
+  if(chart2!=null) chart2.showLoading()
   await request_single_article(id);
   const charDom1 = document.getElementById("single-chart-dialog1");
-  const chart1 = echarts.init(charDom1);
+  chart1 = echarts.init(charDom1);
   const charDom2 = document.getElementById("single-chart-dialog2");
-  const chart2 = echarts.init(charDom2);
+  chart2 = echarts.init(charDom2);
+  chart1.hideLoading()
+  chart2.hideLoading()
   //饼状图
   let data = [];
   for (let i = 0; i < concepts.value.length; i++) {

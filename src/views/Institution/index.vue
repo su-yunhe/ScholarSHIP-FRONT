@@ -217,7 +217,7 @@ onBeforeMount(() => {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 50px;
+  font-size: 30px;
   color: black;
   font-weight: bold;
   margin-right: 100px;
