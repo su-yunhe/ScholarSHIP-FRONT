@@ -36,12 +36,21 @@
                 </div>
                 <div>
                     <!-- 可以通过改变 recognized 和 followed 两个变量 改变显示按钮的状态-->
-                    <el-button type="primary" class="scholar-operation op-claim" @click="claimPortal" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
+                    <el-button type="primary" class="scholar-operation op-claim" @click="dialogVisible = true" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
                     <el-button type="primary" class="scholar-operation op-claim" @click="claimPortal" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证门户</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="!followed"> <el-icon><StarFilled /></el-icon>关注学者</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="followed"> <el-icon color="gold"><StarFilled /></el-icon>已关注学者</el-button>
                 </div>
-
+                <el-dialog
+                    title="认证理由"
+                    v-model="dialogVisible"
+                    width="50%">
+                    <el-input v-model="reason" placeholder="请输入内容"></el-input>
+                    <div class="dialog-footer">
+                        <el-button @click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="claimPortal">确 定</el-button>
+                    </div>
+                </el-dialog>
                 <!-- <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
                 <button class="scholar-operation op-claim" @click="claimPortal">认领门户</button>
                 <button v-if="!isConcerned" class="scholar-operation op-concern" @click="concernScholar">关注学者</button>
@@ -82,6 +91,8 @@ export default {
             recognized: false, // 该学者门户是否已被认领
             userStore: useUserStore(),
             isConcerned: false,
+            dialogVisible: false,
+            reason:'',
         }
     },
     methods: {
@@ -104,7 +115,8 @@ export default {
             console.log(this.tagName);
         },
         claimPortal() {//认领门户
-
+            console.log("认证理由："+this.reason);
+            this.dialogVisible = false
         },
         concernScholar(){//关注学者
             httpInstance.post("concern_add",{
