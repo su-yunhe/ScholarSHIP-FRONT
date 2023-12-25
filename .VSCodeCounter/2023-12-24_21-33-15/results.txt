@@ -1,0 +1,184 @@
+Date : 2023-12-24 21:33:15
+Directory : c:\code\vue\ScholarSHIP-FRONT
+Total : 98 files,  33348 codes, 775 comments, 848 blanks, all 34971 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          2 |     13,137 |          0 |          2 |     13,139 |
+| CSS                |         35 |     10,610 |        347 |         55 |     11,012 |
+| vue                |         39 |      8,514 |        352 |        717 |      9,583 |
+| JavaScript         |         10 |        869 |         46 |         45 |        960 |
+| SCSS               |          3 |        118 |         20 |         10 |        148 |
+| TypeScript         |          2 |         53 |         10 |          4 |         67 |
+| Markdown           |          1 |         22 |          0 |         14 |         36 |
+| HTML               |          1 |         13 |          0 |          1 |         14 |
+| JSON with Comments |          1 |          8 |          0 |          0 |          8 |
+| XML                |          4 |          4 |          0 |          0 |          4 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                        | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                           |         98 |     33,348 |        775 |        848 |     34,971 |
+| . (Files)                                                                                   |          8 |     13,279 |         20 |         26 |     13,325 |
+| src                                                                                         |         90 |     20,069 |        755 |        822 |     21,646 |
+| src (Files)                                                                                 |          2 |        114 |         20 |         30 |        164 |
+| src\apis                                                                                    |          1 |         19 |          1 |          2 |         22 |
+| src\assets                                                                                  |          7 |         98 |          2 |         23 |        123 |
+| src\assets (Files)                                                                          |          3 |         89 |          2 |         21 |        112 |
+| src\assets\font                                                                             |          1 |          6 |          0 |          2 |          8 |
+| src\assets\images                                                                           |          3 |          3 |          0 |          0 |          3 |
+| src\components                                                                              |          1 |        342 |          0 |         53 |        395 |
+| src\mock                                                                                    |          1 |        162 |          0 |          6 |        168 |
+| src\router                                                                                  |          1 |         75 |          1 |          3 |         79 |
+| src\static                                                                                  |         33 |     10,928 |        348 |         33 |     11,309 |
+| src\static\tinymce                                                                          |         33 |     10,928 |        348 |         33 |     11,309 |
+| src\static\tinymce (Files)                                                                  |          1 |        412 |          3 |          1 |        416 |
+| src\static\tinymce\skins                                                                    |         32 |     10,516 |        345 |         32 |     10,893 |
+| src\static\tinymce\skins\content                                                            |          8 |        231 |         76 |          8 |        315 |
+| src\static\tinymce\skins\content\dark                                                       |          2 |         60 |         19 |          2 |         81 |
+| src\static\tinymce\skins\content\default                                                    |          2 |         55 |         19 |          2 |         76 |
+| src\static\tinymce\skins\content\document                                                   |          2 |         60 |         19 |          2 |         81 |
+| src\static\tinymce\skins\content\writer                                                     |          2 |         56 |         19 |          2 |         77 |
+| src\static\tinymce\skins\ui                                                                 |         24 |     10,285 |        269 |         24 |     10,578 |
+| src\static\tinymce\skins\ui\oxide                                                           |         12 |      5,152 |        134 |         12 |      5,298 |
+| src\static\tinymce\skins\ui\oxide-dark                                                      |         12 |      5,133 |        135 |         12 |      5,280 |
+| src\stores                                                                                  |          3 |         71 |          5 |         10 |         86 |
+| src\styles                                                                                  |          3 |        118 |         20 |         10 |        148 |
+| src\styles (Files)                                                                          |          2 |         99 |         14 |          9 |        122 |
+| src\styles\element                                                                          |          1 |         19 |          6 |          1 |         26 |
+| src\utils                                                                                   |          2 |        362 |         11 |         10 |        383 |
+| src\views                                                                                   |         36 |      7,780 |        347 |        642 |      8,769 |
+| src\views (Files)                                                                           |          2 |         22 |          0 |          4 |         26 |
+| src\views\Admin                                                                             |          4 |        133 |          1 |         16 |        150 |
+| src\views\Admin (Files)                                                                     |          1 |         21 |          1 |          2 |         24 |
+| src\views\Admin\components                                                                  |          3 |        112 |          0 |         14 |        126 |
+| src\views\Home                                                                              |          6 |        625 |         16 |         90 |        731 |
+| src\views\Home (Files)                                                                      |          1 |         13 |          5 |          6 |         24 |
+| src\views\Home\components                                                                   |          5 |        612 |         11 |         84 |        707 |
+| src\views\Institution                                                                       |          2 |        599 |          0 |         19 |        618 |
+| src\views\Institution (Files)                                                               |          1 |        262 |          0 |         11 |        273 |
+| src\views\Institution\components                                                            |          1 |        337 |          0 |          8 |        345 |
+| src\views\Introduction                                                                      |          2 |        658 |         39 |         96 |        793 |
+| src\views\Introduction (Files)                                                              |          1 |         25 |         39 |          4 |         68 |
+| src\views\Introduction\components                                                           |          1 |        633 |          0 |         92 |        725 |
+| src\views\Login                                                                             |          1 |        534 |          4 |         82 |        620 |
+| src\views\UserCenter                                                                        |          8 |      1,407 |        101 |        157 |      1,665 |
+| src\views\UserCenter (Files)                                                                |          1 |         26 |          3 |          4 |         33 |
+| src\views\UserCenter\components                                                             |          7 |      1,381 |         98 |        153 |      1,632 |
+| src\views\academic                                                                          |          1 |        383 |          6 |          9 |        398 |
+| src\views\advancedSearch                                                                    |          1 |        277 |        129 |         22 |        428 |
+| src\views\analyses                                                                          |          1 |        514 |         44 |         45 |        603 |
+| src\views\scholar                                                                           |          7 |      1,250 |          7 |         37 |      1,294 |
+| src\views\scholar (Files)                                                                   |          4 |        595 |          3 |         19 |        617 |
+| src\views\scholar\personalScholar                                                           |          3 |        655 |          4 |         18 |        677 |
+| src\views\search                                                                            |          1 |      1,378 |          0 |         65 |      1,443 |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                    | language           | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\code\vue\ScholarSHIP-FRONT\README.md                                                     | Markdown           |         22 |          0 |         14 |         36 |
+| c:\code\vue\ScholarSHIP-FRONT\auto-imports.d.ts                                             | TypeScript         |          3 |          5 |          2 |         10 |
+| c:\code\vue\ScholarSHIP-FRONT\components.d.ts                                               | TypeScript         |         50 |          5 |          2 |         57 |
+| c:\code\vue\ScholarSHIP-FRONT\index.html                                                    | HTML               |         13 |          0 |          1 |         14 |
+| c:\code\vue\ScholarSHIP-FRONT\jsconfig.json                                                 | JSON with Comments |          8 |          0 |          0 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\package-lock.json                                             | JSON               |     13,085 |          0 |          1 |     13,086 |
+| c:\code\vue\ScholarSHIP-FRONT\package.json                                                  | JSON               |         52 |          0 |          1 |         53 |
+| c:\code\vue\ScholarSHIP-FRONT\src\App.vue                                                   | vue                |         85 |          5 |         21 |        111 |
+| c:\code\vue\ScholarSHIP-FRONT\src\apis\user.js                                              | JavaScript         |         19 |          1 |          2 |         22 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\base.css                                           | CSS                |         59 |          2 |         14 |         75 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\font\font.css                                      | CSS                |          6 |          0 |          2 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\images\bgc1.svg                                    | XML                |          1 |          0 |          0 |          1 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\images\signin.svg                                  | XML                |          1 |          0 |          0 |          1 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\images\signup.svg                                  | XML                |          1 |          0 |          0 |          1 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\logo.svg                                           | XML                |          1 |          0 |          0 |          1 |
+| c:\code\vue\ScholarSHIP-FRONT\src\assets\main.css                                           | CSS                |         29 |          0 |          7 |         36 |
+| c:\code\vue\ScholarSHIP-FRONT\src\components\header.vue                                     | vue                |        342 |          0 |         53 |        395 |
+| c:\code\vue\ScholarSHIP-FRONT\src\main.js                                                   | JavaScript         |         29 |         15 |          9 |         53 |
+| c:\code\vue\ScholarSHIP-FRONT\src\mock\index.js                                             | JavaScript         |        162 |          0 |          6 |        168 |
+| c:\code\vue\ScholarSHIP-FRONT\src\router\index.js                                           | JavaScript         |         75 |          1 |          3 |         79 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\dark\content.css             | CSS                |         59 |         13 |          1 |         73 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\dark\content.min.css         | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\default\content.css          | CSS                |         54 |         13 |          1 |         68 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\default\content.min.css      | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\document\content.css         | CSS                |         59 |         13 |          1 |         73 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\document\content.min.css     | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\writer\content.css           | CSS                |         55 |         13 |          1 |         69 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\content\writer\content.min.css       | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\content.css            | CSS                |        697 |         17 |          1 |        715 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\content.inline.css     | CSS                |        710 |         16 |          1 |        727 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\content.inline.min.css | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\content.min.css        | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\content.mobile.css     | CSS                |         21 |          8 |          1 |         30 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\content.mobile.min.css | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\skin.css               | CSS                |      3,025 |         22 |          1 |      3,048 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\skin.min.css           | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\skin.mobile.css        | CSS                |        643 |         30 |          1 |        674 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\skin.mobile.min.css    | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\skin.shadowdom.css     | CSS                |         31 |          6 |          1 |         38 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide-dark\skin.shadowdom.min.css | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\content.css                 | CSS                |        716 |         16 |          1 |        733 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\content.inline.css          | CSS                |        710 |         16 |          1 |        727 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\content.inline.min.css      | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\content.min.css             | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\content.mobile.css          | CSS                |         21 |          8 |          1 |         30 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\content.mobile.min.css      | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\skin.css                    | CSS                |      3,025 |         22 |          1 |      3,048 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\skin.min.css                | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\skin.mobile.css             | CSS                |        643 |         30 |          1 |        674 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\skin.mobile.min.css         | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\skin.shadowdom.css          | CSS                |         31 |          6 |          1 |         38 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\skins\ui\oxide\skin.shadowdom.min.css      | CSS                |          1 |          6 |          1 |          8 |
+| c:\code\vue\ScholarSHIP-FRONT\src\static\tinymce\zh-Hans.js                                 | JavaScript         |        412 |          3 |          1 |        416 |
+| c:\code\vue\ScholarSHIP-FRONT\src\stores\library.js                                         | JavaScript         |         15 |          0 |          1 |         16 |
+| c:\code\vue\ScholarSHIP-FRONT\src\stores\scholar.js                                         | JavaScript         |         17 |          0 |          2 |         19 |
+| c:\code\vue\ScholarSHIP-FRONT\src\stores\userStore.js                                       | JavaScript         |         39 |          5 |          7 |         51 |
+| c:\code\vue\ScholarSHIP-FRONT\src\styles\common.scss                                        | SCSS               |         94 |         14 |          8 |        116 |
+| c:\code\vue\ScholarSHIP-FRONT\src\styles\element\index.scss                                 | SCSS               |         19 |          6 |          1 |         26 |
+| c:\code\vue\ScholarSHIP-FRONT\src\styles\var.scss                                           | SCSS               |          5 |          0 |          1 |          6 |
+| c:\code\vue\ScholarSHIP-FRONT\src\utils\Input.vue                                           | vue                |        307 |          0 |          1 |        308 |
+| c:\code\vue\ScholarSHIP-FRONT\src\utils\http.js                                             | JavaScript         |         55 |         11 |          9 |         75 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\AboutView.vue                                       | vue                |         14 |          0 |          2 |         16 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Admin\components\aside.vue                          | vue                |          4 |          0 |          1 |          5 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Admin\components\header.vue                         | vue                |         38 |          0 |          6 |         44 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Admin\components\main.vue                           | vue                |         70 |          0 |          7 |         77 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Admin\index.vue                                     | vue                |         21 |          1 |          2 |         24 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\HomeView.vue                                        | vue                |          8 |          0 |          2 |         10 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Home\components\HomeFooter.vue                      | vue                |        199 |          3 |         26 |        228 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Home\components\HomeHeader.vue                      | vue                |        110 |          1 |         20 |        131 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Home\components\HomeHeaderFix.vue                   | vue                |        121 |          1 |         15 |        137 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Home\components\HomeMain.vue                        | vue                |        112 |          4 |         14 |        130 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Home\components\HomeNav.vue                         | vue                |         70 |          2 |          9 |         81 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Home\index.vue                                      | vue                |         13 |          5 |          6 |         24 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Institution\components\instdInfo.vue                | vue                |        337 |          0 |          8 |        345 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Institution\index.vue                               | vue                |        262 |          0 |         11 |        273 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Introduction\components\main.vue                    | vue                |        633 |          0 |         92 |        725 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Introduction\index.vue                              | vue                |         25 |         39 |          4 |         68 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\Login\index.vue                                     | vue                |        534 |          4 |         82 |        620 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\articles.vue                  | vue                |        327 |         53 |         32 |        412 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\followings.vue                | vue                |        148 |          4 |         17 |        169 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\histories.vue                 | vue                |        190 |          1 |         25 |        216 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\infomation.vue                | vue                |        121 |          0 |         16 |        137 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\main.vue                      | vue                |         91 |          2 |         14 |        107 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\screening.vue                 | vue                |        185 |          0 |         16 |        201 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\components\test.vue                      | vue                |        319 |         38 |         33 |        390 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\UserCenter\index.vue                                | vue                |         26 |          3 |          4 |         33 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\academic\index.vue                                  | vue                |        383 |          6 |          9 |        398 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\advancedSearch\index.vue                            | vue                |        277 |        129 |         22 |        428 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\analyses\index.vue                                  | vue                |        514 |         44 |         45 |        603 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\academic.vue                                | vue                |        256 |          2 |          5 |        263 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\datas.vue                                   | vue                |         26 |          0 |          4 |         30 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\links.vue                                   | vue                |         90 |          1 |          3 |         94 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\personalScholar\personalPortal.vue          | vue                |        215 |          0 |          4 |        219 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\personalScholar\removed.vue                 | vue                |        161 |          1 |          5 |        167 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\personalScholar\unremoved.vue               | vue                |        279 |          3 |          9 |        291 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\scholar\scholarPortal.vue                           | vue                |        223 |          0 |          7 |        230 |
+| c:\code\vue\ScholarSHIP-FRONT\src\views\search\index.vue                                    | vue                |      1,378 |          0 |         65 |      1,443 |
+| c:\code\vue\ScholarSHIP-FRONT\vite.config.js                                                | JavaScript         |         46 |         10 |          5 |         61 |
+| Total                                                                                       |                    |     33,348 |        775 |        848 |     34,971 |
++---------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

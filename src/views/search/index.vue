@@ -611,6 +611,7 @@ const getWenList = async (input, num) => {
   httpInstance
     .post(`/SearchManager/SearchWork`, { content: input, page: num })
     .then((res) => {
+      console.log(res)
       // console.log(1);
       pageFullLength.value = res.count > 10000 ? 10000 : res.count;
       // console.log(pageFullLength.value)
