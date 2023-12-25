@@ -115,7 +115,8 @@
   <div class="result">
     <el-row :gutter="10">
       <el-col :span="5">
-        <div class="left">
+        <transition transition name="fade">
+        <div class="left" v-show="show_left">
           <div class="conditionBox">
             <div class="title">筛选方式</div>
             <div class="main">
@@ -181,8 +182,35 @@
             </div>
           </div>
         </div>
+        </transition>
       </el-col>
       <el-col :span="19">
+        <el-skeleton
+      style="width: 100%"
+      :loading="!rendered"
+      animated
+      :throttle="500"
+      :count="pageSize"
+    >
+      <template #template>
+        <!-- <el-skeleton-item variant="image" style="width: 100%; height: 800px" /> -->
+        <div style="padding: 15px">
+          <el-skeleton-item variant="h3" style="width: 50%" />
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-items: space-between;
+              margin-top: 16px;
+              height: 16px;
+            "
+          >
+            <el-skeleton-item variant="text" style="margin-right: 16px" />
+            <el-skeleton-item variant="text" style="width: 30%" />
+          </div>
+        </div>
+      </template>
+      <template #default>
         <div class="right">
           <div v-for="item in paginatedData" style="margin-top: 15px">
             <div class="res">
@@ -462,11 +490,25 @@
             </div>
           </div>
         </div>
+        <el-affix style="z-index: 0;" v-if="!paginatedData.length" >
+            <el-empty description="这里空空如也"/>
+        </el-affix>
+      </template>
+    </el-skeleton>
       </el-col>
     </el-row>
+    <el-divider v-if="paginatedData.length!=0"></el-divider>
+    <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :total="pageFullLength"
+        v-if="rendered"
+      />
+      <el-divider v-if="paginatedData.length!=0"></el-divider>
   </div>
 
-  <div>
+  <!-- <div>
     <el-divider></el-divider>
     <div class="footer">
       <el-pagination
@@ -477,7 +519,7 @@
         :total="pageFullLength"
       />
     </div>
-  </div>
+  </div> -->
 </template>
 <script setup>
 import { ref, watchEffect, computed, onMounted } from "vue";
@@ -520,13 +562,14 @@ const years = ref([
   2022,
   2023,
 ]);
+const show_left = ref(false);
 const authorList = ref([]);
 const conceptList = ref([]);
 const institutionList = ref([]);
 const searchType = ref("");
 const searchTypes = ["文献", "作者", "机构"];
 const currentPage = ref(1);
-const pageSize = ref(20);
+const pageSize = ref(10);
 const pageFullLength = ref();
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
@@ -538,7 +581,9 @@ const selectList = ref([]);
 const showDataChart = ref(false);
 const showSingleChart = ref(false);
 const ok = ref("文献");
+const rendered = ref(true);
 const search = async () => {
+  rendered.value = false;
   currentPage.value = 1;
   if (ok.value == "文献") {
     getWenList(input.value, 1);
@@ -591,6 +636,7 @@ const getWenList = async (input, num) => {
       pageFullLength.value = res.count > 10000 ? 10000 : res.count;
       // console.log(pageFullLength.value)
       items.value = res.data;
+      rendered.value = true;
     })
     .catch((error) => {
       console.log(error);
@@ -598,9 +644,6 @@ const getWenList = async (input, num) => {
   getTopAuthor(input);
   getTopConcept(input);
   getTopInstitution(input);
-  for (var i = 0; i < items.value.length; i++) {
-    items.value[i].abstract = "摘要：" + items.value[i].abstract;
-  }
 };
 const getXueList = async (input, num) => {
   httpInstance
@@ -639,6 +682,7 @@ const getIns = (name) => {
 };
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 const toDocument = (id) => {
   var str = "/academic/" + id;
@@ -652,7 +696,7 @@ const gotoAuthor = (name) => {
   router.push({ path: str });
 };
 onMounted(async () => {
-  getList();
+  show_left.value = true;
 });
 const cited_by_count = ref([]);
 const reference_count = ref([]);
@@ -895,6 +939,21 @@ async function analyzeStatic(id) {
 }
 </script>
 <style scoped lang="scss">
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 1.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to
+
+/* .fade-leave-active, 2.1.8 版本以下 */
+    {
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
 #single_all {
   display: flex;
   flex-direction: row;
@@ -1299,7 +1358,7 @@ async function analyzeStatic(id) {
 }
 
 .result {
-  height: 1000px;
+  // height: 1000px;
   margin: 40px 20px 20px 20px;
 
   .left {
