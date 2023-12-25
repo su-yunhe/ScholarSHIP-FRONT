@@ -71,36 +71,7 @@ const citeStringChicago = ref('');
 const format = ref('IEEE');
 
 onMounted(() => {
-<<<<<<< HEAD
     loading();
-=======
-    essayNum.value = 0;
-    if (scholarStore.essayList.length == 0) {
-        setTimeout(() => {
-            loading();
-            console.log("academic paper:", scholarStore.essayList, essayList.value);
-        }, 3000);
-        setTimeout(() => {
-            console.log("judge1:", essayList.value.length == 0 && scholarStore.essayList.length != 0);
-            if (essayList.value.length == 0 && scholarStore.essayList.length != 0) {
-                loading();
-                console.log("academic paper2:", scholarStore.essayList, essayList.value);
-            }
-        }, 5000);
-        setTimeout(() => {
-            console.log("judge2:", essayList.value.length == 0 && scholarStore.essayList.length != 0);
-            if (essayList.value.length == 0 && scholarStore.essayList.length != 0) {
-                loading();
-                console.log("academic paper3:", scholarStore.essayList, essayList.value);
-            }
-        }, 7000);
-    }
-    else {
-        loading();
-        console.log("academic paper:", scholarStore.essayList, essayNum.value);
-    }
-
->>>>>>> 9298a867e81c03c7cb55add7bc242487f7626729
 });
 // watch(()=>scholarStore.essayList, (newVal, oldVal) => {
 //     console.log("academic监听essayList:",newVal.length, oldVal.length);
