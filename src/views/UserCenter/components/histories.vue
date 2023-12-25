@@ -5,7 +5,7 @@
             onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, #fafafa, rgb(107, 168, 87))';"
             onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, #fafafa 85%, rgba(107, 168, 87, 0.75))';">
             <div class="tltle"><span style="font-weight: bold;">浏览记录<el-icon
-                        style="cursor: pointer;  margin-left: 0.5vw; position: relative; top: 1.5px;" color="red"
+                        style="cursor: pointer;  margin-left: 0.5vw; position: relative; top: 1.5px; color: #fab6b6;"
                         @click="deleteAllEntries">
                         <DeleteFilled />
                     </el-icon></span></div>
