@@ -61,6 +61,7 @@ import * as echarts from 'echarts'
 import httpInstance from "@/utils/http";
 import {Document, School, Share, UserFilled} from "@element-plus/icons-vue";
 import {ref, onMounted} from "vue";
+import {useRoute} from 'vue-router'
 import InstdInfo from "@/views/Institution/components/instdInfo.vue";
 
 const school_name = ref()
@@ -71,9 +72,11 @@ const quote_count = ref()
 const scholar_list = ref([])
 const showoff = ref(false)
 
-const thisInsId = "I27837315"//TODO
+var thisInsId//TODO
 
 onMounted(async ()=>{
+  const route =useRoute()
+  thisInsId = route.params.essay_id
   let scholarRelationEcharts = echarts.init(document.getElementById('scholar-relation-echarts'))
   scholarRelationEcharts.showLoading()
   await request_basic_info()
