@@ -79,8 +79,8 @@
         <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start; flex-wrap: wrap">
           <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px;">
             <div style="font-size: 16px;color: black;font-weight: bold" >
-              {{index+1}}.{{val.title.slice(0, 93)}}
-              <span v-if="val.title.length>93" style="font-size: 16px;color: black;font-weight: bold">...</span>
+              {{index+1}}.{{val.title.slice(0, 90)}}
+              <span v-if="val.title.length>90" style="font-size: 16px;color: black;font-weight: bold">...</span>
             </div>
             <div style="font-size: 14px;color: grey;margin-top: 5px;">
               作者：
@@ -728,12 +728,16 @@ async function request_multi_article() {
     console.log(error);
   }
 }
+var data_chart_large=null
 async function confirmSelect() {
   if (selectList.value.length === 0) return;
   showDataChart.value = true;
+  showDataChartDialog.value = false;
+  if(data_chart_large!=null) data_chart_large.showLoading()
   await request_multi_article();
   const chartDom = document.getElementById("data-chart-dialog");
-  const data_chart_large = echarts.init(chartDom);
+  data_chart_large = echarts.init(chartDom);
+  data_chart_large.hideLoading()
   const option = {
     title: {
       text: "对比分析结果",
@@ -863,13 +867,18 @@ async function request_single_article(id) {
     authorships.value = response.data.authorships;
   } catch (error) {}
 }
+var chart1=null, chart2=null
 async function analyzeStatic(id) {
   showSingleChart.value = true;
+  if(chart1!=null) chart1.showLoading()
+  if(chart2!=null) chart2.showLoading()
   await request_single_article(id);
   const charDom1 = document.getElementById("single-chart-dialog1");
-  const chart1 = echarts.init(charDom1);
+  chart1 = echarts.init(charDom1);
   const charDom2 = document.getElementById("single-chart-dialog2");
-  const chart2 = echarts.init(charDom2);
+  chart2 = echarts.init(charDom2);
+  chart1.hideLoading()
+  chart2.hideLoading()
   //饼状图
   let data = [];
   for (let i = 0; i < concepts.value.length; i++) {

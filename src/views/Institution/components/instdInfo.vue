@@ -1,15 +1,18 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import {useRoute} from "vue-router";
 import * as echarts from 'echarts'
 import httpInstance from "@/utils/http";
 
-const thisInsId = "I27837315"
+var thisInsId = "I27837315"
 const cited_by_list = ref([])
 const works_count_list = ref([])
 const score_list = ref([])
 const authors_list = ref([])
 
 onMounted(async ()=>{
+  const route = useRoute()
+  thisInsId = route.params.essay_id
   let xCord,yCord
   //chart1\2\3\4的定义
   const chartDom1 = document.getElementById('essay-chart-content-chart')

@@ -7,12 +7,13 @@ export const useScholarStore = defineStore('scholar', () => {
     let essayList = []
     let removedEssayList = []
     let graph_data = {}
-
+    let essayNum = 0;
     return{
         scholarInfo,
         essayList,
         removedEssayList,
         graph_data,
+        essayNum
     }
 }, {
   persist: true,

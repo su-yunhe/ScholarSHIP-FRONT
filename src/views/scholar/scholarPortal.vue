@@ -10,7 +10,7 @@
                     <div class="scholar-information-organization"><el-icon style="position: relative; top: 2px;"><OfficeBuilding /></el-icon> {{ scholarInfo.institution }}</div>
                     <div style="margin-top: 0px;">
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
@@ -85,7 +85,8 @@ export default {
             loadingTag: true,
             tagName: 'academic',
             scholarID: null,
-            scholarInfo: null,
+            scholarInfo:null,
+            essayNum: 0,
             monitoredRoute: null,
             followed: false, // 是否已被当前用户关注
             recognized: false, // 该学者门户是否已被认领
@@ -114,9 +115,17 @@ export default {
             }
             console.log(this.tagName);
         },
-        claimPortal() {//认领门户
-            console.log("认证理由："+this.reason);
-            this.dialogVisible = false
+        claimPortal(){//认领门户
+            let Time = new Date()
+            httpInstance.post("apply_add",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID,
+                email: this.userStore.userInfo.email,
+                content: this.reason,
+                time: Time.toLocaleString
+            }).then((res) => {
+                console.log(res)
+            })
         },
         concernScholar(){//关注学者
             httpInstance.post("concern_add",{
@@ -134,17 +143,29 @@ export default {
                 this.loadingTag = false;
             });
         },
-        async getEssayList(scholarStore) {
-            let userID = 1;
-            console.log("balabala");
-            await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
-                console.log("papers1:", res);
-                if (res.error === 0) {
-                    scholarStore.essayList = res.result;
-                    console.log("papers2:", scholarStore.essayList);
-                }
+        async getEssayNum(scholarStore){
+            await httpInstance.get('/get_works_count', {author_id:this.scholarID}).then(res => res.data).then(res => {
+                console.log("get_works_count:", res);
+                scholarStore.essayNum = res.result.works_count;
+                this.essayNum = res.result.works_count;
             });
-            console.log("balabala2");
+        },
+        async getEssayList(scholarStore){
+
+            let userID = 1;
+            let round = 1;
+            let length = 1;
+            for(;length != 0;round++){
+                await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true&count=${round}`).then((res) => {
+                length = res.result.length;
+                if (length != 0) {
+                    let essays = scholarStore.essayList;
+                    essays = essays.concat(res.result);
+                    scholarStore.essayList = essays;
+                }
+                
+            });
+            }
         },
         getGraphData(scholarStore) {
             httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
@@ -156,8 +177,9 @@ export default {
             this.loadingTag = true;
             this.scholarID = this.$route.path.split("/")[2];
             const scholarStore = useScholarStore();
-            scholarStore.essayList = [];
-            console.log("清空essayList：", scholarStore.essayList);
+            // scholarStore.essayList = [];
+            this.getEssayNum(scholarStore);
+
             this.getScholarInfo(scholarStore);
 
             this.getEssayList(scholarStore);
@@ -165,7 +187,7 @@ export default {
         },
         checkConcern(){
             // 是否已经关注学者
-            
+
         },
         recordBrowse(){
             let Time = new Date()

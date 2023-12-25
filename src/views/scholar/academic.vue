@@ -52,6 +52,7 @@ const scholarStore = useScholarStore();
 import httpInstance from '@/utils/http'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { watch } from 'vue';
 const router = useRouter()
 const IDForm = ref({
     scholarID: 'A5023888391',
@@ -70,33 +71,16 @@ const citeStringChicago = ref('');
 const format = ref('IEEE');
 
 onMounted(() => {
-    essayNum.value = 0;
-    if (scholarStore.essayList.length == 0) {
-        setTimeout(() => {
-            loading();
-            console.log("academic paper:", scholarStore.essayList, essayList.value);
-        }, 3000);
-        setTimeout(() => {
-            console.log("judge1:", essayList.value.length == 0 && scholarStore.essayList.length != 0);
-            if (essayList.value.length == 0 && scholarStore.essayList.length != 0) {
-                loading();
-                console.log("academic paper2:", scholarStore.essayList, essayList.value);
-            }
-        }, 5000);
-        setTimeout(() => {
-            console.log("judge2:", essayList.value.length == 0 && scholarStore.essayList.length != 0);
-            if (essayList.value.length == 0 && scholarStore.essayList.length != 0) {
-                loading();
-                console.log("academic paper3:", scholarStore.essayList, essayList.value);
-            }
-        }, 7000);
-    }
-    else {
-        loading();
-        console.log("academic paper:", scholarStore.essayList, essayNum.value);
-    }
-
+    loading();
 });
+// watch(()=>scholarStore.essayList, (newVal, oldVal) => {
+//     console.log("academic监听essayList:",newVal.length, oldVal.length);
+//     loading();
+// })
+watch(()=>[scholarStore.essayList, scholarStore.essayNum], ([newVal, newNum],[oldVal, oldNum]) => {
+    console.log("academic监听essayList:",newVal.length, oldVal.length, newNum, oldNum);
+    loading();
+})
 const loading = () => {
     essayList.value = scholarStore.essayList;
     displayEssays.value = essayList.value.slice(0, 5);

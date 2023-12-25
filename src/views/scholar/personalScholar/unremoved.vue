@@ -63,6 +63,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { watch } from 'vue';
 import { useRouter } from 'vue-router'
 import {useScholarStore} from '../../../stores/scholar'
 const scholarStore = useScholarStore();
@@ -89,19 +90,13 @@ let removeDialogVisible = ref(false);
 const removeEssay= ref({});
 
 onMounted(() => {
-    essayNum.value = 0;
-    if(scholarStore.essayList.length == 0){
-        setTimeout(()=>{
-            console.log("unremoved academic paper:",scholarStore.essayList);
-            loading();
-        }, 3000);
-    }
-    else{
-        loading();
-    }
+    loading();
     
 });
-
+watch(()=>scholarStore.essayList, (newVal, oldVal) => {
+    console.log("academic监听essayList:",newVal.length, oldVal.length);
+    loading();
+})
 const currentPageChange = (value) => {
     displayEssays.value = essayList.value.slice( (value-1)*5, 5+(value-1)*5);
     currentPage.value = value;
