@@ -8,8 +8,10 @@
         <el-table-column align="center" prop="time" label="申请时间" />
         <el-table-column align="center" prop="operation" label="操作">
             <template #default="{ row }">
-            <el-button type="success" @click="pass(row.id)" plain round>通过</el-button>
-            <el-button type="danger" @click="fail(row.id)" plain round>拒绝</el-button>
+            <el-button v-if="row.status == 0" type="success" @click="pass(row.id)" plain round>通过</el-button>
+            <el-button v-if="row.status == 0" type="danger" @click="fail(row.id)" plain round>拒绝</el-button>
+            <el-tag v-if="row.status == 1" type="success">已通过</el-tag>
+            <el-tag v-if="row.status == 2" type="error">已拒绝</el-tag>
             </template>
         </el-table-column>
     </el-table>
@@ -18,7 +20,7 @@
 <script lang="ts" setup>
 import httpInstance from "@/utils/http";
 import { ElMessage } from "element-plus";
-import { onBeforeMount, reactive } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 
 const applicationTable = reactive([
 // {

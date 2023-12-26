@@ -36,8 +36,9 @@
                 </div>
                 <div>
                     <!-- 可以通过改变 recognized 和 followed 两个变量 改变显示按钮的状态-->
-                    <el-button type="primary" class="scholar-operation op-claim" @click="dialogVisible = true" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
+                    <el-button type="primary" class="scholar-operation op-claim" @click="dialogVisible = true" size="large" v-if="!recognized&&!alreadyRecognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
                     <el-tag type="success" class="scholar-operation op-claim" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证此门户</el-tag>
+                    <el-tag type="success" class="scholar-operation op-claim" size="large" v-if="alreadyRecognized&&!recognized"><el-icon><SuccessFilled /></el-icon>平台认证学者</el-tag>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="!followed"> <el-icon><StarFilled /></el-icon>关注学者</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="cancelConcern" size="large" v-if="followed"> <el-icon color="gold"><StarFilled /></el-icon>取消关注</el-button>
                 </div>
@@ -48,7 +49,7 @@
                     <el-input v-model="reason" placeholder="请输入内容"></el-input>
                     <div class="dialog-footer">
                         <el-button @click="dialogVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="claimPortal">确 定</el-button>
+                        <el-button type="primary" :disabled="buttonDis" @click="claimPortal">确 定</el-button>
                     </div>
                 </el-dialog>
                 <!-- <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
@@ -89,12 +90,14 @@ export default {
             essayNum: 0,
             monitoredRoute: null,
             followed: false, // 是否已被当前用户关注
-            recognized: false, // 该学者门户是否已被认领
+            recognized: false, // 该学者门户是否已被当前用户认领
+            alreadyRecognized: false, // 该学者门户是否已被其他用户认领
             userStore: useUserStore(),
             followed: false,
             recognized: false,
             dialogVisible: false,
             reason:'',
+            buttonDis: false,
         }
     },
     methods: {
@@ -117,6 +120,7 @@ export default {
             console.log(this.tagName);
         },
         claimPortal(){//认领门户
+            this.buttonDis = true
             let Time = new Date()
             console.log(this.scholarInfo.name)
             httpInstance.post("apply_add",{
@@ -134,6 +138,8 @@ export default {
                     message: "申请成功，请等待管理员审批",
                     type: 'success',
                 })
+                this.dialogVisible = false
+                this.buttonDis = false
             })
         },
         dateFtt(fmt, date) { 
@@ -256,6 +262,16 @@ export default {
                     this.recognized = false
                 }
             })
+            httpInstance.post("scholar_get_user",{
+                scholarId: this.scholarID
+            }).then((res) => {
+                console.log(res)
+                if(res.msg === "学者已被用户认证"){
+                    this.alreadyRecognized = true
+                }else{
+                    this.alreadyRecognized = false
+                }
+            })
         },
         recordBrowse(){
             let Time = new Date()
@@ -281,6 +297,8 @@ export default {
             // 执行其他操作或调用其他方法
             console.log("route:", this.monitoredRoute);
             this.loading();
+            this.checkConcern()
+            this.checkRecognize()
         },
     },
     beforeMount(){

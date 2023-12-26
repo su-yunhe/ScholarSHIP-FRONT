@@ -5,7 +5,7 @@
             <el-card class="screening-card"
                 onmouseover="this.style.scale='1.1'; this.style.background='linear-gradient(to bottom right, #fafafa, rgb(200, 65, 48))';"
                 onmouseout="this.style.scale='1.0'; this.style.background='linear-gradient(to bottom right, #fafafa 85%,  rgba(200, 65, 48, 0.75))';">
-                <span style="font-weight: bold;">筛选</span>
+                <span style="font-weight: bold;">收藏夹</span>
                 <el-divider />
                 <el-tag type="info" v-for="tag in dynamicTags" :key="tag" class="mx-1"
                     :class="{ 'active-tag': activeName === tag }" closable :disable-transitions="false"

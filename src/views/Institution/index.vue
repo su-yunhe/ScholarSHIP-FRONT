@@ -78,6 +78,7 @@ var thisInsId//TODO
 onMounted(async ()=>{
   const route =useRoute()
   thisInsId = route.params.essay_id
+  recordBrowse() // 记录浏览
   let scholarRelationEcharts = echarts.init(document.getElementById('scholar-relation-echarts'))
   scholarRelationEcharts.showLoading()
   await request_basic_info()
@@ -182,9 +183,7 @@ const recordBrowse = () => {
     console.log(res)
   })
 }
-onBeforeMount(() => {
-  recordBrowse() // 记录浏览
-})
+
 
 </script>
 
