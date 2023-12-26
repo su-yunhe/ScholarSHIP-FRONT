@@ -5,7 +5,7 @@ import router from '@/router/index'
 // 创建axios实例
 const httpInstance = axios.create({
   // baseURL: 'http://119.3.252.71/api',
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: '/api',
   timeout: 5000
 })
 // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
