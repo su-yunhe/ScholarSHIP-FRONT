@@ -413,40 +413,41 @@ import { useRouter } from "vue-router";
 import { DataAnalysis, Histogram, TrendCharts } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 import httpInstance from "@/utils/http";
+import axios from 'axios';
 const router = useRouter();
 const value = ref("");
 const input = ref("");
 const lazyValue = ref("");
 const items = ref([]);
-const minyear = ref();
-const maxyear = ref();
+const minyear = ref(1900);
+const maxyear = ref(2023);
 const activeName = ref("1");
 const years = ref([
-  1999,
-  2000,
-  2001,
-  2002,
-  2003,
-  2004,
-  2005,
-  2006,
-  2007,
-  2008,
-  2009,
-  2010,
-  2011,
-  2012,
-  2013,
-  2014,
-  2015,
-  2016,
-  2017,
-  2018,
-  2019,
-  2020,
-  2021,
-  2022,
-  2023,
+  // 1999,
+  // 2000,
+  // 2001,
+  // 2002,
+  // 2003,
+  // 2004,
+  // 2005,
+  // 2006,
+  // 2007,
+  // 2008,
+  // 2009,
+  // 2010,
+  // 2011,
+  // 2012,
+  // 2013,
+  // 2014,
+  // 2015,
+  // 2016,
+  // 2017,
+  // 2018,
+  // 2019,
+  // 2020,
+  // 2021,
+  // 2022,
+  // 2023,
 ]);
 const show_left = ref(false);
 const authorList = ref([]);
@@ -458,6 +459,10 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const pageFullLength = ref();
 onMounted(() => {
+  var i = 1900;
+  while(i<2024){
+    years.value.push(i)
+  }
   if (router.currentRoute.value.fullPath.split('/')[1]=='search'){
     getWenList("",1);
     return;
@@ -774,6 +779,7 @@ const pdf = async (id) => {
     .post(`/SearchManager/DownloadWork`, { id: id })
     .then((res) => {
       // window.open(res.data, '_blank');
+      console.log(res.data)
       const response = axios.get(res.data, {
         responseType: 'blob', // 必须指定为blob类型才能下载
       });
