@@ -642,7 +642,7 @@ const copyCiteString = (content) => {
 }
 const getTopInstitution = async (input) => {
   httpInstance
-    .post(`/SearchManager/SearchTopConcept`, { content: input })
+    .post(`/SearchManager/SearchTopInstitution`, { content: input })
     .then((res) => {
       // console.log(res);
       institutionList.value = res.top_institution;
