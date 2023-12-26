@@ -161,7 +161,7 @@ const doLogin = () => {
       userStore.userInfo = res.data
       console.log(userStore.userInfo)
       ElMessage({ type: 'success', message: '登录成功' })
-      router.replace({ path: '/scholar' })
+      router.replace({ path: '/intro' })
     })
   }
 }
