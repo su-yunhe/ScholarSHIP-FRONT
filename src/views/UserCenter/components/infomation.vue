@@ -70,7 +70,8 @@ const judge_recognize = () => {
   })
 }
 const toScholar = () => {
-  router.push("/scholar/" + scholarId.value)
+  router.push("/personalScholar");
+  userStore.userInfo.scholarId = scholarId.value
 }
 
 const introInput = ref('')
