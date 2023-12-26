@@ -164,6 +164,7 @@ const doLogin = () => {
       }).then((res) => {
         userStore.userInfo.introduction = res.results[0].introduction
       })
+      userStore.userInfo.identity = "用户"
       console.log(userStore.userInfo)
       ElMessage({ type: 'success', message: '登录成功' })
       router.replace({ path: '/intro' })
