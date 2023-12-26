@@ -2,6 +2,7 @@
 import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import axios from 'axios'
 const userStore = useUserStore()
 const router = useRouter()
 // 不显示搜索框的路径

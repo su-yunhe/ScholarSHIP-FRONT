@@ -741,13 +741,14 @@ const toInstitution = (id) => {
   router.push({ path: str });
 };
 const pdf = async (id) => {
+  console.log("111")
   httpInstance
     .post(`/SearchManager/DownloadWork`, { id: id })
     .then((res) => {
       // window.open(res.data, '_blank');
       const response = axios.get(res.data, {
         responseType: 'blob', // 必须指定为blob类型才能下载
-      });
+      }); 
       console.log("download", response);
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
