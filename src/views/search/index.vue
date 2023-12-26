@@ -191,7 +191,7 @@
                       <el-col :span="12">
                         <div class="author_holder">
                           <span style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                          <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)
+                          <span style="cursor: pointer; " class="author" v-for="a in item.author" @click="gotoAuthor(a, item.author, item.author_id)"
                             :title="a">{{ a
                             }}</span>
                         </div>
@@ -213,7 +213,7 @@
                           position: relative;
                           top: -5px;
                         ">机构：</span>
-                          <span style="cursor: pointer" class="author" :title="item.institution">{{ item.institution
+                          <span style="cursor: pointer" class="author" :title="item.institution" @click="gotoInstitution(item.institution_id)">{{ item.institution
                           }}</span>
                         </div>
                       </el-col>
@@ -653,6 +653,7 @@ const getWenList = async (input, num) => {
         count.value = 0;
       } else {
         items.value = res.data;
+        items.value.splice(items.value.length-1,1);
         count.value = res.count;
       }
       rendered.value = true;
@@ -674,6 +675,7 @@ const getXueList = async (input, num) => {
         items.value = [];
         count.value = 0;
       } else {
+        // console.log(res);
         items.value = res.data;
         count.value = pageFullLength.value;
       }
@@ -733,6 +735,20 @@ const toAuthor = (name) => {
   var str = "/scholar/" + name;
   router.push({ path: str });
 };
+const gotoAuthor = (a, author_name, author_id) => {
+  // var index = items.value.
+  var index = author_name.indexOf(a);
+  var id = author_id[index].split("org/")[1];
+  var str = "scholar/" + id;
+  window.open(str, "_blank");
+};
+
+const gotoInstitution = (ins) => {
+  console.log(ins);
+  var id = ins.split(".org/")[1];
+  var str = "institution/" + id;
+  window.open(str, "_blank");
+}
 onMounted(async () => {
   show_left.value = true;
 });
@@ -1376,7 +1392,7 @@ async function analyzeStatic(id) {
         border-radius: 5px;
         /* background-color: gray; */
         font-size: 12px;
-        max-width: 5vw;
+        max-width: 8vw;
         max-height: 22px;
         overflow: hidden;
         display: -webkit-inline-box;
@@ -1399,7 +1415,7 @@ async function analyzeStatic(id) {
         border-radius: 5px;
         color: rgb(255, 255, 255);
         font-size: 12px;
-        max-width: 5vw;
+        max-width: 6vw;
         max-height: 22px;
         overflow: hidden;
         display: -webkit-inline-box;
