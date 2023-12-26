@@ -100,26 +100,8 @@ text-align: left;
                                 <DataAnalysis />
                             </el-icon>
                         </el-button>
-                        <el-button size="small" type="warning" plain style="
-box-shadow: none;
-font-weight: 300;
-float: left;
-text-align: left;
-" @click="gourl(item)">
-                            来源<el-icon>
-                                <Position />
-                            </el-icon>
-                        </el-button>
-                        <el-button size="small" type="warning" plain style="
-box-shadow: none;
-font-weight: 300;
-float: left;
-text-align: left;
-" @click="pdf(item.pdf)">
-                            下载<el-icon>
-                                <Download />
-                            </el-icon>
-                        </el-button>
+                        
+                    
                         <el-popconfirm width="220" confirm-button-text="确定" confirm-button-type="danger"
                             cancel-button-text="取消" :icon="InfoFilled" icon-color="#626AEF" title="确定要移除收藏吗?"
                             @confirm="deleteFromCollection(item)">
