@@ -13,10 +13,10 @@
                     <div v-for="scholar in scholars" :key="scholar" class="text_item" @mouseenter="mouseOver(scholar)" @click="toFollow(scholar)"
                         @mouseleave="mouseLeave">
                         <div style="float: left">
-                            <el-avatar :size="50" :src="circleUrl" />
+                            <el-avatar :size="50"><img src="@/assets/images/scholar_avatar.jpg"/></el-avatar> 
                         </div>
                         <div style="margin-left: 20px; float: left;">
-                            <div class="following_content" :title="scholar.scholar_name">
+                            <div class="following_content" :title="scholar.scholar_name" style="position: relative; top: 15px;">
                                 {{ scholar.name }}
                             </div>
                             <!-- <div class="following_content" :title="scholar.scholar_introduction">
@@ -49,7 +49,7 @@ import {
     Close
 } from '@element-plus/icons-vue'
 import router from "@/router";
-const circleUrl = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+const circleUrl = "@/assets/images/scholar_avatar.jpg"
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 

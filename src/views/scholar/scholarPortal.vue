@@ -4,7 +4,7 @@
             <div class="scholarTopHeaderBar"
                 onmouseover="this.style.boxShadow='rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,rgba(0, 0, 0, 0.07) 0px 16px 16px'; this.style.backgroundColor='rgba(32,32,32)';"
                 onmouseout="this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px'; this.style.backgroundColor='rgb(32,32,32,0.8)';">
-                <img src="@/assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
+                <img src="@/assets/images/scholar_avatar.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
                     <div class="scholar-information-name">{{ scholarInfo.name }}</div>
                     <div class="scholar-information-organization"><el-icon style="position: relative; top: 2px;"><OfficeBuilding /></el-icon> {{ scholarInfo.institution }}</div>
