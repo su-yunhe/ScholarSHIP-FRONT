@@ -110,17 +110,18 @@
           <div class="title2">高级检索使用说明</div>
           <el-divider></el-divider>
           <div>
-            高级检索支持使用运算符*、+、-、''、""、()进行同一检索项内多个检索词的组合运算，检索框内输入的内容不得超过120个字符。
-            输入运算符*(与)、+(或)、-(非)时，前后要空一个字节，优先级需用英文半角括号确定。
-            若检索词本身含空格或*、+、-、()、/、%、=等特殊符号，进行多词组合运算时，为避免歧义，须将检索词用英文半角单引号或英文半角双引号引起来。
-            例如： （1）篇名检索项后输入：神经网络 *
-            自然语言，可以检索到篇名包含“神经网络”及“自然语言”的文献。
+            高级检索支持使用运算符*、+、-、''、""、()进行同一检索项内多个检索词的组合运算，检索框内输入的内容不得超过120个字符。<br><br>
+            输入运算符*(与)、+(或)、-(非)时，前后要空一个字节，优先级需用英文半角括号确定。<br><br>
+            若检索词本身含空格或*、+、-、()、/、%、=等特殊符号，进行多词组合运算时，为避免歧义，须将检索词用英文半角单引号或英文半角双引号引起来。<br><br>
+            例如： <br>
+            （1）篇名检索项后输入：神经网络 *
+            自然语言，可以检索到篇名包含“神经网络”及“自然语言”的文献。<br>
             （2）主题检索项后输入：(锻造 + 自由锻) *
-            裂纹，可以检索到主题为“锻造”或“自由锻”，且有关“裂纹”的文献。
+            裂纹，可以检索到主题为“锻造”或“自由锻”，且有关“裂纹”的文献。<br>
             （3）如果需检索篇名包含“digital library”和“information
-            service”的文献，在篇名检索项后输入：'digital library' * 'information service'。
+            service”的文献，在篇名检索项后输入：'digital library' * 'information service'。<br>
             （4）如果需检索篇名包含“2+3”和“人才培养”的文献，在篇名检索项后输入：'2+3' *
-            人才培养。
+            人才培养。<br>
           </div>
         </el-card>
       </el-col>
@@ -154,31 +155,31 @@
       </div>
     </div>
     <div id="selectDialog">
-    <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70vw">
-      <div id="options">
-        <el-checkbox-group v-model="selectList" style="display: flex; flex-direction: column; align-items: flex-start; flex-wrap: wrap">
-          <el-checkbox v-for="(val,index) in paginatedData" :key="index" :label="val.id" size="large" style="margin: 10px;padding: 5px;">
-            <div style="font-size: 16px;color: black;font-weight: bold" >
-              {{index+1}}.{{val.title.slice(0, 90)}}
-              <span v-if="val.title.length>90" style="font-size: 16px;color: black;font-weight: bold">...</span>
-            </div>
-            <div style="font-size: 14px;color: grey;margin-top: 5px;">
-              作者：
-              <span style="color: green;max-width: 30vw">{{ val.author.slice(0, 4) }}</span>
-              <span v-if="val.author.length > 4" style="color:green;">.etc</span>
-              日期：
-              <span style="color: dodgerblue;">{{ val.date }}</span>
-            </div>
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <template #footer>
-        <el-button type="primary" size="large" @click="confirmSelect()" plain
-          >确定</el-button
-        >
-      </template>
-    </el-dialog>
-  </div>
+      <el-dialog v-model="showDataChartDialog" title="请选择想要查看的文献" width="70vw">
+        <div id="options">
+          <el-checkbox-group v-model="selectList"
+            style="display: flex; flex-direction: column; align-items: flex-start; flex-wrap: wrap">
+            <el-checkbox v-for="(val, index) in paginatedData" :key="index" :label="val.id" size="large"
+              style="margin: 10px;padding: 5px;">
+              <div style="font-size: 16px;color: black;font-weight: bold">
+                {{ index + 1 }}.{{ val.title.slice(0, 90) }}
+                <span v-if="val.title.length > 90" style="font-size: 16px;color: black;font-weight: bold">...</span>
+              </div>
+              <div style="font-size: 14px;color: grey;margin-top: 5px;">
+                作者：
+                <span style="color: green;max-width: 30vw">{{ val.author.slice(0, 4) }}</span>
+                <span v-if="val.author.length > 4" style="color:green;">.etc</span>
+                日期：
+                <span style="color: dodgerblue;">{{ val.date }}</span>
+              </div>
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+        <template #footer>
+          <el-button type="primary" size="large" @click="confirmSelect()" plain>确定</el-button>
+        </template>
+      </el-dialog>
+    </div>
     <div id="chartDialog">
       <el-dialog v-model="showDataChart" style="width: 90vw; height: 90vh">
         <div id="data-chart-dialog" style="height: 80vh; width: 80vw"></div>
@@ -200,7 +201,24 @@
         </div>
       </el-dialog>
     </div>
-    <div v-loading="loading">
+    <el-skeleton style="width: 100%" :loading="loading" animated :throttle="500" :count="pageSize">
+      <template #template>
+        <!-- <el-skeleton-item variant="image" style="width: 100%; height: 800px" /> -->
+        <div style="padding: 15px">
+          <el-skeleton-item variant="h3" style="width: 50%" />
+          <div style="
+              display: flex;
+              align-items: center;
+              justify-items: space-between;
+              margin-top: 16px;
+              height: 16px;
+            ">
+            <el-skeleton-item variant="text" style="margin-right: 16px" />
+            <el-skeleton-item variant="text" style="width: 30%" />
+          </div>
+        </div>
+      </template>
+      <template #default>
       <div v-for="item in paginatedData" style="margin-top: 15px">
         <div class="res">
           <div class="title" :title="item.title" style="cursor: pointer;" @click="toDocument(item.id)">
@@ -322,7 +340,8 @@
           </div>
         </div>
       </div>
-    </div>
+    </template>
+    </el-skeleton>
 
     <!-- 引用对话框 -->
     <el-dialog title="引用" v-model="citeDialogVisible" width="50%">
@@ -774,7 +793,7 @@ const analyzeStatic = async (id) => {
   chart2.setOption(option2);
 }
 
-const request_multi_article = async() => {
+const request_multi_article = async () => {
   try {
     const rd = selectList.value.join(",");
     const requestData = {
@@ -792,12 +811,12 @@ const request_multi_article = async() => {
     console.log(error);
   }
 }
-var data_chart_large=null
-const confirmSelect = async() => {
+var data_chart_large = null
+const confirmSelect = async () => {
   if (selectList.value.length === 0) return;
   showDataChart.value = true;
   showDataChartDialog.value = false;
-  if(data_chart_large!=null) data_chart_large.showLoading()
+  if (data_chart_large != null) data_chart_large.showLoading()
   await request_multi_article();
   const chartDom = document.getElementById("data-chart-dialog");
   data_chart_large = echarts.init(chartDom);
