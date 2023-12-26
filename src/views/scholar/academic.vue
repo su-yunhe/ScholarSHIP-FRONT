@@ -20,9 +20,6 @@
                 <span class="essay-indicator-op" @click="getCitation(essay)"><el-icon>
                         <Link />
                     </el-icon>引用</span>
-                <span class="essay-indicator-op" @click="collection(essay)"><el-icon>
-                        <Star />
-                    </el-icon>收藏</span>
             </div>
         </div>
         <!-- 引用对话框 -->

@@ -13,7 +13,7 @@
                 <a :href="essay.pdf_url" target="_blank"><span class="essay-indicator-op"><el-icon><Reading /></el-icon>pdf预览</span></a>
                 <!-- <span class="essay-indicator-op" @click="download(essay.pdf_url)"><el-icon><Download /></el-icon>下载</span> -->
                 <span class="essay-indicator-op" @click="getCitation(essay)"><el-icon><Link /></el-icon>引用</span>
-                <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span>
+                <!-- <span class="essay-indicator-op" @click="collection(essay)"><el-icon><Star /></el-icon>收藏</span> -->
                 
             </div>
         </div>

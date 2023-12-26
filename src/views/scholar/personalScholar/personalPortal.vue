@@ -5,12 +5,14 @@
         element-loading-background="white"
         >
         <div v-if="!loadingTag">
-            <div class="scholarTopHeaderBar">
+            <div class="scholarTopHeaderBar"
+                onmouseover="this.style.boxShadow='rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,rgba(0, 0, 0, 0.07) 0px 16px 16px'; this.style.backgroundColor='rgba(32,32,32)';"
+                onmouseout="this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px'; this.style.backgroundColor='rgb(32,32,32,0.8)';">
                 <img src="../../../assets/images/scholarAvator.jpg" width="150" height="150" class="scholarAvator">
                 <div class="scholar-information">
                     <div class="scholar-information-name">{{ scholarInfo.name }}</div>
-                    <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
-                    <div>
+                    <div class="scholar-information-organization"><el-icon style="position: relative; top: 2px;"><OfficeBuilding /></el-icon>{{ scholarInfo.institution }}</div>
+                    <div style="margin-top: 0px;">
                         <div class="scholar-indicator">
                             <div class="scholar-indicator-num">{{ essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
@@ -23,13 +25,44 @@
                             <div class="scholar-indicator-num">{{ scholarInfo.hIndex }}</div>
                             <div class="scholar-indicator-dec">影响力指数</div>
                         </div>
-                    </div>
                 </div>
-
+                <el-button-group class="scholarNav_new">
+                    <el-button type="primary" :autofocus="true" style="outline: 0;" @click="clickAcademic">
+                        学术
+                    </el-button>
+                    <el-button type="primary" @click="clickDatas">
+                        数据
+                    </el-button>
+                    <el-button type="primary" @click="clickLinks">
+                        圈子
+                    </el-button>
+                    <el-button type="primary" @click="clickRemoved">
+                        已下架文献
+                    </el-button>
+                </el-button-group>
+                <!-- <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
+                <button class="scholarNav scholarNav2" @click="clickDatas">数据</button>
+                <button class="scholarNav scholarNav3" @click="clickLinks">圈子</button> -->
+                <!-- <button class="scholarNav scholarNav4" @click="clickRemoved">已下架文献</button> -->
+            </div>
+            
+            <el-dialog
+                title="认证理由"
+                v-model="dialogVisible"
+                width="50%">
+                <el-input v-model="reason" placeholder="请输入内容"></el-input>
+                <div class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="claimPortal">确 定</el-button>
+                </div>
+            </el-dialog>
+                <!-- <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
+                <button class="scholar-operation op-claim" @click="claimPortal">认领门户</button>
+                <button v-if="!isConcerned" class="scholar-operation op-concern" @click="concernScholar">关注学者</button>
+                <button v-else class="scholar-operation op-concern" @click="concernScholar">已关注</button>
                 <button class="scholarNav scholarNav1" @click="clickAcademic">学术</button>
                 <button class="scholarNav scholarNav2" @click="clickDatas">数据</button>
-                <button class="scholarNav scholarNav3" @click="clickLinks">圈子</button>
-                <button class="scholarNav scholarNav4" @click="clickRemoved">已下架文献</button>
+                <button class="scholarNav scholarNav3" @click="clickLinks">圈子</button> -->
             </div>
             <div class="scholar-tagContent">
                 <component :is="tagName"></component>
@@ -167,65 +200,87 @@ return {
     width: 100vw;
     min-height: 100vh;
 }
-.scholarMainbody{
+
+.scholarMainbody {
     margin: auto;
     margin-top: 20px;
     width: 70%;
 }
-.scholarTopHeaderBar{
-    /* width: 100%; */width: 70%;margin: auto;
-    height: 200px;
+
+.scholarTopHeaderBar {
+    /* width: 100%; */
+    position: relative;
+    top: 20px;
+    width: 85%;
+    margin: auto;
+    height: 180px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     position: relative;
+    transition: all 0.3s;
+    border: 1px solid black;
+    border-radius: 8% / 50%;
+    background-color: rgba(32, 32, 32, 0.8);
+    color: white;
 }
-.scholar-tagContent{
+
+.scholar-tagContent {
     widows: 90%;
     margin: auto;
 }
-.scholarAvator{
+
+.scholarAvator {
     border-radius: 50%;
     display: inline-block;
     margin-top: 15px;
-    margin-left: 40px;
+    margin-left: 5vw;
 }
-.scholar-information{
+
+.scholar-information {
     display: inline-block;
-    margin-left: 60px;
-    margin-top: 20px;
+    margin-left: 4vw;
+    margin-top: 15px;
     vertical-align: top;
 }
-.scholar-information-name{
+
+.scholar-information-name {
     font-size: 25px;
     font-weight: bold;
 }
-.scholar-information-organization{
+
+.scholar-information-organization {
     color: #7EB5EA;
 }
+
 /* 如果有机构门户就放着 
 .scholar-information-organization:hover{
     text-decoration: underline;
     color: #6a9fd2;
 } */
-.scholar-indicator{
+.scholar-indicator {
     display: inline-block;
-    margin: 10px 25px 0 0;
+    margin: 5px 25px 0 0;
 }
-.scholar-indicator-num{
+
+.scholar-indicator-num {
     text-align: center;
     font-size: 20px;
     font-weight: 500;
 }
-.scholar-operation{
+
+.scholar-operation {
     position: absolute;
-    top: 60px;
+    right: 25vw;
 }
-.op-claim{
-    right: 300px;
+
+.op-claim {
+    top: 50px;
 }
-.op-concern{
-    right: 200px;
+
+.op-concern {
+    top: 100px;
 }
-.scholarNav{
+
+.scholarNav {
     width: 80px;
     height: 30px;
     border-style: none;
@@ -236,20 +291,25 @@ return {
     position: absolute;
     bottom: 0;
 }
-.scholarNav4{
+
+.scholarNav3 {
     right: 0;
 }
-.scholarNav3{
+
+.scholarNav2 {
     right: 80px;
 }
-.scholarNav2{
+
+.scholarNav1 {
     right: 160px;
 }
-.scholarNav1{
-    right: 240px;
-}
-.scholarNav:hover{
+
+.scholarNav:hover {
     background-color: rgb(160, 149, 149);
+}
+
+.scholarNav_new {
+    margin-top: 10px;
 }
 
 </style>
