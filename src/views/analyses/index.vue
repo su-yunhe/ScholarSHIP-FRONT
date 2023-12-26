@@ -532,7 +532,7 @@
   }
 </script>
 
-<style>
+<style scoped>
 .root{
   background-color:#fcfcfc;
 }

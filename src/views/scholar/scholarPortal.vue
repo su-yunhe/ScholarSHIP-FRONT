@@ -194,15 +194,13 @@ export default {
             });
         },
         async getEssayNum(scholarStore){
-            await httpInstance.get('/get_works_count', {author_id:this.scholarID}).then(res => res.data).then(res => {
+            await httpInstance.get(`/get_works_count?author_id=${this.scholarID}`).then(res => {
                 console.log("get_works_count:", res);
                 scholarStore.essayNum = res.result.works_count;
                 this.essayNum = res.result.works_count;
             });
         },
         async getEssayList(scholarStore){
-
-            let userID = 1;
             let round = 1;
             let length = 1;
             for(;length != 0;round++){
@@ -227,7 +225,7 @@ export default {
             this.loadingTag = true;
             this.scholarID = this.$route.path.split("/")[2];
             const scholarStore = useScholarStore();
-            // scholarStore.essayList = [];
+            scholarStore.essayList = [];
             this.getEssayNum(scholarStore);
 
             this.getScholarInfo(scholarStore);

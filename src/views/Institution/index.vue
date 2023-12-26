@@ -2,7 +2,7 @@
 <div id="global">
   <div id="global-info">
     <div id="institution-info">
-      <el-card id="box-card">
+      <el-card id="box-card" style="height: 300px;">
         <template #header>
           <div id="box-card-header">
             <div id="school-name"><el-icon size="60px" style="margin-right: 20px"><School /></el-icon>{{school_name}}</div>
@@ -259,8 +259,8 @@ const recordBrowse = () => {
   width: 40%;
 }
 #chart-card{
-  height: 35vh;
-  width: 30vw;
+  height: 300px;
+  width: 37vw;
   margin: 0;
   padding: 0;
 }

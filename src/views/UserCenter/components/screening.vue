@@ -156,7 +156,7 @@ onBeforeMount(() => {
 })
 </script>
 
-<style>
+<style scoped>
 .screening-card {
     margin: 5%;
     min-height: 100px;

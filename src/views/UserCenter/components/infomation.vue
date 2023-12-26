@@ -119,7 +119,7 @@ onBeforeMount(() => {
 })
 </script>
 
-<style>
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.7s ease;

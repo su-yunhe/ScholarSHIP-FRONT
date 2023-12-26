@@ -24,7 +24,7 @@ const logout = () => {
   </Transition>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 header {
   line-height: 1.5;
   max-height: 100vh;

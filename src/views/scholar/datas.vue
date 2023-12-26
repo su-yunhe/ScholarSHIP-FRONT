@@ -20,7 +20,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .datasContent{
     width: 100%;
     height: 100px;
