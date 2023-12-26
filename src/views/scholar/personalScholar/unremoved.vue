@@ -208,6 +208,11 @@ const remove = () => {//下架文献
         essayNum.value = essayList.value.length;
         scholarStore.essayList = essayList.value;
         scholarStore.removedEssayList.push(removeEssay.value);
+        scholarStore.essayNum--;
+        ElMessage({
+            type: 'success',
+            message: "下架成功"
+        })
     })
     removeDialogVisible.value = false;
 }

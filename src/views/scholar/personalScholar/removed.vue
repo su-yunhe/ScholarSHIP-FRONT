@@ -93,6 +93,11 @@ const upload = () => {//上架文献
         essayNum.value = essayList.value.length;
         scholarStore.removedEssayList = essayList.value;
         scholarStore.essayList.push(uploadEssay.value);
+        scholarStore.essayNum++;
+        ElMessage({
+            type: 'success',
+            message: "重新上架成功"
+        })
     })
     uploadDialogVisible.value = false;
 }

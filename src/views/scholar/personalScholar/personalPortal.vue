@@ -12,7 +12,7 @@
                     <div class="scholar-information-organization">{{ scholarInfo.institution }}</div>
                     <div>
                         <div class="scholar-indicator">
-                            <div class="scholar-indicator-num">{{ scholarInfo.essayNum }}</div>
+                            <div class="scholar-indicator-num">{{ essayNum }}</div>
                             <div class="scholar-indicator-dec">文献数</div>
                         </div>
                         <div class="scholar-indicator">
@@ -39,130 +39,124 @@
 </template>
 
 <script>
+import { ref, onMounted, watch } from 'vue'
 import {useScholarStore} from '../../../stores/scholar'
+import { useUserStore } from '../../../stores/userStore'
 import httpInstance from '@/utils/http'
 import unremoved from './unremoved.vue';
 import links from '../links.vue';
 import datas from '../datas.vue';
-import removed from './removed.vue'
+import removed from './removed.vue';
 export default {
-    name: 'personalScholar',
-    components: {
-        unremoved,
-        links,
-        datas,
-        removed
-    },
-    data() {
-        return {
-            loadingTag: true,
-            tagName:'unremoved',
-            scholarID: "A5023888391",
-            scholarInfo:{},
-        }
-    },
-    methods:{
-        clickAcademic(){
-            if(this.tagName != 'unremoved'){
-                this.tagName = 'unremoved';
-            }
-        },
-        clickDatas(){
-            if(this.tagName != 'datas'){
-                this.tagName = 'datas';
-            }
-        },
-        clickLinks(){
-            if(this.tagName != 'links'){
-                this.tagName = 'links';
-            }
-        },
-        clickRemoved(){
-            if(this.tagName != 'removed'){
-                this.tagName = 'removed';
-            }
-        },
-        async getScholarInfo(){
-            let userID = 1;
-            await httpInstance.post('/get_scholar', {scholarID : this.scholarID, userID : userID}).then(res => res.data).then(res => {
-                console.log("get scholarInfo res:", res);
-                this.scholarInfo = res;
-            });
-        },
-        // async getEssayList(scholarStore){
-        //     let userID = 1;
-        //     console.log("balabala");
-        //     await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true`).then((res) => {
-        //         if (res.error === 0) {
-        //             scholarStore.essayList = res.result;
-        //             console.log("unremoved papers:", scholarStore.essayList);
-        //             this.loadingTag = false;
-        //         }
-        //     });
-        //     await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=false`).then((res) => {
-        //         if (res.error === 0) {
-        //             scholarStore.removedEssayList = res.result;
-        //             console.log("removed papers:", scholarStore.removedEssayList);
-        //         }
-        //     });
-        // },
-        async getEssayNum(scholarStore){
-            await httpInstance.get('/get_works_count', {author_id:this.scholarID}).then(res => res.data).then(res => {
-                console.log("get_works_count:", res);
-                scholarStore.essayNum = res.result.works_count;
-                this.essayNum = res.result.works_count;
-            });
-        },
-        async getEssayList(scholarStore){
-            let userID = 1;
-            let round = 1;
-            let length = 1;
-            for(;length != 0;round++){
-                await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=true&count=${round}`).then((res) => {
-                length = res.result.length;
-                if (length != 0) {
-                    let essays = scholarStore.essayList;
-                    essays = essays.concat(res.result);
-                    scholarStore.essayList = essays;
-                    this.loadingTag = false;
-                    console.log("papers:",scholarStore.essayList);
-                }
-            });
-            }
-        },
-        async getRemovedEssayList(scholarStore){
-            let userID = 1;
-            let round = 1;
-            let length = 1;
-            for(;length != 0;round++){
-                await httpInstance.get(`/get_works?author_id=${this.scholarID}&status=false&count=${round}`).then((res) => {
-                length = res.result.length;
-                if (length != 0) {
-                    let essays = scholarStore.removedEssayList;
-                    essays = essays.concat(res.result);
-                    scholarStore.removedEssayList= essays;
-                    // scholarStore.essayNum = scholarStore.removedEssayList.length;
-                }
-            });
-            }
-        },
-        getGraphData(scholarStore){
-            httpInstance.get(`/get_relation_map?root_id=${this.scholarID}`).then(res => {
-                console.log("get_relation_map res:", res.result);
-                scholarStore.graph_data = res.result;
-            })
-        },
-    },
-    created(){
-        this.loadingTag = true;
-        const scholarStore = useScholarStore();
-        // scholarStore.essayList = [];
-        this.getEssayNum(scholarStore);
-        this.getScholarInfo(scholarStore);
-        this.getEssayList(scholarStore);
-        this.getRemovedEssayList(scholarStore);
-        this.getGraphData(scholarStore);
+components:{
+    unremoved,
+    datas,
+    links,
+    removed
+},
+setup(){
+const scholarStore = useScholarStore();
+const userStore = useUserStore();
+const loadingTag = ref(true);
+const tagName = ref('unremoved');
+const scholarID =  ref("A5023888391");
+const scholarInfo = ref({});
+const essayNum =  ref(0);
+
+const clickAcademic = () => {
+    if(tagName.value != 'unremoved'){
+        tagName.value = 'unremoved';
     }
+}
+const clickDatas = () => {
+    if(tagName.value != 'datas'){
+        tagName.value = 'datas';
+    }
+}
+const clickLinks = () => {
+    if(tagName.value != 'links'){
+        tagName.value = 'links';
+    }
+}
+const clickRemoved = () => {
+    if(tagName.value != 'removed'){
+        tagName.value = 'removed';
+    }
+}
+const getScholarInfo = async() => {
+    await httpInstance.post('/get_scholar', {scholarID : scholarID.value, userID : userStore.userInfo.userid}).then(res => res.data).then(res => {
+        console.log("get scholarInfo res:", res);
+        scholarInfo.value = res;
+    });
+}
+const getEssayList = async () => {
+    let round = 1;
+    let length = 1;
+    for(;length != 0;round++){
+        await httpInstance.get(`/get_works?author_id=${scholarID.value}&status=true&count=${round}`).then((res) => {
+        length = res.result.length;
+        if (length != 0) {
+            let essays = scholarStore.essayList;
+            essays = essays.concat(res.result);
+            scholarStore.essayList = essays;
+            scholarStore.essayNum = essays.length;
+            loadingTag.value = false;
+            console.log("papers:",scholarStore.essayList);
+            essayNum.value = scholarStore.essayNum;
+        }
+    });
+    }
+}
+const getRemovedEssayList = async () => {
+    let round = 1;
+    let length = 1;
+    for(;length != 0;round++){
+        await httpInstance.get(`/get_works?author_id=${scholarID.value}&status=false&count=${round}`).then((res) => {
+        length = res.result.length;
+        if (length != 0) {
+            let essays = scholarStore.removedEssayList;
+            essays = essays.concat(res.result);
+            scholarStore.removedEssayList= essays;
+        }
+    });
+    }
+}
+const getGraphData = () => {
+    httpInstance.get(`/get_relation_map?root_id=${scholarID.value}`).then(res => {
+        console.log("get_relation_map res:", res.result);
+        scholarStore.graph_data = res.result;
+    })
+}
+onMounted(() => {
+        loadingTag.value = true;
+        scholarStore.essayList = [];
+        // this.getEssayNum(scholarStore);
+        getScholarInfo();
+        getEssayList();
+        getRemovedEssayList();
+        getGraphData();
+}); 
+
+watch(()=>scholarStore.essayNum, (newVal, oldVal) => {
+    console.log("personal scholar监听essayNum:",newVal, oldVal);
+    essayNum.value = newVal;
+})
+return {
+    loadingTag,
+    tagName,
+    scholarID,
+    scholarInfo,
+    essayNum,
+    clickAcademic,
+    clickDatas,
+    clickLinks,
+    clickRemoved,
+    getScholarInfo,
+    getEssayList,
+    getRemovedEssayList,
+    getGraphData
+}
+}
 }
 </script>
 

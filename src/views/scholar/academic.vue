@@ -1,6 +1,6 @@
 <template>
     <div class="academicContent">
-        <div class="essayNum">学者文献共<span>{{ essayNum }}</span>篇</div>
+        <div class="essayNum">学者文献共<span>{{ scholarStore.essayNum }}</span>篇</div>
         <div class="essayBox" v-for="essay in displayEssays" :key="essay"
             onmouseover="this.style.boxShadow='rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,rgba(0, 0, 0, 0.07) 0px 16px 16px';"
             onmouseout="this.style.boxShadow='rgba(149, 157, 165, 0.2) 0px 8px 24px';">
@@ -39,7 +39,7 @@
             </div>
         </el-dialog>
         <el-pagination v-if="essayNum != 0" @current-change="currentPageChange" v-model:current-page="currentPage"
-            :page-size="5" layout="prev, pager, next, jumper" v-model:total="essayNum" class="el-pagination">
+            :page-size="5" layout="prev, pager, next, jumper" v-model:total="scholarStore.essayList.length" class="el-pagination">
         </el-pagination>
     </div>
 </template>
@@ -58,7 +58,7 @@ const IDForm = ref({
     scholarID: 'A5023888391',
     userID: 1,
 })
-const essayNum = ref(0);
+// const essayNum = ref(0);
 const displayEssays = ref([]); // 记得进入页面时初始化
 const essayList = ref([]);
 const currentPage = ref(1);
@@ -73,18 +73,14 @@ const format = ref('IEEE');
 onMounted(() => {
     loading();
 });
-// watch(()=>scholarStore.essayList, (newVal, oldVal) => {
-//     console.log("academic监听essayList:",newVal.length, oldVal.length);
-//     loading();
-// })
-watch(()=>[scholarStore.essayList, scholarStore.essayNum], ([newVal, newNum],[oldVal, oldNum]) => {
-    console.log("academic监听essayList:",newVal.length, oldVal.length, newNum, oldNum);
+watch(()=>scholarStore.essayList, (newVal, oldVal) => {
+    console.log("academic监听essayList:",newVal.length, oldVal.length);
     loading();
 })
 const loading = () => {
     essayList.value = scholarStore.essayList;
     displayEssays.value = essayList.value.slice(0, 5);
-    essayNum.value = scholarStore.essayList.length;
+    // essayNum.value = scholarStore.essayList.length;
 }
 const currentPageChange = (value) => {
     displayEssays.value = essayList.value.slice((value - 1) * 5, 5 + (value - 1) * 5);
@@ -209,7 +205,7 @@ const copyCiteString = (content) => {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     margin-bottom: 15px;
     transition: all 0.3s;
-
+}
     .essayBox-name {
         font-size: large;
         font-weight: bold;
@@ -262,7 +258,7 @@ const copyCiteString = (content) => {
         cursor: pointer;
         border-radius: 10px;
     }
-}
+
 
 
 .el-pagination {
