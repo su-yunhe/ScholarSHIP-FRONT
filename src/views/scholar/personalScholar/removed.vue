@@ -86,7 +86,7 @@ const uploadDialog = (essay) => {//上架文献
 }
 const upload = () => {//上架文献
     let work_id = uploadEssay.value.id.split('/')[3];
-    httpInstance.post("/change_status", JSON.stringify({work_id: work_id})).then(res => {
+    httpInstance.post("/change_status", {work_id: work_id}).then(res => {
         console.log("change_status:", res);
         essayList.value = essayList.value.filter(item=>item != uploadEssay.value);
         displayEssays.value = essayList.value.slice(0,5);
@@ -121,7 +121,7 @@ const upload = () => {//上架文献
 .essayBox{
     width: 100%;
     height: auto;
-    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     margin-bottom: 15px;
 }
 .essayBox-name{
