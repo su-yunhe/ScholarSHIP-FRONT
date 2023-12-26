@@ -34,9 +34,9 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="a" @click="ok = '文献'; clean()">文献</el-dropdown-item>
-                  <el-dropdown-item command="b" @click="ok = '学者'; clean()">学者</el-dropdown-item>
-                  <el-dropdown-item command="c" @click="ok = '机构'; clean()">机构</el-dropdown-item>
+                  <el-dropdown-item command="a" @click="ok = '文献'; clean(); search()">文献</el-dropdown-item>
+                  <el-dropdown-item command="b" @click="ok = '学者'; clean(); search()">学者</el-dropdown-item>
+                  <el-dropdown-item command="c" @click="ok = '机构'; clean(); search()">机构</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -175,6 +175,9 @@
           </template>
           <template #default>
             <div class="right">
+              <div class="essayNum" v-if="rendered && ok==='文献'">共搜索到 <span> {{ count }} </span> 篇文献</div>
+              <div class="essayNum" v-if="rendered && ok==='学者'">共搜索到 <span> {{ count }} </span> 位学者</div>
+              <div class="essayNum" v-if="rendered && ok==='机构'">共搜索到 <span> {{ count }} </span> 个机构</div>
               <div v-for="item in paginatedData" style="margin-top: 15px">
                 <div class="res">
                   <div class="title" v-show="ok === '文献'" :title="item.title" style="cursor: pointer;"
@@ -455,32 +458,33 @@ const institutionList = ref([]);
 const searchType = ref("");
 const searchTypes = ["文献", "作者", "机构"];
 const currentPage = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(20);
 const pageFullLength = ref();
+const count = ref(0);
 onMounted(() => {
-  if (router.currentRoute.value.fullPath.split('/')[1]=='search'){
-    getWenList("",1);
+  if (router.currentRoute.value.fullPath.split('/')[1] == 'search') {
+    getWenList("", 1);
     return;
   }
-  var type=router.currentRoute.value.fullPath.split('type=')[1].split('&id')[0];
-  var id=router.currentRoute.value.fullPath.split('id=')[1];
-  id=id.replace("+"," ");
+  var type = router.currentRoute.value.fullPath.split('type=')[1].split('&id')[0];
+  var id = router.currentRoute.value.fullPath.split('id=')[1];
+  id = id.replace("+", " ");
   id = decodeURIComponent(id);
-  input.value=id;
-  if (type=="1"){
+  input.value = id;
+  if (type == "1") {
     getWenList(id, 1);
-  } else if (type=="2"){
-    ok.value="学者";
+  } else if (type == "2") {
+    ok.value = "学者";
     getXueList(id, 1);
   } else {
-    ok.value="机构";
+    ok.value = "机构";
     getJiList(id, 1);
   }
 });
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return items.value.slice(start, end);
+  return items.value.slice(0, pageSize.value);
 });
 const showDataChartDialog = ref(false);
 const selectList = ref([]);
@@ -681,10 +685,12 @@ const getWenList = async (input, num) => {
       // console.log(1);
       pageFullLength.value = res.count > 10000 ? 10000 : res.count;
       // console.log(pageFullLength.value)
-      if (pageFullLength.value==0){
-        items.value=[];
+      if (pageFullLength.value == 0) {
+        items.value = [];
+        count.value = 0;
       } else {
         items.value = res.data;
+        count.value = res.count;
       }
       rendered.value = true;
     })
@@ -703,10 +709,12 @@ const getXueList = async (input, num) => {
       console.log(res);
       pageFullLength.value = res.data.length > 10000 ? 10000 : res.data.length; // 后端传来的数据没有res.count字段
       // console.log(pageFullLength.value)
-      if (pageFullLength.value==0){
-        items.value=[];
+      if (pageFullLength.value == 0) {
+        items.value = [];
+        count.value = 0;
       } else {
         items.value = res.data;
+        count.value = pageFullLength.value;
       }
       rendered.value = true;
     })
@@ -724,10 +732,12 @@ const getJiList = async (input, num) => {
       console.log(res);
       pageFullLength.value = res.data.length > 10000 ? 10000 : res.data.length; // 后端传来的数据没有res.count字段
       // console.log(pageFullLength.value)
-      if (pageFullLength.value==0){
-        items.value=[];
+      if (pageFullLength.value == 0) {
+        items.value = [];
+        count.value = 0;
       } else {
         items.value = res.data;
+        count.value = pageFullLength.value;
       }
       rendered.value = true;
     })
@@ -740,13 +750,14 @@ const getJiList = async (input, num) => {
 const getIns = (name) => {
   console.log(name);
 };
-const handleCurrentChange = (n) => {
+const handleCurrentChange = async (n) => {
+  rendered.value = false;
   if (ok.value == "文献") {
-    getWenList(input.value, n);
+    await getWenList(input.value, n);
   } else if (ok.value == "学者") {
-    getXueList(input.value, n);
+    await getXueList(input.value, n);
   } else {
-    getJiList(input.value, n);
+    await getJiList(input.value, n);
   }
   currentPage.value = n;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1336,6 +1347,21 @@ async function analyzeStatic(id) {
   }
 
   .right {
+
+    .essayNum {
+      height: 0;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      top: -30px;
+      padding-left: 5px;
+      // padding-bottom: 10px;
+    }
+
+    .essayNum span {
+      font-size: 25px
+    }
+
     .res:hover {
       box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,
         rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,

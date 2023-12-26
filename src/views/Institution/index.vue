@@ -45,7 +45,7 @@
     <div id="scholar-relation">
       <el-card id="chart-card">
         <div id="chart-card-content">
-          <div id="scholar-relation-echarts" style="height: 32vh;width: 28vw"></div>
+          <div id="scholar-relation-echarts" style="height: 250px; width: 350px"></div>
         </div>
       </el-card>
     </div>
@@ -117,7 +117,7 @@ onMounted(async ()=>{
     animationEasingUpdate: 'quinticInOut',
     series:[
       {
-        name: 'Les Miserables',
+        name: '',
         type: 'graph',
         layout: 'circular',
         circular:{
@@ -152,12 +152,13 @@ async function request_basic_info(){
       insId: thisInsId
     }
     const response = await httpInstance.post('/get_institution_basic', requestData)//TODO:httpInstance
-    scholar_list.value = response.data.authors
-    quote_count.value = response.data.cite_cout.cited_by_count
-    essay_count.value = response.data.work_cout.works_count
-    scholar_count.value = response.data.author_count
-    school_url.value = response.data.homepage_url.homepage_url
-    school_name.value = response.data.display_name//TODO
+    console.log(response.data);
+    scholar_list.value = response.data.authors;
+    quote_count.value = response.data.cite_cout;
+    essay_count.value = response.data.work_cout;
+    scholar_count.value = response.data.author_count;
+    school_url.value = response.data.homepage_url.homepage_url;
+    school_name.value = response.data.display_name;//TODO
   }catch (error){
     console.log(error)
   }
