@@ -166,7 +166,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .scholarContainer {
     margin: 0;
     padding: 0;

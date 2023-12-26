@@ -218,7 +218,7 @@ const loading = () => {
 }
 </script>
 
-<style>
+<style scoped>
 .academicContent{
     /* width: 100%; */
     width: 70%;margin: auto;

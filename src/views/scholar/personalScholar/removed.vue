@@ -98,7 +98,7 @@ const upload = () => {//上架文献
 }
 </script>
 
-<style>
+<style scoped>
 .academicContent{
     /* width: 100%; */
     width: 70%;margin: auto;

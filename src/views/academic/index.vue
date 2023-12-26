@@ -373,7 +373,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .academicContainer {
     margin: 0;
     padding: 0;

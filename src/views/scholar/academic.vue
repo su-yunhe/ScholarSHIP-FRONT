@@ -180,7 +180,7 @@ const copyCiteString = (content) => {
 }
 </script>
 
-<style>
+<style scoped>
 .academicContent {
     /* width: 100%; */
     width: 70%;
