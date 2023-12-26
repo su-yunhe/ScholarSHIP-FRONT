@@ -360,6 +360,7 @@ export default {
     },
 
     beforeMount(){
+        this.recordBrowse()
         this.loadingTag = true;
         this.loadLabels()
         let work_id = this.$route.path.split("/")[2];

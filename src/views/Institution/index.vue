@@ -170,11 +170,13 @@ function jumpToOfficialWebsite(){
 const userStore = useUserStore()
 const recordBrowse = () => {
   let Time = new Date()
+  console.log(thisInsId)
+  console.log(Time.toLocaleString())
   httpInstance.post("history_add",{
     userid: userStore.userInfo.userid,
     type: 0,
     realId: thisInsId,
-    time: Time.toLocaleString
+    time: Time.toLocaleString()
   }).then((res) => {
     console.log(res)
   })
