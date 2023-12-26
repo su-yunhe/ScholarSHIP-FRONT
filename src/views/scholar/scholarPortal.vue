@@ -37,9 +37,9 @@
                 <div>
                     <!-- 可以通过改变 recognized 和 followed 两个变量 改变显示按钮的状态-->
                     <el-button type="primary" class="scholar-operation op-claim" @click="dialogVisible = true" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
-                    <el-button type="primary" class="scholar-operation op-claim" @click="claimPortal" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证门户</el-button>
+                    <el-button type="primary" class="scholar-operation op-claim" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证门户</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="!followed"> <el-icon><StarFilled /></el-icon>关注学者</el-button>
-                    <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="followed"> <el-icon color="gold"><StarFilled /></el-icon>已关注学者</el-button>
+                    <el-button type="primary" class="scholar-operation op-concern" @click="cancelConcern" size="large" v-if="followed"> <el-icon color="gold"><StarFilled /></el-icon>取消关注</el-button>
                 </div>
                 <el-dialog
                     title="认证理由"
@@ -91,7 +91,8 @@ export default {
             followed: false, // 是否已被当前用户关注
             recognized: false, // 该学者门户是否已被认领
             userStore: useUserStore(),
-            isConcerned: false,
+            followed: false,
+            recognized: false,
             dialogVisible: false,
             reason:'',
         }
@@ -122,13 +123,55 @@ export default {
                 scholarId: this.scholarID,
                 email: this.userStore.userInfo.email,
                 content: this.reason,
-                time: Time.toLocaleString
+                time: this.dateFtt(" yyyy-MM-dd hh:mm:ss",Time),
+                username: this.userStore.userInfo.realname,
+                scholarname: this.scholarInfo.name,
+                insname: this.scholarInfo.institution
+            }).then((res) => {
+                console.log(res)
+                ElMessage({
+                    message: "申请成功，请等待管理员审批",
+                    type: 'success',
+                })
+            })
+        },
+        dateFtt(fmt, date) { 
+            var o = {
+                "M+": date.getMonth() + 1,     
+                "d+": date.getDate(),    
+                "h+": date.getHours(),    
+                "m+": date.getMinutes(),   
+                "s+": date.getSeconds(),    
+                "q+": Math.floor((date.getMonth() + 3) / 3),
+                "S": date.getMilliseconds()    //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        },
+        concernScholar(){//关注学者
+            ElMessage({
+                message: "关注成功！",
+                type: 'success',
+            })
+            this.followed = true
+            httpInstance.post("concern_add",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID
             }).then((res) => {
                 console.log(res)
             })
         },
-        concernScholar(){//关注学者
-            httpInstance.post("concern_add",{
+        cancelConcern(){ // 取消关注
+            ElMessage({
+                message: "操作成功！",
+                type: 'success',
+            })
+            this.followed = false
+            httpInstance.post("concern_delete",{
                 userid: this.userStore.userInfo.userid,
                 scholarId: this.scholarID
             }).then((res) => {
@@ -187,6 +230,10 @@ export default {
         },
         checkConcern(){
             // 是否已经关注学者
+
+        },
+        checkRecognize(){
+            // 是否已经认领了门户
 
         },
         recordBrowse(){

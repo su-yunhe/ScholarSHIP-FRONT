@@ -72,6 +72,11 @@ const router = createRouter({
       name: 'analyses',
       component: AnalysesView
 
+    },
+    {
+      path: '/adminLogin',
+      name: 'adminLogin',
+      component: () => import('@/views/AdminLogin/index.vue')
     }
   ]
 })

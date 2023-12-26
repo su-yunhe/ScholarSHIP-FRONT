@@ -238,20 +238,19 @@ export default {
             }).then((res) => {
                 // console.log(res)
                 console.log(this.userStore.userInfo.userid)
-                this.collections_copy = [...res.results]
-                if (this.collections_copy.length === 0) {
+                this.collections = [...res.results]
+                if (this.collections.length === 0) {
                     // 创建默认收藏夹
                     httpInstance.post("label_star_add", {
                         userid: this.userStore.userInfo.userid,
                         name: "默认收藏夹"
                     }).then((res) => {
-                        this.collections_copy.push(res.label[0])
+                        this.collections.push(res.label[0])
                     })
                 }
             })
         },
         essayCollection(){
-            this.loadLabels()
             this.collectionDialogVisible = true;
             // this.collections_copy = [...this.collections];
         },
@@ -268,18 +267,16 @@ export default {
             console.log(this.userStore.userInfo.userid)
             console.log(this.collectionId)
             console.log(this.$route.path.split("/")[2])
+            ElMessage({
+                message: "收藏成功！",
+                type: 'success',
+            })
             httpInstance.post("star_add",{
                 userid: this.userStore.userInfo.userid,
                 labelId: this.collectionId,
                 articleId: this.$route.path.split("/")[2]
             }).then((res) => {
                 console.log(res)
-                if(res.error == 0){
-                    ElMessage({
-                        message: "收藏成功！",
-                        type: 'success',
-                    })
-                }
             })
         },
         collectionChange(value) {
@@ -289,9 +286,34 @@ export default {
             //永久添加标签名
             //请求
             //暂时显示
-            this.collections.push({ id: this.collections[this.collections.length - 1].id + 1, name: this.collectionName });
-            this.collectionName = null;
-            this.addCollectionVisible = false;
+            // this.collections.push({ id: this.collections[this.collections.length - 1].id + 1, name: this.collectionName });
+            // this.collectionName = null;
+            if (this.collectionName) {
+            if (this.collectionName.length > 10) {
+                ElMessage({
+                    message: "收藏夹命名不能超过10个字符",
+                    type: 'warning',
+                })
+            } else {
+                httpInstance.post("label_star_add", {
+                    userid: this.userStore.userInfo.userid,
+                    name: this.collectionName
+                }).then((res) => {
+                    console.log(res)
+                    if (res.msg === "标签重名") {
+                        ElMessage({
+                            message: "收藏夹已存在!",
+                            type: 'error',
+                        })
+                    } else {
+                        this.collections.push(res.label[0])
+                    }
+                })
+            }
+        }
+        // inputVisible.value = false
+        this.addCollectionVisible = false;
+        this.collectionName = ''
         },
         getEssayDetail(work_id, user_id) {
             httpInstance.get(`/get_detail?work_id=${work_id}&user_id=${user_id}`).then((res) => {
@@ -339,6 +361,7 @@ export default {
 
     beforeMount(){
         this.loadingTag = true;
+        this.loadLabels()
         let work_id = this.$route.path.split("/")[2];
         let user_id = 1;
         this.getEssayDetail(work_id, user_id);
