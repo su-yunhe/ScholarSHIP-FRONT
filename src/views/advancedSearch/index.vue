@@ -4,7 +4,6 @@
       <el-col :span="15">
         <el-card>
           <div class="title">高级检索</div>
-
           <el-divider></el-divider>
           <div class="title1">时间范围</div>
           <div class="timeSearch">
@@ -96,7 +95,7 @@
           </div>
 
           <el-divider></el-divider>
-          <button class="btn" @click="search()">
+          <button class="btn" @click="search(1)">
             <span class="box">
               <el-icon style="position: relative; top: 2px;">
                 <Search />
@@ -141,8 +140,44 @@
         </button>
       </div>
       <div class="search">
-
+        <div style="padding-top: 10px; margin-left: 50px">
+          <div class="input__container">
+            <div class="shadow__input"></div>
+            <!-- <span id="dropdown_span">
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link" style="font-weight: 10px; font-size: 14px">
+                {{ ok }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="a" @click="ok = '文献'; clean(); search()">文献</el-dropdown-item>
+                  <el-dropdown-item command="b" @click="ok = '学者'; clean(); search()">学者</el-dropdown-item>
+                  <el-dropdown-item command="c" @click="ok = '机构'; clean(); search()">机构</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </span>
+          <input @keydown.enter="search" type="text" name="text" id="text" class="input__search" placeholder="在此处搜索"
+            style="font-size: 14px" v-model="input" />
+          <button class="input__button__shadow" id="search_button" @click="search">
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
+              <path
+                d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z"
+                fill-rule="evenodd" fill="#17202A"></path>
+            </svg>
+          </button> -->
+          <Transition name="fade">
+            <div class="essayNum" style="font-size: 16px;">
+              <span v-show="!loading" style="font-size: 16px;">共搜索到 <span style="font-size: 25px;"> {{ count }} </span> 篇文献</span>
+              <span v-show="loading" ><span style="font-size: 22px;"> 搜索中... </span></span>
+            </div>
+          </Transition>
+          </div>
+        </div>
       </div>
+      <!-- <div class="search">
+        搜索到{{ count }}篇文献
+      </div> -->
       <div id="data-chart" class="menu1">
         <button class="btn" @click="showDataChartDialog = true">
           <span class="box">
@@ -219,32 +254,32 @@
         </div>
       </template>
       <template #default>
-      <div v-for="item in paginatedData" style="margin-top: 15px">
-        <div class="res">
-          <div class="title" :title="item.title" style="cursor: pointer;" @click="toDocument(item.id)">
-            {{
-              item.title }}</div>
-          <div class="info1">
-            <el-row>
-              <el-col :span="12">
-                <div class="author_holder">
-                  <span style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
-                  <span style="cursor: pointer; " class="author" v-for="a in item.author" @click=gotoAuthor(a)
-                    :title="a">{{
-                      a
+        <div v-for="item in paginatedData" style="margin-top: 15px">
+          <div class="res">
+            <div class="title" :title="item.title" style="cursor: pointer;" @click="toDocument(item.id)">
+              {{
+                item.title }}</div>
+            <div class="info1">
+              <el-row>
+                <el-col :span="12">
+                  <div class="author_holder">
+                    <span style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">作者：</span>
+                    <span style="cursor: pointer; " class="author" v-for="a in item.author" @click="gotoAuthor(a, item.author, item.author_id)"
+                      :title="a">{{
+                        a
+                      }}</span>
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div class="author_holder">
+                    <span style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
+                    <span class="concept_holder" v-for="k in item.keywords" :title="k">{{ k
                     }}</span>
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div class="author_holder">
-                  <span style="margin-left:30px; font-size: 12px; position: relative; top: -5px;">关键词：</span>
-                  <span class="concept_holder" v-for="k in item.keywords" :title="k">{{ k
-                  }}</span>
-                </div>
-              </el-col>
-            </el-row>
-          </div>
-          <div style="
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+            <div style="
                   max-height: 35px;
                   max-width: 95%;
                   margin-top: 5px;
@@ -257,61 +292,61 @@
                   -webkit-line-clamp: 2;
                   -webkit-box-orient: vertical;
                 ">
-            {{ item.abstract }}
-          </div>
+              {{ item.abstract }}
+            </div>
 
-          <div style="margin-left: 27px; margin-top: 8px">
-            <el-button size="small" type="primary" plain style="
+            <div style="margin-left: 27px; margin-top: 8px">
+              <el-button size="small" type="primary" plain style="
                     box-shadow: none;
                     font-weight: 300;
                     float: left;
                     text-align: left;
                   " @click="getCitation(item.id)">
-              引用<el-icon>
-                <Link />
-              </el-icon>
-            </el-button>
-            <el-button size="small" type="success" plain style="
+                引用<el-icon>
+                  <Link />
+                </el-icon>
+              </el-button>
+              <el-button size="small" type="success" plain style="
                     box-shadow: none;
                     font-weight: 300;
                     float: left;
                     text-align: left;
                   " @click="toDocument(item.id)">
-              详情<el-icon>
-                <DataAnalysis />
-              </el-icon>
-            </el-button>
-            <el-button size="small" type="warning" plain style="
+                详情<el-icon>
+                  <DataAnalysis />
+                </el-icon>
+              </el-button>
+              <el-button size="small" type="warning" plain style="
                     box-shadow: none;
                     font-weight: 300;
                     float: left;
                     text-align: left;
                   " @click="gourl(item.id)">
-              来源<el-icon>
-                <Position />
-              </el-icon>
-            </el-button>
-            <el-button size="small" type="warning" plain style="
+                来源<el-icon>
+                  <Position />
+                </el-icon>
+              </el-button>
+              <el-button size="small" type="warning" plain style="
                     box-shadow: none;
                     font-weight: 300;
                     float: left;
                     text-align: left;
                   " @click="pdf(item.id)">
-              下载<el-icon>
-                <Download />
-              </el-icon>
-            </el-button>
-            <el-button size="small" type="primary" plain style="
+                下载<el-icon>
+                  <Download />
+                </el-icon>
+              </el-button>
+              <el-button size="small" type="primary" plain style="
                     box-shadow: none;
                     font-weight: 300;
                     float: left;
                     text-align: left;
                   " @click="analyzeStatic(item.id)">
-              数据<el-icon>
-                <Histogram />
-              </el-icon>
-            </el-button>
-            <span style="
+                数据<el-icon>
+                  <Histogram />
+                </el-icon>
+              </el-button>
+              <span style="
                     float: right;
                     text-align: right;
                     margin-top: 3px;
@@ -319,12 +354,12 @@
                     font-size: 15px;
                     margin-right: 150px;
                   ">
-              被引次数：
-              <span style="color: #2d94d4">
-                {{ item.cite }}
+                被引次数：
+                <span style="color: #2d94d4">
+                  {{ item.cite }}
+                </span>
               </span>
-            </span>
-            <span style="
+              <span style="
                     float: right;
                     text-align: right;
                     margin-top: 3px;
@@ -332,16 +367,23 @@
                     font-size: 15px;
                     margin-right: 50px;
                   ">
-              发表时间：
-              <span style="color: #2d94d4">
-                {{ item.date }}
+                发表时间：
+                <span style="color: #2d94d4">
+                  {{ item.date }}
+                </span>
               </span>
-            </span>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
+        <el-affix style="z-index: 0;" v-if="!count && !loading">
+              <el-empty description="这里空空如也" />
+            </el-affix>
+      </template>
     </el-skeleton>
+    <el-divider v-if="count != 0"></el-divider>
+    <el-pagination layout="prev, pager, next, jumper, ->" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+      :total="pageFullLength" v-if="!loading && count != 0" />
+    <el-divider v-if="count != 0"></el-divider>
 
     <!-- 引用对话框 -->
     <el-dialog title="引用" v-model="citeDialogVisible" width="50%">
@@ -429,7 +471,7 @@ const years = ref([
 const items = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(20);
-const pageFullLength = ref()
+const pageFullLength = ref(0)
 const citeString = ref("")
 const citeStringIEEE = ref("")
 const citeStringGB = ref("")
@@ -442,11 +484,12 @@ const concepts = ref()
 const authorships = ref()
 const showDataChartDialog = ref(false);
 const selectList = ref([]);
-const showDataChart = ref(false)
+const showDataChart = ref(false);
+const count = ref(0);
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return items.value.slice(start, end);
+  return items.value.slice(0, pageSize.value);
 })
 const cited_by_count = ref([])
 const reference_count = ref([])
@@ -455,6 +498,13 @@ const related_count = ref([])
 
 const loading = ref(false)
 const isResult = ref(false)
+
+const handleCurrentChange = async (n) => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  loading.value = true;
+  await search(n);
+  currentPage.value = n
+};
 
 const continueSearch = () => {
   items.value = []
@@ -535,6 +585,14 @@ const toDocument = (id) => {
   window.open(str, "_blank")
 }
 
+const gotoAuthor = (a, author_name, author_id) => {
+  // var index = items.value.
+  var index = author_name.indexOf(a);
+  var id = author_id[index].split("org/")[1];
+  var str = "scholar/" + id;
+  window.open(str, "_blank");
+};
+
 const getCitation = async (id) => {
   citeDialogVisible.value = true;
   try {
@@ -607,7 +665,7 @@ const copyCiteString = (content) => {
 
 
 
-const search = async () => {
+const search = async (to_page) => {
   loading.value = true
   isResult.value = true
   let op1 = []
@@ -681,16 +739,19 @@ const search = async () => {
     name1.push(conceptRequests.value[i].str)
   }
   await httpInstance.post('/SearchManager/AdvancedSearchWork', {
-    page: 1,
+    page: to_page,
     min_year: minyear.value,
     max_year: maxyear.value,
     op: op1,
     type: type1,
     name: name1
   }).then(res => {
-    loading.value = false
     console.log(res)
-    items.value = res.data
+    items.value = res.data;
+    count.value = res.data[res.data.length-1].count;
+    items.value.splice(items.value.length-1,1);
+    pageFullLength.value = count.value> 10000 ? 10000 :count.value;
+    loading.value = false
   })
 
 }
@@ -940,6 +1001,17 @@ const confirmSelect = async () => {
 }
 </script>
 <style scoped lang = "scss">
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .main {
   margin: 10px 20px 0px 20px;
   height: 90vh;
@@ -1154,6 +1226,7 @@ const confirmSelect = async () => {
 
       .input__container {
         position: relative;
+        left: -2vw;
         background: rgba(255, 255, 255, 0.664);
         padding: 10px 15px;
         display: flex;
@@ -1161,14 +1234,26 @@ const confirmSelect = async () => {
         align-items: center;
         gap: 5px;
         border-radius: 22px;
-        max-width: 300px;
+        // max-width: 300px;
         height: 50px;
         transition: transform 400ms;
         transform-style: preserve-3d;
-        transform: rotateX(15deg) rotateY(-20deg);
+        // transform: rotateX(15deg) rotateY(-20deg);
         perspective: 500px;
         transition: 0.7s ease-in-out;
       }
+
+      .essayNum {
+        height: 0;
+        padding: 0;
+        margin: 0;
+        position: relative;
+        top: -20px;
+      }
+
+      // .essayNum span {
+      //   font-size: 25px
+      // }
 
       #search_button {
         width: 60px;
@@ -1331,7 +1416,7 @@ const confirmSelect = async () => {
       border-radius: 5px;
       /* background-color: gray; */
       font-size: 12px;
-      max-width: 5vw;
+      max-width: 8vw;
       max-height: 22px;
       overflow: hidden;
       display: -webkit-inline-box;
@@ -1354,7 +1439,7 @@ const confirmSelect = async () => {
       border-radius: 5px;
       color: rgb(255, 255, 255);
       font-size: 12px;
-      max-width: 5vw;
+      max-width: 6vw;
       max-height: 22px;
       overflow: hidden;
       display: -webkit-inline-box;

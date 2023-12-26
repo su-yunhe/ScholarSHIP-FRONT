@@ -16,7 +16,7 @@
           用户名: {{ userName }}
         </span>
         <span style="margin-left: 10px;">
-          <el-tag class="ml-2" type="success" @click="toScholar"><el-icon size="10px"><CircleCheck /></el-icon>认证学者</el-tag>
+          <el-tag v-if="recognized" class="ml-2" type="success" @click="toScholar" style="cursor: pointer;, background-color: rgb(240, 249, 235);"><el-icon size="10px"><CircleCheck /></el-icon>认证学者</el-tag>
         </span>
       </div>
       <div>
@@ -42,6 +42,8 @@ import { ElMessage } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 import { useUserStore } from "@/stores/userStore"
 import httpInstance from "@/utils/http"
+import { onMounted } from "vue"
+import router from "@/router"
 
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
@@ -55,6 +57,25 @@ const getUserIntro = () => {
     console.log(res)
     userIntro.value = res.data
   })
+}
+
+const recognized = ref(false)
+const scholarId = ref('')
+const judge_recognize = () => {
+  httpInstance.post("judge_authenticated",{
+    userid: userStore.userInfo.userid
+  }).then((res) => {
+    console.log(res)
+    if(res.msg === "用户已认证"){
+      recognized.value = true
+      scholarId.value = res.results
+    }else{
+      recognized.value = false
+    }
+  })
+}
+const toScholar = () => {
+  router.push("/scholar/" + scholarId.value)
 }
 
 const introInput = ref('')
@@ -93,8 +114,9 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 
-onBeforeMount(() => {
+onMounted(() => {
   getUserIntro()
+  judge_recognize()
 })
 </script>
 

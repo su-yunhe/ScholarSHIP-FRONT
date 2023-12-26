@@ -393,7 +393,7 @@
       </el-col>
     </el-row>
     <el-divider v-if="paginatedData.length != 0"></el-divider>
-    <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+    <el-pagination layout="prev, pager, next, jumper, ->" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
       :total="pageFullLength" v-if="rendered && paginatedData.length != 0" />
     <el-divider v-if="paginatedData.length != 0"></el-divider>
   </div>
@@ -744,7 +744,7 @@ const toAdvancedSearch = () => {
 };
 const toAuthor = (name) => {
   var str = "/scholar/" + name;
-  router.push({ path: str });
+  window.open(str, "_blank")
 };
 const gotoAuthor = (a, author_name, author_id) => {
   // var index = items.value.
@@ -765,7 +765,7 @@ onMounted(async () => {
 });
 const toInstitution = (id) => {
   var str = "/institution/" + id;
-  router.push({ path: str });
+  window.open(str, "_blank")
 };
 const pdf = async (id) => {
   console.log("111")

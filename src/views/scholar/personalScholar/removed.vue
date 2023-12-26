@@ -93,6 +93,11 @@ const upload = () => {//上架文献
         essayNum.value = essayList.value.length;
         scholarStore.removedEssayList = essayList.value;
         scholarStore.essayList.push(uploadEssay.value);
+        scholarStore.essayNum++;
+        ElMessage({
+            type: 'success',
+            message: "重新上架成功"
+        })
     })
     uploadDialogVisible.value = false;
 }
@@ -116,7 +121,7 @@ const upload = () => {//上架文献
 .essayBox{
     width: 100%;
     height: auto;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
     margin-bottom: 15px;
 }
 .essayBox-name{
