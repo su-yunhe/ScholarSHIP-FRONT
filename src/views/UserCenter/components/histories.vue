@@ -12,7 +12,7 @@
             <el-divider />
             <el-scrollbar max-height="200px">
                 <TransitionGroup name="list" tag="ul">
-                    <div v-for="entry in recordEntries" :key="entry" class="text_item" @mouseenter="mouseEnter(entry)"
+                    <div v-for="entry in recordEntries" :key="entry" class="text_item" @mouseenter="mouseEnter(entry)" @click="toHistory(entry)"
                         @mouseleave="mouseLeave" id="history_item">
                         <div style="float: left;">
                             <div class="history_content" :title="entry.name" style="font-weight: bold;">
@@ -27,7 +27,7 @@
                             </div>
                         </div>
                         <span style="max-height: 10px;">
-                            <el-button v-if="entryMouseOn == entry.id" @click="deleteEntry(entry)" color="red" plain
+                            <el-button v-if="entryMouseOn == entry.id" @click.stop="deleteEntry(entry)" color="red" plain
                                 type="danger" size="small" :icon="Close" circle
                                 style="float: right; position: relative; left: -0.5vw;" />
                             <!-- <el-icon v-if="entryMouseOn == entry.id" style="cursor: pointer;margin-left: 10vw; float:inline-end; position: relative; top: -50px; left: -1vw;" color="red" @click="deleteEntry(entry)" class="delete_item"><Delete /></el-icon> -->
@@ -50,6 +50,7 @@ import {
     Close
 } from '@element-plus/icons-vue'
 import { ListItem } from "element-plus";
+import router from "@/router";
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 
@@ -77,6 +78,16 @@ const deleteEntry = (entry) => {
             type: 'success',
         })
     })
+}
+
+const toHistory = (entry) => {
+    if(entry.type === 0){
+        router.push("/institution/" + entry.real_id)
+    }else if(entry.type === 1){
+        router.push("/academic/" + entry.real_id)
+    }else{
+        router.push("/scholar/" + entry.real_id)
+    }
 }
 
 const deleteAllEntries = () => {
