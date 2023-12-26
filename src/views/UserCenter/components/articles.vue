@@ -153,7 +153,7 @@ margin-right: 50px;
         <el-affix :offset="180" style="z-index: 0;" v-if="!articles.length" >
             <el-empty description="还没有收藏的文献"/>
         </el-affix>
-        <el-pagination id="page" v-if="articles.length" layout="prev, pager, next" :total=articles.length
+        <el-pagination style="position: relative; right: -30vw" id="page" v-if="articles.length" layout="prev, pager, next" :total=articles.length
             :page-size=entryPerPage @current-change="changePage" />
     </div>
 </template>
@@ -317,7 +317,8 @@ const changePage = (val: number) => {
 const readArticle = (article) => {
     console.log(article.title)
     let articleId = article.article_id
-    router.push("/academic/" + articleId)
+    let str = "/academic/" + articleId;
+    window.open(str, "_blank")
 }
 
 const deleteFromCollection = (article) => {

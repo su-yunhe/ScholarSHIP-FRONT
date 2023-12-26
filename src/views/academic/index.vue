@@ -57,11 +57,11 @@
             </div>
             <div class="essay-essays">
                 <div v-if="referenced_works_num != 0">引用文章</div>
-                <span v-for="work in essay.referenced_works" :key="work" @click="enterEssay(work_id)" >{{ work.title }}</span>
+                <span v-for="work in essay.referenced_works" :key="work" @click="enterEssay(work.id)">{{ work.title }}</span>
             </div>
             <div class="essay-essays">
                 <div v-if="related_works_num != 0">相关文章</div>
-                <a v-for="work in essay.related_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
+                <span v-for="work in essay.related_works" :key="work" @click="enterEssay(work.id)">{{ work.title }}</span>
             </div>
         </div>
 
@@ -113,6 +113,7 @@ export default {
     },
     data() {
         return {
+            monitoredRoute: null,
             loadingTag: true,
             citeDialogVisible: false,
             collectionDialogVisible: false,
@@ -340,10 +341,10 @@ export default {
             })
         },
         enterEssay(id) {//进入引用参考文献展示页
-            // console.log('enter essay:', essay, essay.id);
+            console.log('enter essay:', id);
             let essay_id = id.split('/')[3];
             console.log("essay_id:", essay_id)
-            router.push(`/academic/${essay_id}`);
+            this.$router.push(`/academic/${essay_id}`);
         },
         recordBrowse(){
             let work_id = this.$route.path.split("/")[2];
@@ -364,11 +365,27 @@ export default {
         this.loadingTag = true;
         this.loadLabels()
         let work_id = this.$route.path.split("/")[2];
-        let user_id = 1;
+        let user_id = this.userStore.userInfo.userid;
         this.getEssayDetail(work_id, user_id);
 
         this.getReferencedAndRelated(work_id, user_id);
         console.log("essay:", this.essay);
+    },
+    watch: {
+        $route(newRoute) {
+            this.monitoredRoute = newRoute; // 将新的路由信息保存到组件的monitoredRoute属性中
+            // 执行其他操作或调用其他方法
+            console.log("route:", this.monitoredRoute);
+            this.recordBrowse()
+            this.loadingTag = true;
+            this.loadLabels()
+            let work_id = this.$route.path.split("/")[2];
+            let user_id = this.userStore.userInfo.userid;
+            this.getEssayDetail(work_id, user_id);
+
+            this.getReferencedAndRelated(work_id, user_id);
+            console.log("essay:", this.essay);
+        },
     },
 }
 </script>
@@ -469,7 +486,7 @@ export default {
     font-weight: bold;
 }
 
-.essay-essays a {
+.essay-essays span {
     display: inline-block;
     font-weight: normal;
     width: 42%;
@@ -478,7 +495,7 @@ export default {
     color: rgb(118, 139, 205);
 }
 
-.essay-essays a:hover {
+.essay-essays span:hover {
     text-decoration: underline;
 }
 

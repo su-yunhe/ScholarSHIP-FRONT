@@ -15,8 +15,15 @@
         <span>
           用户名: {{ userName }}
         </span>
-        <span style="margin-left: 10px;">
-          <el-tag v-if="recognized" class="ml-2" type="success" @click="toScholar" style="cursor: pointer;, background-color: rgb(240, 249, 235);"><el-icon size="10px"><CircleCheck /></el-icon>认证学者</el-tag>
+        <span style="margin-left: 10px;" onmouseover="this.style.backgroundColor='rgb(240, 249, 235)';"
+            onmouseout="this.style.backgroundColor='rgb(240, 249, 235)';">
+          <el-tag
+            onmouseover="this.style.backgroundColor='rgb(240, 249, 235);';"
+            onmouseout="this.style.backgroundColor='rgb(240, 249, 235);';"
+            v-if="recognized" class="ml-2" type="success" @click="toScholar"
+            style="cursor: pointer;, background-color: rgb(240, 249, 235);" title="进入认证学者界面"><el-icon size="10px">
+              <CircleCheck />
+            </el-icon>认证学者</el-tag>
         </span>
       </div>
       <div>
@@ -57,20 +64,23 @@ const getUserIntro = () => {
 const recognized = ref(false)
 const scholarId = ref('')
 const judge_recognize = () => {
-  httpInstance.post("judge_authenticated",{
+  httpInstance.post("judge_authenticated", {
     userid: userStore.userInfo.userid
   }).then((res) => {
     console.log(res)
-    if(res.msg === "用户已认证"){
+    if (res.msg === "用户已认证") {
       recognized.value = true
       scholarId.value = res.results
-    }else{
+    } else {
       recognized.value = false
     }
   })
 }
 const toScholar = () => {
-  router.push("/scholar/" + scholarId.value)
+  let str = "/scholar/" + scholarId.value;
+  window.open(str, "_blank")
+  router.push("/personalScholar");
+  userStore.userInfo.scholarId = scholarId.value
 }
 
 const introInput = ref('')
@@ -153,5 +163,4 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-}
-</style>
+}</style>

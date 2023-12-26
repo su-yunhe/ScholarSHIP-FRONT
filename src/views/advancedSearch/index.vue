@@ -381,7 +381,7 @@
       </template>
     </el-skeleton>
     <el-divider v-if="count != 0"></el-divider>
-    <el-pagination layout="prev, pager, next, jumper, ->" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+    <el-pagination style="position: relative; right: -30vw" layout="prev, pager, next, jumper, ->" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
       :total="pageFullLength" v-if="!loading && count != 0" />
     <el-divider v-if="count != 0"></el-divider>
 
@@ -1248,7 +1248,7 @@ const confirmSelect = async () => {
         padding: 0;
         margin: 0;
         position: relative;
-        top: -20px;
+        top: -17px;
       }
 
       // .essayNum span {
