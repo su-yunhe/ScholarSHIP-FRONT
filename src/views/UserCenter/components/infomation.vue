@@ -77,8 +77,8 @@ const judge_recognize = () => {
   })
 }
 const toScholar = () => {
-  let str = "/scholar/" + scholarId.value;
-  window.open(str, "_blank")
+  // let str = "/scholar/" + scholarId.value;
+  // window.open(str, "_blank")
   router.push("/personalScholar");
   userStore.userInfo.scholarId = scholarId.value
 }
