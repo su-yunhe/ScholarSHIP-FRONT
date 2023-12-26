@@ -86,7 +86,8 @@ const cancelFollow = (scholar) => {
 }
 
 const toFollow = (scholar) => {
-    router.push("/scholar/" + scholar.scholar_id)
+    let str = "/scholar/" + scholar.scholar_id
+    window.open(str, "_blank")
 }
 
 onBeforeMount(() => {

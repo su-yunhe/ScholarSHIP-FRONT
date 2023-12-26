@@ -12,14 +12,16 @@
             <el-divider />
             <el-scrollbar max-height="200px">
                 <TransitionGroup name="list" tag="ul">
-                    <div v-for="entry in recordEntries" :key="entry" class="text_item" @mouseenter="mouseEnter(entry)" @click="toHistory(entry)"
-                        @mouseleave="mouseLeave" id="history_item">
+                    <div v-for="entry in recordEntries" :key="entry" class="text_item" @mouseenter="mouseEnter(entry)"
+                        @click="toHistory(entry)" @mouseleave="mouseLeave" id="history_item">
                         <div style="float: left;">
                             <div class="history_content" :title="entry.name" style="font-weight: bold;">
                                 <el-tag v-if="entry.type === 1" type="success" plain size="small"
                                     @click="to_blur($event)">论文</el-tag>
-                                <el-tag v-if="entry.type === 2" type="primary" plain size="small" @click="to_blur($event)">学者</el-tag>
-                                <el-tag v-if="entry.type === 0" type="info" plain size="small" @click="to_blur($event)">机构</el-tag>
+                                <el-tag v-if="entry.type === 2" type="primary" plain size="small"
+                                    @click="to_blur($event)">学者</el-tag>
+                                <el-tag v-if="entry.type === 0" type="info" plain size="small"
+                                    @click="to_blur($event)">机构</el-tag>
                                 {{ entry.name }}
                             </div>
                             <div class="history_content" style="color: grey;">
@@ -81,13 +83,15 @@ const deleteEntry = (entry) => {
 }
 
 const toHistory = (entry) => {
-    if(entry.type === 0){
-        router.push("/institution/" + entry.real_id)
-    }else if(entry.type === 1){
-        router.push("/academic/" + entry.real_id)
-    }else{
-        router.push("/scholar/" + entry.real_id)
+    let str = "";
+    if (entry.type === 0) {
+        str = "/institution/" + entry.real_id;
+    } else if (entry.type === 1) {
+        str = "/academic/" + entry.real_id;
+    } else {
+        str = "/scholar/" + entry.real_id;
     }
+    window.open(str, "_blank")
 }
 
 const deleteAllEntries = () => {
@@ -196,32 +200,4 @@ onBeforeMount(() => {
         position: absolute;
     }
 }
-
-// .history-card :hover {
-//   background-color: rgb(107, 168, 87, 0.75);
-//   transition: all 1s;
-// }
-
-// .history-card div :hover{
-//   background-color: rgba(0,0,0,0);
-// }
-
-// #history_item {
-//     border: 2px solid black;
-//     border-radius: 10px;
-//     border-bottom: 1px solid white;
-//     margin-bottom: 10px;
-//     padding-bottom: 10px;
-// }
-
-// #history_item :hover{
-//     cursor: pointer;
-//     border-radius: 20px;
-//     background-color: rgba(255,255,255,0.5);
-// }
-
-// #history_item div :hover{
-//     cursor: pointer;
-//     border: 1px solid black;
-//     background-color: rgba(0,0,0,0);
-// }</style>
+</style>

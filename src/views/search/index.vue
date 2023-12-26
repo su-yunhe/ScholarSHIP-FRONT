@@ -393,7 +393,7 @@
       </el-col>
     </el-row>
     <el-divider v-if="paginatedData.length != 0"></el-divider>
-    <el-pagination layout="prev, pager, next, jumper, ->" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+    <el-pagination style="position: relative; right: -35vw" layout="prev, pager, next, jumper, ->" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
       :total="pageFullLength" v-if="rendered && paginatedData.length != 0" />
     <el-divider v-if="paginatedData.length != 0"></el-divider>
   </div>
