@@ -15,7 +15,9 @@ export const useUserStore = defineStore('user', () => {
     username:'',
     authorization:'',
     email:'',
-    realname:''
+    realname:'',
+    introduction:'',
+    scholarId:'',
   })
 
  

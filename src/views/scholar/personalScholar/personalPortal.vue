@@ -162,6 +162,7 @@ const getGraphData = () => {
 }
 onMounted(() => {
         loadingTag.value = true;
+        scholarID.value = userStore.userInfo.scholarId;
         scholarStore.essayList = [];
         // this.getEssayNum(scholarStore);
         getScholarInfo();

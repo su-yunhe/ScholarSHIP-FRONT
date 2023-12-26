@@ -156,6 +156,7 @@ const doLogin = () => {
     }).then(res => {
       console.log(res.data)
       userStore.userInfo = res.data
+      userStore.userInfo.identity = "管理员"
       console.log(userStore.userInfo)
       ElMessage({ type: 'success', message: '登录成功' })
       router.replace({ path: '/admin' })

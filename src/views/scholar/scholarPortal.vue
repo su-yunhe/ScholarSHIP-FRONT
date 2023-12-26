@@ -186,7 +186,7 @@ export default {
             })
         },
         async getScholarInfo() {
-            let userID = 1;
+            let userID = this.userStore.userInfo.userid;
             await httpInstance.post('/get_scholar', { scholarID: this.scholarID, userID: userID }).then(res => res.data).then(res => {
                 console.log("get scholarInfo res:", res);
                 this.scholarInfo = res;

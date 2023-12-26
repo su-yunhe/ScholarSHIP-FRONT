@@ -31,7 +31,6 @@ httpInstance.interceptors.request.use(config => {
 httpInstance.interceptors.response.use(function (res) {
   if (res.data.error !== 0) {
     // 统一错误提示
-
     if (res.data.error === 401 || res.data.error === 402) {
       console.log(1)
       ElMessageBox.confirm(
