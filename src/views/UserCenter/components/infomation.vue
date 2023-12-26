@@ -16,7 +16,7 @@
           用户名: {{ userName }}
         </span>
         <span style="margin-left: 10px;">
-          <el-tag class="ml-2" type="success" @click="toScholar"><el-icon size="10px"><CircleCheck /></el-icon>认证学者</el-tag>
+          <el-tag class="ml-2" type="success" @click="toScholar" style="cursor: pointer; background-color: rgb(240, 249, 235);" title="去往认证学者界面"><el-icon size="10px"><CircleCheck /></el-icon>认证学者</el-tag>
         </span>
       </div>
       <div>
@@ -42,6 +42,7 @@ import { ElMessage } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 import { useUserStore } from "@/stores/userStore"
 import httpInstance from "@/utils/http"
+import { onMounted } from "vue"
 
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
@@ -93,7 +94,7 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 
-onBeforeMount(() => {
+onMounted(() => {
   getUserIntro()
 })
 </script>
