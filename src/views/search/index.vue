@@ -109,7 +109,7 @@
         <transition transition name="fade">
           <div class="left" v-show="show_left">
             <div class="conditionBox">
-              <div class="title" @click="filter()">筛选</div>
+              <div class="title" @click="filter(1)">筛选</div>
               <div class="main">
                 <div class="paper">
                   <el-collapse v-model="activeName" accordion>
@@ -132,25 +132,26 @@
                     </el-collapse-item>
                     <el-collapse-item title="作者" name="2" v-show="!(ok === '学者')">
                       <div v-for="i in authorList" style="font-size: 13px">
-                        <el-checkbox @click="getIns(i.name)" />
+                        <el-checkbox @click="getIns(i.id,2)" />
                         {{ i.name }}&nbsp({{ i.count }})
                       </div>
                     </el-collapse-item>
                     <el-collapse-item title="主题" name="3">
                       <div v-for="i in conceptList" style="font-size: 13px">
-                        <el-checkbox @click="getIns(i.name)" />
+                        <el-checkbox @click="getIns(i.id,4)" />
                         {{ i.name }}&nbsp({{ i.count }})
                       </div>
                     </el-collapse-item>
                     <el-collapse-item title="机构" name="4" v-show="!(ok === '机构')">
                       <div v-for="i in institutionList" style="font-size: 13px">
-                        <el-checkbox @click="getIns(i.name)" />
+                        <el-checkbox @click="getIns(i.id,3)" />
                         {{ i.name }}&nbsp({{ i.count }})
                       </div>
                     </el-collapse-item>
                   </el-collapse>
                 </div>
               </div>
+              <div class="title" @click="nofilter()">重置</div>
             </div>
           </div>
         </transition>
@@ -416,41 +417,16 @@ import { useRouter } from "vue-router"
 import { DataAnalysis, Histogram, TrendCharts } from "@element-plus/icons-vue"
 import * as echarts from "echarts"
 import httpInstance from "@/utils/http"
+import axios from 'axios';
 const router = useRouter()
 const value = ref("")
 const input = ref("")
 const lazyValue = ref("")
 const items = ref([]);
-const minyear = ref()
-const maxyear = ref()
+const minyear = ref(1900)
+const maxyear = ref(2023)
 const activeName = ref("1")
-const years = ref([
-  1999,
-  2000,
-  2001,
-  2002,
-  2003,
-  2004,
-  2005,
-  2006,
-  2007,
-  2008,
-  2009,
-  2010,
-  2011,
-  2012,
-  2013,
-  2014,
-  2015,
-  2016,
-  2017,
-  2018,
-  2019,
-  2020,
-  2021,
-  2022,
-  2023,
-]);
+const years = ref([]);
 const show_left = ref(false);
 const authorList = ref([]);
 const conceptList = ref([]);
@@ -462,6 +438,11 @@ const pageSize = ref(20);
 const pageFullLength = ref();
 const count = ref(0);
 onMounted(() => {
+  var i = 1900;
+  while(i<2024){
+    years.value.push(i)
+    i=i+1;
+  }
   if (router.currentRoute.value.fullPath.split('/')[1] == 'search') {
     getWenList("", 1);
     return;
@@ -499,14 +480,33 @@ const citeStringGB = ref("")
 const citeStringBib = ref("")
 const citeStringChicago = ref("")
 const citeDialogVisible = ref(false)
-
-const filter = () => {
-  console.log(minyear)
-  console.log(maxyear)
-  console.log(authorList)
-  console.log(conceptList)
-  console.log(institutionList)
-
+const searchType1 = ref(false)
+const filter = (p) => {
+  httpInstance
+    .post(`/SearchManager/FilterWork`, { page:p,content:input.value,min_year:minyear.value,max_year:maxyear.value,name:id_list.value,type:type_list.value })
+    .then((res) => {
+      pageFullLength.value = res.data.length> 10000 ? 10000 :res.data.length;
+      // console.log(pageFullLength.value)
+      if (pageFullLength.value == 0) {
+        items.value = [];
+        count.value = 0;
+      } else {
+        items.value = res.data;
+        count.value = res.data.length;
+        currentPage.value=p;
+        searchType1.value=true;
+      }
+      rendered.value = true;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+const nofilter = () => {
+  searchType1.value=false;
+  id_list.value=[]
+  type_list.value=[]
+  search()
 }
 const clean = () => {
   items.value = [];
@@ -707,10 +707,21 @@ const getJiList = async (input, num) => {
   getTopConcept(input);
   getTopAuthor(input);
 };
-const getIns = (name) => {
-  console.log(name);
+const id_list = ref([])
+const type_list = ref([])
+const getIns = (id,t) => {
+  id_list.value.push(id)
+  type_list.value.push(t)
+  // console.log(name);
 };
 const handleCurrentChange = async (n) => {
+  if(searchType1.value){
+    rendered.value = false;
+    await filter(n);
+    currentPage.value = n
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return ;
+  }
   rendered.value = false;
   if (ok.value == "文献") {
     await getWenList(input.value, n);
@@ -746,6 +757,7 @@ const pdf = async (id) => {
     .post(`/SearchManager/DownloadWork`, { id: id })
     .then((res) => {
       // window.open(res.data, '_blank');
+      console.log(res.data)
       const response = axios.get(res.data, {
         responseType: 'blob', // 必须指定为blob类型才能下载
       }); 

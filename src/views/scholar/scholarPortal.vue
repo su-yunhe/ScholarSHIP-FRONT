@@ -37,7 +37,7 @@
                 <div>
                     <!-- 可以通过改变 recognized 和 followed 两个变量 改变显示按钮的状态-->
                     <el-button type="primary" class="scholar-operation op-claim" @click="dialogVisible = true" size="large" v-if="!recognized"><el-icon><Promotion /></el-icon>认领门户</el-button>
-                    <el-button type="primary" class="scholar-operation op-claim" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证门户</el-button>
+                    <el-tag type="success" class="scholar-operation op-claim" size="large" v-if="recognized"><el-icon><SuccessFilled /></el-icon>已认证此门户</el-tag>
                     <el-button type="primary" class="scholar-operation op-concern" @click="concernScholar" size="large" v-if="!followed"> <el-icon><StarFilled /></el-icon>关注学者</el-button>
                     <el-button type="primary" class="scholar-operation op-concern" @click="cancelConcern" size="large" v-if="followed"> <el-icon color="gold"><StarFilled /></el-icon>取消关注</el-button>
                 </div>
@@ -118,6 +118,7 @@ export default {
         },
         claimPortal(){//认领门户
             let Time = new Date()
+            console.log(this.scholarInfo.name)
             httpInstance.post("apply_add",{
                 userid: this.userStore.userInfo.userid,
                 scholarId: this.scholarID,
@@ -230,11 +231,31 @@ export default {
         },
         checkConcern(){
             // 是否已经关注学者
-
+            httpInstance.post("judge_concern",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID
+            }).then((res) => {
+                console.log(res)
+                if(res.results){
+                    this.followed = true
+                }else{
+                    this.followed = false
+                }
+            })
         },
         checkRecognize(){
             // 是否已经认领了门户
-
+            httpInstance.post("judge_scholar",{
+                userid: this.userStore.userInfo.userid,
+                scholarId: this.scholarID
+            }).then((res) => {
+                console.log(res)
+                if(res.results){
+                    this.recognized = true
+                }else{
+                    this.recognized = false
+                }
+            })
         },
         recordBrowse(){
             let Time = new Date()
@@ -264,6 +285,7 @@ export default {
     },
     beforeMount(){
         this.checkConcern()
+        this.checkRecognize()
         this.recordBrowse()
     }
 
