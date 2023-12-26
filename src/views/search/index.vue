@@ -1,20 +1,20 @@
 <template>
   <el-dialog title="引用" v-model="citeDialogVisible" width="50%">
-          <div>引用格式：</div>
-          <div>
-              <el-button v-for="(format_, i) in ['IEEE', 'GB/T7714', 'BibText', 'Chicago']" @click="changeFormat(i)"
+    <div>引用格式：</div>
+    <div>
+      <el-button v-for="(format_, i) in ['IEEE', 'GB/T7714', 'BibText', 'Chicago']" @click="changeFormat(i)"
         :key="format_">{{ format_ }}</el-button>
-              <!-- <span></span> -->
-            </div>
-          <div class="citeContent">{{ citeString }}</div>
-          <div class="dialog-footer">
-              <el-button @click="citeDialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="copyCiteString(citeString.value)">复 制</el-button>
-            </div>
+      <!-- <span></span> -->
+    </div>
+    <div class="citeContent">{{ citeString }}</div>
+    <div class="dialog-footer">
+      <el-button @click="citeDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="copyCiteString(citeString.value)">复 制</el-button>
+    </div>
   </el-dialog>
   <div class="searchBox">
     <div class="menu1">
-      <button class="btn" @click="toAdvancedSearch">
+      <button class="btn" @click="toAdvancedSearch()">
         <span class="box">
           <el-icon style="position: relative; top: 2px">
             <Search />
@@ -109,7 +109,7 @@
         <transition transition name="fade">
           <div class="left" v-show="show_left">
             <div class="conditionBox">
-              <div class="title">筛选方式</div>
+              <div class="title" @click="filter()">筛选</div>
               <div class="main">
                 <div class="paper">
                   <el-collapse v-model="activeName" accordion>
@@ -411,19 +411,19 @@
   </div> -->
 </template>
 <script setup>
-import { ref, watchEffect, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { DataAnalysis, Histogram, TrendCharts } from "@element-plus/icons-vue";
-import * as echarts from "echarts";
-import httpInstance from "@/utils/http";
-const router = useRouter();
-const value = ref("");
-const input = ref("");
-const lazyValue = ref("");
+import { ref, watchEffect, computed, onMounted } from "vue"
+import { useRouter } from "vue-router"
+import { DataAnalysis, Histogram, TrendCharts } from "@element-plus/icons-vue"
+import * as echarts from "echarts"
+import httpInstance from "@/utils/http"
+const router = useRouter()
+const value = ref("")
+const input = ref("")
+const lazyValue = ref("")
 const items = ref([]);
-const minyear = ref();
-const maxyear = ref();
-const activeName = ref("1");
+const minyear = ref()
+const maxyear = ref()
+const activeName = ref("1")
 const years = ref([
   1999,
   2000,
@@ -499,28 +499,15 @@ const citeStringGB = ref("")
 const citeStringBib = ref("")
 const citeStringChicago = ref("")
 const citeDialogVisible = ref(false)
-// const search = async () => {
-//   rendered.value = false;
-//   const cite = (id) => {
-//     httpInstance
-//       .get(`/get_citation`, { work_id: id, citation_type: "GB/T7714" })
-//       .then((res) => {
-//         const textToCopy = res.data.result;
-//         navigator.clipboard.writeText(textToCopy)
-//           .then(() => {
-//             console.log("已成功复制到剪贴板");
-//             // 可以显示成功提示或执行其他操作
-//           })
-//           .catch((error) => {
-//             console.error("复制到剪贴板失败", error);
-//             // 可以显示错误提示或执行其他操作
-//           });
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   }
-// }
+
+const filter = () => {
+  console.log(minyear)
+  console.log(maxyear)
+  console.log(authorList)
+  console.log(conceptList)
+  console.log(institutionList)
+
+}
 const clean = () => {
   items.value = [];
   authorList.value = [];
@@ -550,33 +537,6 @@ const search = async () => {
   }
 };
 const cite = async (id) => {
-  // httpInstance
-  //   .get(`/get_citation?work_id=${id}&citation_type=GB/T7714`)
-  //   .then((res) => {
-  //     console.log(res);
-  //     const textToCopy = res.result;
-  //     navigator.clipboard.writeText(textToCopy)
-  //       .then(() => {
-  //         console.log("已成功复制到剪贴板");
-  //         ElMessage({
-  //           message: '已成功复制到剪贴板',
-  //           grouping: true,
-  //           type: 'success',
-  //         })
-  //       })
-  //       .catch((error) => {
-  //         console.error("复制到剪贴板失败", error);
-  //         // 可以显示错误提示或执行其他操作
-  //         ElMessage({
-  //           message: '复制到剪贴板失败',
-  //           grouping: true,
-  //           type: 'warning',
-  //         })
-  //       });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   });
   citeDialogVisible.value = true;
   try {
     const [IEEE, GB, Bib, Chicago] = await Promise.all([
@@ -646,9 +606,9 @@ const copyCiteString = (content) => {
 }
 const getTopInstitution = async (input) => {
   httpInstance
-    .post(`/SearchManager/SearchTopConcept`, { content: input })
+    .post(`/SearchManager/SearchTopInstitution`, { content: input })
     .then((res) => {
-      // console.log(res);
+      console.log(res);
       institutionList.value = res.top_institution;
     })
     .catch((error) => {
@@ -670,7 +630,9 @@ const getTopAuthor = async (input) => {
   httpInstance
     .post(`/SearchManager/SearchTopAuthor`, { content: input })
     .then((res) => {
-      // console.log(res);
+      console.log(1
+      )
+      console.log(res)
       authorList.value = res.top_author;
     })
     .catch((error) => {
@@ -678,11 +640,12 @@ const getTopAuthor = async (input) => {
     });
 };
 const getWenList = async (input, num) => {
+  console.log(input)
+  console.log(num)
   httpInstance
     .post(`/SearchManager/SearchWork`, { content: input, page: num })
     .then((res) => {
       console.log(res)
-      // console.log(1);
       pageFullLength.value = res.count > 10000 ? 10000 : res.count;
       // console.log(pageFullLength.value)
       if (pageFullLength.value == 0) {
@@ -695,7 +658,7 @@ const getWenList = async (input, num) => {
       rendered.value = true;
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error); 
     });
   getTopAuthor(input);
   getTopConcept(input);
@@ -705,8 +668,6 @@ const getXueList = async (input, num) => {
   httpInstance
     .post(`/SearchManager/SearchAuthor`, { content: input, page: num })
     .then((res) => {
-      // console.log(1);
-      console.log(res);
       pageFullLength.value = res.data.length > 10000 ? 10000 : res.data.length; // 后端传来的数据没有res.count字段
       // console.log(pageFullLength.value)
       if (pageFullLength.value == 0) {
@@ -728,7 +689,6 @@ const getJiList = async (input, num) => {
   httpInstance
     .post(`/SearchManager/SearchInstitution`, { content: input, page: num })
     .then((res) => {
-      // console.log(1);
       console.log(res);
       pageFullLength.value = res.data.length > 10000 ? 10000 : res.data.length; // 后端传来的数据没有res.count字段
       // console.log(pageFullLength.value)
@@ -759,13 +719,13 @@ const handleCurrentChange = async (n) => {
   } else {
     await getJiList(input.value, n);
   }
-  currentPage.value = n;
+  currentPage.value = n
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 const toDocument = (id) => {
   var str = "/academic/" + id;
-  router.push({ path: str });
-};
+  window.open(str, "_blank")
+}
 const toAdvancedSearch = () => {
   router.push({ name: "advancedSearch" });
 };
@@ -1325,14 +1285,20 @@ async function analyzeStatic(id) {
       background-color: #fafafa;
 
       .title {
-        margin: 0 20px;
+        margin: 0 100px 10px 100px;
         padding-top: 10px;
         height: 60px;
         line-height: 40px;
         text-align: center;
         font-weight: bold;
         font-size: 18px;
+        border-radius: 5px;
+        transition: 0.2s;
         // border-bottom: 1px solid rgb(222, 222, 222);
+      }
+
+      .title:hover {
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
       }
 
       .main {
