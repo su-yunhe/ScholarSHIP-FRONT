@@ -150,7 +150,7 @@ const doLogin = () => {
     ElMessage({ type: 'warning', message: '密码不能为空' })
   }else{
     console.log(1)
-    httpInstance.post("login", {
+    httpInstance.post("manager_login", {
       userName: form.value.userName,
       password: form.value.password
     }).then(res => {
