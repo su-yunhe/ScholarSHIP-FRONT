@@ -57,7 +57,7 @@
             </div>
             <div class="essay-essays">
                 <div v-if="referenced_works_num != 0">引用文章</div>
-                <a v-for="work in essay.referenced_works" :key="work" :href="work.id" target="_blank">{{ work.title }}</a>
+                <span v-for="work in essay.referenced_works" :key="work" @click="enterEssay(work_id)" >{{ work.title }}</span>
             </div>
             <div class="essay-essays">
                 <div v-if="related_works_num != 0">相关文章</div>
@@ -339,9 +339,9 @@ export default {
                 console.log("get referenced and related error:", error);
             })
         },
-        enterEssay(essay) {//进入引用参考文献展示页
-            console.log('enter essay:', essay, essay.id);
-            let essay_id = essay.id.split('/')[3]
+        enterEssay(id) {//进入引用参考文献展示页
+            // console.log('enter essay:', essay, essay.id);
+            let essay_id = id.split('/')[3];
             console.log("essay_id:", essay_id)
             router.push(`/academic/${essay_id}`);
         },
@@ -373,7 +373,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .academicContainer {
     margin: 0;
     padding: 0;

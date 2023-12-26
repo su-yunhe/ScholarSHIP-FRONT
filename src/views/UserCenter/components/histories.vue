@@ -16,10 +16,10 @@
                         @mouseleave="mouseLeave" id="history_item">
                         <div style="float: left;">
                             <div class="history_content" :title="entry.name" style="font-weight: bold;">
-                                <el-button v-if="entry.type === 1" type="primary" plain size="small"
-                                    @click="to_blur($event)">论文</el-button>
-                                <el-button v-if="entry.type === 2" type="warning" plain size="small" @click="to_blur($event)">学者</el-button>
-                                <el-button v-if="entry.type === 0" type="info" plain size="small" @click="to_blur($event)">机构</el-button>
+                                <el-tag v-if="entry.type === 1" type="success" plain size="small"
+                                    @click="to_blur($event)">论文</el-tag>
+                                <el-tag v-if="entry.type === 2" type="primary" plain size="small" @click="to_blur($event)">学者</el-tag>
+                                <el-tag v-if="entry.type === 0" type="info" plain size="small" @click="to_blur($event)">机构</el-tag>
                                 {{ entry.name }}
                             </div>
                             <div class="history_content" style="color: grey;">
