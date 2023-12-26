@@ -15,7 +15,8 @@ export const useUserStore = defineStore('user', () => {
     username:'',
     authorization:'',
     email:'',
-    realname:''
+    realname:'',
+    identity: ''
   })
 
  
@@ -37,7 +38,9 @@ export const useUserStore = defineStore('user', () => {
       username:'',
       authorization:'',
       email:'',
-      realname:''
+      realname:'',
+      identity: ''
+
     }
   }
 

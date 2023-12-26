@@ -6,7 +6,7 @@ import axios from 'axios'
 const userStore = useUserStore()
 const router = useRouter()
 // 不显示搜索框的路径
-const excludedPaths = ['/intro', '/login', '/search', '/AdvancedSearch']
+const excludedPaths = ['/intro', '/login', '/search', '/AdvancedSearch', '/admin', '/adminLogin']
 const myInput = ref("")
 
 const toLogin = () => {
@@ -55,7 +55,7 @@ const doSearch = () => {
       <span style="color: rgba(200, 65, 48);margin-left: 2px;">I</span>
       <span style="color: rgba(233, 187, 18);margin-left: 2px;">P</span>
     </div>
-    <div class="menu1">
+    <div class="menu1" v-if = "router.currentRoute.value.fullPath != '/admin' && router.currentRoute.value.fullPath != '/adminLogin'">
       <button v-if="router.currentRoute.value.fullPath!= '/AdvancedSearch'" class="btn"  @click="toAdvancedSearch()">
         <span class="box">
           高级搜索
