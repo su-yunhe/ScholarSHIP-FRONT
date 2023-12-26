@@ -159,10 +159,16 @@ const doLogin = () => {
     }).then(res => {
       console.log(res.data)
       userStore.userInfo = res.data
+      httpInstance.post("get_user_info",{
+        userid: userStore.userInfo.userid
+      }).then((res) => {
+        userStore.userInfo.introduction = res.results[0].introduction
+      })
       console.log(userStore.userInfo)
       ElMessage({ type: 'success', message: '登录成功' })
       router.replace({ path: '/intro' })
     })
+    
   }
 }
 

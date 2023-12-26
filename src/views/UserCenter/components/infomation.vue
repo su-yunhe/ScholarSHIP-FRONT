@@ -49,14 +49,9 @@ const userStore = useUserStore()
 const userId = userStore.userInfo.userid
 const userName = userStore.userInfo.username
 
-const userIntro = ref("")
+const userIntro = userStore.userInfo.introduction
 const getUserIntro = () => {
-  httpInstance.post("", {
-    userid: userId
-  }).then((res) => {
-    console.log(res)
-    userIntro.value = res.data
-  })
+
 }
 
 const recognized = ref(false)
