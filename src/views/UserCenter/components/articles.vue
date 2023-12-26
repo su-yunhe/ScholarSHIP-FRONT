@@ -326,10 +326,14 @@ const deleteFromCollection = (article) => {
     httpInstance.post("star_delete",{
         userid: userId,
         labelId: libraryStore.labelId,
-        articleId: article.article_id,
+        id: article.article_id,
         isDelete: 0
     }).then((res) => {
         console.log(res)
+        ElMessage({
+            type: 'success',
+            message: '操作成功！',
+        })
     })
     let val = cur_page.value;
     const index = displayedArticles.findIndex(item => item.id === article.id);
