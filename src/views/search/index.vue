@@ -458,6 +458,10 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const pageFullLength = ref();
 onMounted(() => {
+  if (router.currentRoute.value.fullPath.split('/')[1]=='search'){
+    getWenList("",1);
+    return;
+  }
   var type=router.currentRoute.value.fullPath.split('type=')[1].split('&id')[0];
   var id=router.currentRoute.value.fullPath.split('id=')[1];
   id=id.replace("+"," ");
