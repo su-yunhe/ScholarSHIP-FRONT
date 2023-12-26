@@ -14,7 +14,7 @@
     "@tiptap/pm": "^2.1.7",
     "@tiptap/starter-kit": "^2.1.7",
     "@tiptap/vue-3": "^2.1.7",
-    "axios": "^1.4.0",
+    "axios": "^1.6.2",
     "echarts": "^5.4.3",
     "element-plus": "^2.4.4",
     "entrance-vue": "^1.0.2",

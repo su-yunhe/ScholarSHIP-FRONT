@@ -15,6 +15,9 @@
         <span>
           用户名: {{ userName }}
         </span>
+        <span style="margin-left: 10px;">
+          <el-tag class="ml-2" type="success" @click="toScholar"><el-icon size="10px"><CircleCheck /></el-icon>认证学者</el-tag>
+        </span>
       </div>
       <div>
         <span>

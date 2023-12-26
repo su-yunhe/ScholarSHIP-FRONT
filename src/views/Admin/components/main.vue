@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import httpInstance from "@/utils/http";
 import { ElMessage } from "element-plus";
-import { reactive } from "vue";
+import { onBeforeMount, reactive } from "vue";
 
 const applicationTable = reactive([
 // {
@@ -57,6 +57,7 @@ const applicationTable = reactive([
 const loadTable = () => {
     httpInstance.post("get_all_apply").then((res) => {
         console.log(res)
+        applicationTable.splice(0, applicationTable.length, ...res.data)
     })
 }
 
@@ -67,7 +68,6 @@ const pass = (id: string) => {
         id: requestId
     }).then((res) => {
         console.log(res)
-        loadTable()
     })
     ElMessage({
         message: "操作成功！",
@@ -81,13 +81,15 @@ const fail = (id: string) => {
         id: requestId
     }).then((res) => {
         console.log(res)
-        loadTable()
     })
     ElMessage({
         message: "操作成功！",
         type: 'success',
     })
 }
+onBeforeMount(() => {
+    loadTable()
+})
 </script>
 
 <style scoped>

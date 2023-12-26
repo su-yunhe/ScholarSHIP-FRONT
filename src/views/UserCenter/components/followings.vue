@@ -10,7 +10,7 @@
             <el-divider />
             <el-scrollbar max-height="200px">
                 <TransitionGroup name="list" tag="ul">
-                    <div v-for="scholar in scholars" :key="scholar" class="text_item" @mouseenter="mouseOver(scholar)"
+                    <div v-for="scholar in scholars" :key="scholar" class="text_item" @mouseenter="mouseOver(scholar)" @click="toFollow(scholar)"
                         @mouseleave="mouseLeave">
                         <div style="float: left">
                             <el-avatar :size="50" :src="circleUrl" />
@@ -24,7 +24,7 @@
                             </div> -->
                         </div>
                         <div style="margin-left: 5vw;">
-                            <el-button v-if="scholarMouseOn === scholar.scholar_id" @click="cancelFollow(scholar)"
+                            <el-button v-if="scholarMouseOn === scholar.scholar_id" @click.stop="cancelFollow(scholar)"
                                 id="cancel_following_btn" color="red" plain type="danger" size="small" :icon="Close" circle
                                 style="float: right; position: relative; left: -0.5vw;" />
                             <!-- <el-button v-if="scholarMouseOn === scholar.scholar_id"
@@ -48,6 +48,7 @@ import { onBeforeMount, reactive, ref } from "vue";
 import {
     Close
 } from '@element-plus/icons-vue'
+import router from "@/router";
 const circleUrl = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 const userStore = useUserStore()
 const userId = userStore.userInfo.userid
@@ -62,14 +63,14 @@ const loadFollowings = () => {
 }
 
 const scholarMouseOn = ref('')
-const mouseOver = (scholar: string) => {
+const mouseOver = (scholar) => {
     console.log("当前悬浮在" + scholar.scholar_id)
     scholarMouseOn.value = scholar.scholar_id
 }
 const mouseLeave = () => {
     scholarMouseOn.value = ''
 }
-const cancelFollow = (scholar: string) => {
+const cancelFollow = (scholar) => {
     console.log("取消关注" + scholar.scholar_id)
     httpInstance.post("concern_delete", {
         userid: userId,
@@ -82,6 +83,10 @@ const cancelFollow = (scholar: string) => {
             type: 'success',
         })
     })
+}
+
+const toFollow = (scholar) => {
+    router.push("/scholar/" + scholar.scholar_id)
 }
 
 onBeforeMount(() => {
